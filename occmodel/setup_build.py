@@ -76,8 +76,8 @@ try:
       ext_modules=[
         Extension("occmodel",
                     sources=["occmodel.pyx"],
-                    depends = ["liboccmodel.a", "src/OCCModelLib.pxd"] + glob.glob("src/*.pxi"),
-                    include_dirs = ['src', '/usr/include/oce'],
+                    depends = ["liboccmodel.a", "@src/OCCModelLib.pxd"] + glob.glob("@src/*.pxi"),
+                    include_dirs = ['@src', '/usr/include/oce'],
                     library_dirs = ['.'],
                     libraries = ["occmodel", "GL", "glut", "pthread"] + OCCLIBS,
                     extra_compile_args = ["-fpermissive"],
