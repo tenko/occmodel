@@ -6,7 +6,7 @@ import unittest
 
 from math import pi, sin, cos, sqrt
 
-sys.path.append('..')
+sys.path.insert(0, '..')
 from occmodel import Vertex, Edge
 
 class test_Edge(unittest.TestCase):

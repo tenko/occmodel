@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
         
 cdef class Box:
+    '''
+    Class representing a bounding box
+    '''
     cdef public Point near
     cdef public Point far
     

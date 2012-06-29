@@ -20,12 +20,25 @@ The license is GPL v2.
 Examples
 ********
 
-* Arc
-* Face
-* Box
-* Pipe
-* Loft
+* Introduction
+* Arc 3P
+* Bezier
 * Boolean
+* Box
+* Circle
+* Extrude
+* Face interior point
+* Face edge sequence
+* Line
+* Loft
+* Pipe
+* Polygonal face
+* Read
+* Revolve
+* Section
+* Sphere
+* Spline
+* Write
 
 Contents
 ********
@@ -34,6 +47,7 @@ Contents
 * Box
 * Edge
 * GLUTViewer
+* Mesh
 * Plane
 * Point
 * Quaternion

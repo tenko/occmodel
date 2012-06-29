@@ -6,7 +6,7 @@ import unittest
 
 from math import pi, sin, cos, sqrt
 
-sys.path.append('..')
+sys.path.insert(0, '..')
 from occmodel import Vertex, Edge, Face
 
 class test_Face(unittest.TestCase):

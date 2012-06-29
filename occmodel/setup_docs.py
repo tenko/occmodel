@@ -12,7 +12,7 @@ cmdclass = {'build_sphinx': BuildDoc}
 import Common.Geometry
 sys.path.append(Common.Geometry.__path__[0])
 
-os.chdir('docs/src')
+os.chdir('@docs/src')
 sys.argv.append('build_sphinx')
 
 name = 'occmodel'

@@ -79,8 +79,8 @@ cpdef Vector cross(Vector a, Vector b):
     return Vector(a.y * b.z - b.y * a.z, a.z * b.x - b.z * a.x, a.x * b.y - b.x * a.y)
 
 cpdef int isParallell(Vector v1, Vector v2):
-    """'
-    Return 1 if parallell, -1 if anti-parallell and 0 if not parallell.'
+    """
+    Return 1 if parallell, -1 if anti-parallell and 0 if not parallell.
     """
     assert v1 is not None and not v2 is None
     ll = _length(v1.x, v1.y, v1.z) * _length(v2.x, v2.y, v2.z)

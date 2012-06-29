@@ -879,7 +879,7 @@ def demo():
 def viewer(objs, colors = None):
     '''
     View object or sequence of objects.
-    Edges, faces and solids are supported
+    Edges, faces and solids are supported.
     '''
     viewer = GLUTViewer(800,800)
     

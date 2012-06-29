@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 cdef class Point:
+    '''
+    Class representing a 3D point in space
+    '''
     cdef public double x, y, z
     
     def __init__(self, *args):

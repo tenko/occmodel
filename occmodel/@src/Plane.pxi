@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 cdef class Plane:
+    '''
+    Class representing a mathematical infinite plane.
+    '''
     cdef readonly Point origin
     cdef readonly Vector xaxis
     cdef readonly Vector yaxis

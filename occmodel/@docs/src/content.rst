@@ -1,14 +1,27 @@
 occmodel
 --------
 
-.. autofunction:: occmodel.viewer
+.. autofunction:: occmodel.cross
+
+.. autofunction:: occmodel.distance
+
+.. autofunction:: occmodel.dot
 
 .. autofunction:: occmodel.demo
+
+.. autofunction:: occmodel.isParallell
+
+.. autofunction:: occmodel.isPerpendicular
+
+.. autofunction:: occmodel.perpendicular
+
+.. autofunction:: occmodel.viewer
 
 Box
 ---
 .. autoclass:: occmodel.Box
     :members:
+    :special-members:
 
 
 Edge
@@ -23,6 +36,11 @@ GLUTViewer
     :members:
 
 
+Mesh
+----
+.. autoclass:: occmodel.Mesh
+    :members:
+    
 Plane
 -----
 .. autoclass:: occmodel.Plane
@@ -33,12 +51,14 @@ Point
 -----
 .. autoclass:: occmodel.Point
     :members:
+    :special-members:
 
 
 Quaternion
 ----------
 .. autoclass:: occmodel.Quaternion
     :members:
+    :special-members:
 
 
 Solid
@@ -51,12 +71,14 @@ Transform
 ---------
 .. autoclass:: occmodel.Transform
     :members:
+    :special-members:
 
 
 Vector
 ------
 .. autoclass:: occmodel.Vector
     :members:
+    :inherited-members:
 
 
 Vertex

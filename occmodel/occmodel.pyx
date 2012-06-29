@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#cython: embedsignature=True
 from libc.stdlib cimport malloc, free
 from libc.math cimport M_PI, fmin, fmax, fabs
 from libc.math cimport sqrt, sin, cos, tan

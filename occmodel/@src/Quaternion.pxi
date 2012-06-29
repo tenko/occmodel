@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
     
 cdef class Quaternion:
+    '''
+    Class representing a quaternion usefull for rotation
+    transformations.
+    '''
     cdef public double w, x, y, z
     
     def __init__(self, *args):
