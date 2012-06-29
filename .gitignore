@@ -1,0 +1,14 @@
+# build folders
+occmodel/build/
+occmodel/@docs/build/
+# compiled python files
+*.pyc
+*.pyo
+# python extension modules
+*.pyd
+*.so
+# libraries
+*.dll
+*.a
+# object files
+*.o

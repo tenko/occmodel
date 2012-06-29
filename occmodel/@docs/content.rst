@@ -2,8 +2,8 @@
 .. contents:: Table of Contents
 
 
-occmodel
-********
+functions
+*********
 
 cross(Vector a, Vector b) -> Vector
 
