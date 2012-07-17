@@ -24,4 +24,6 @@ The extension have only been build on the Linux platform.
 Documentation
 =============
 
-See docs folder
+See online Sphinx docs_
+
+.. _docs: http://tenko.github.com/occmodel/index.html

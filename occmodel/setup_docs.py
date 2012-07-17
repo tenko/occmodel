@@ -12,7 +12,7 @@ cmdclass = {'build_sphinx': BuildDoc}
 import Common.Geometry
 sys.path.append(Common.Geometry.__path__[0])
 
-os.chdir('@docs/src')
+os.chdir('@docs')
 sys.argv.append('build_sphinx')
 
 name = 'occmodel'
@@ -27,7 +27,7 @@ try:
         cmdclass=cmdclass,
         command_options={
             'build_sphinx': {
-               'builder': ('setup_docs.py', 'text'),
+               'builder': ('setup_docs.py', 'html'),
                }
         },
                    
