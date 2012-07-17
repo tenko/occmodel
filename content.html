@@ -1,0 +1,1915 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>occmodel &mdash; occmodel  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="occmodel  documentation" href="index.html" />
+    <link rel="prev" title="Introduction" href="examples.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="examples.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">occmodel  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="occmodel">
+<h1>occmodel<a class="headerlink" href="#occmodel" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="occmodel.cross">
+<tt class="descclassname">occmodel.</tt><tt class="descname">cross</tt><big>(</big><em>Vector a</em>, <em>Vector b</em><big>)</big> &rarr; Vector<a class="headerlink" href="#occmodel.cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross product</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="occmodel.distance">
+<tt class="descclassname">occmodel.</tt><tt class="descname">distance</tt><big>(</big><em>Point u</em>, <em>Point v</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute distance between 2 points.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="occmodel.dot">
+<tt class="descclassname">occmodel.</tt><tt class="descname">dot</tt><big>(</big><em>Vector a</em>, <em>Vector b</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dot product</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="occmodel.demo">
+<tt class="descclassname">occmodel.</tt><tt class="descname">demo</tt><big>(</big><big>)</big><a class="headerlink" href="#occmodel.demo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple demos</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="occmodel.isParallell">
+<tt class="descclassname">occmodel.</tt><tt class="descname">isParallell</tt><big>(</big><em>Vector v1</em>, <em>Vector v2</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.isParallell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return 1 if parallell, -1 if anti-parallell and 0 if not parallell.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="occmodel.isPerpendicular">
+<tt class="descclassname">occmodel.</tt><tt class="descname">isPerpendicular</tt><big>(</big><em>Vector v1</em>, <em>Vector v2</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.isPerpendicular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return 1 if perpendicular and 0 if not perpendicular.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="occmodel.perpendicular">
+<tt class="descclassname">occmodel.</tt><tt class="descname">perpendicular</tt><big>(</big><em>Vector v</em><big>)</big> &rarr; Vector<a class="headerlink" href="#occmodel.perpendicular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a vector perpendicular to v</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="occmodel.viewer">
+<tt class="descclassname">occmodel.</tt><tt class="descname">viewer</tt><big>(</big><em>objs</em>, <em>colors=None</em><big>)</big><a class="headerlink" href="#occmodel.viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>View object or sequence of objects.
+Edges, faces and solids are supported.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="box">
+<h1>Box<a class="headerlink" href="#box" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Box">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Box</tt><a class="headerlink" href="#occmodel.Box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Box(near=(-0.5, 0.5, -0.5), far=(0.5, -0.5, 0.5))</p>
+<p>Class representing a bounding box</p>
+<dl class="staticmethod">
+<dt id="occmodel.Box.__new__">
+<em class="property">static </em><tt class="descname">__new__</tt><big>(</big><em>S</em>, <em>...</em><big>)</big> &rarr; a new object with type S, a subtype of T<a class="headerlink" href="#occmodel.Box.__new__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Box.addPoint">
+<tt class="descname">addPoint</tt><big>(</big><em>self</em>, <em>pnt</em><big>)</big><a class="headerlink" href="#occmodel.Box.addPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust bounds to include point.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Box.addPoints">
+<tt class="descname">addPoints</tt><big>(</big><em>self</em>, <em>pnts</em><big>)</big><a class="headerlink" href="#occmodel.Box.addPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust bounds to include point.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Box.isPointIn">
+<tt class="descname">isPointIn</tt><big>(</big><em>self</em>, <em>pnt</em>, <em>int strictlyIn=False</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Box.isPointIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if point is inside box.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Box.isValid">
+<tt class="descname">isValid</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Box.isValid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check validity</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="occmodel.Box.union">
+<em class="property">static </em><tt class="descname">union</tt><big>(</big><em>cls</em>, <em>Box a</em>, <em>Box b</em><big>)</big><a class="headerlink" href="#occmodel.Box.union" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new bounding box which is a union of
+the arguments.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__eq__">
+<tt class="descname">__eq__</tt><a class="headerlink" href="#occmodel.Box.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__eq__(y) &lt;==&gt; x==y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__ge__">
+<tt class="descname">__ge__</tt><a class="headerlink" href="#occmodel.Box.__ge__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__ge__(y) &lt;==&gt; x&gt;=y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__gt__">
+<tt class="descname">__gt__</tt><a class="headerlink" href="#occmodel.Box.__gt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__gt__(y) &lt;==&gt; x&gt;y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__init__">
+<tt class="descname">__init__</tt><a class="headerlink" href="#occmodel.Box.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__le__">
+<tt class="descname">__le__</tt><a class="headerlink" href="#occmodel.Box.__le__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__le__(y) &lt;==&gt; x&lt;=y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__lt__">
+<tt class="descname">__lt__</tt><a class="headerlink" href="#occmodel.Box.__lt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__lt__(y) &lt;==&gt; x&lt;y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__ne__">
+<tt class="descname">__ne__</tt><a class="headerlink" href="#occmodel.Box.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__ne__(y) &lt;==&gt; x!=y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__repr__">
+<tt class="descname">__repr__</tt><a class="headerlink" href="#occmodel.Box.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of a box.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.__str__">
+<tt class="descname">__str__</tt><a class="headerlink" href="#occmodel.Box.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of a box.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.center">
+<tt class="descname">center</tt><a class="headerlink" href="#occmodel.Box.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate center of box</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.diagonal">
+<tt class="descname">diagonal</tt><a class="headerlink" href="#occmodel.Box.diagonal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return diagonal as a vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.far">
+<tt class="descname">far</tt><a class="headerlink" href="#occmodel.Box.far" title="Permalink to this definition">¶</a></dt>
+<dd><p>far: occmodel.Point</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.near">
+<tt class="descname">near</tt><a class="headerlink" href="#occmodel.Box.near" title="Permalink to this definition">¶</a></dt>
+<dd><p>near: occmodel.Point</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.radius">
+<tt class="descname">radius</tt><a class="headerlink" href="#occmodel.Box.radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return radius of the sphere enclosing the box</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Box.volume">
+<tt class="descname">volume</tt><a class="headerlink" href="#occmodel.Box.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate volume of box</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="edge">
+<h1>Edge<a class="headerlink" href="#edge" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Edge">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Edge</tt><a class="headerlink" href="#occmodel.Edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge()</p>
+<p>Edge - represent edge geometry (curve).</p>
+<dl class="method">
+<dt id="occmodel.Edge.boundingBox">
+<tt class="descname">boundingBox</tt><big>(</big><em>self</em><big>)</big> &rarr; Box<a class="headerlink" href="#occmodel.Edge.boundingBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return edge bounding box</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.copy">
+<tt class="descname">copy</tt><big>(</big><em>self</em><big>)</big> &rarr; Edge<a class="headerlink" href="#occmodel.Edge.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create copy of edge</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createArc">
+<tt class="descname">createArc</tt><big>(</big><em>self</em>, <em>Vertex start</em>, <em>Vertex end</em>, <em>center</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createArc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create arc from given start, end and center points</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createArc3P">
+<tt class="descname">createArc3P</tt><big>(</big><em>self</em>, <em>Vertex start</em>, <em>Vertex end</em>, <em>pnt</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createArc3P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create arc by fitting through given points</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createBezier">
+<tt class="descname">createBezier</tt><big>(</big><em>self</em>, <em>Vertex start=None</em>, <em>Vertex end=None</em>, <em>points=None</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createBezier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create bezier curve from start,end and given controll
+points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createCircle">
+<tt class="descname">createCircle</tt><big>(</big><em>self</em>, <em>center</em>, <em>normal</em>, <em>double radius</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createCircle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create circle from center, normal direction and radius.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createEllipse">
+<tt class="descname">createEllipse</tt><big>(</big><em>self</em>, <em>center</em>, <em>normal</em>, <em>double rMajor</em>, <em>double rMinor</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createEllipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create ellipse from center, normal direction and given
+major and minor axis.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createLine">
+<tt class="descname">createLine</tt><big>(</big><em>self</em>, <em>Vertex start</em>, <em>Vertex end</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create straight line from given start and end
+points</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createNURBS">
+<tt class="descname">createNURBS</tt><big>(</big><em>self</em>, <em>Vertex start=None</em>, <em>Vertex end=None</em>, <em>points=None</em>, <em>knots=None</em>, <em>weights=None</em>, <em>mults=None</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createNURBS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create NURBS curve.</p>
+<p>start - start point
+end - end point
+points - sequence of controll points
+knots - sequence of kont values
+weights - sequence of controll point weights
+mults - sequence of knot multiplicity</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createSpline">
+<tt class="descname">createSpline</tt><big>(</big><em>self</em>, <em>Vertex start=None</em>, <em>Vertex end=None</em>, <em>points=None</em>, <em>tolerance=1e-06</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createSpline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create interpolating spline from start, end and
+given points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.length">
+<tt class="descname">length</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Edge.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return edge length</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.mirror">
+<tt class="descname">mirror</tt><big>(</big><em>self</em>, <em>Plane plane</em><big>)</big><a class="headerlink" href="#occmodel.Edge.mirror" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mirror edge inplace</p>
+<p>plane - mirror plane</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>angle</em><big>)</big><a class="headerlink" href="#occmodel.Edge.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate edge in place.</p>
+<p>p1 - axis start point
+p2 - axis end point
+angle - rotation angle in radians</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.scale">
+<tt class="descname">scale</tt><big>(</big><em>self</em>, <em>pnt</em>, <em>double scale</em><big>)</big><a class="headerlink" href="#occmodel.Edge.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale edge in place.</p>
+<p>pnt - reference point
+scale - scale factor</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.tesselate">
+<tt class="descname">tesselate</tt><big>(</big><em>self</em>, <em>double factor=0.1</em>, <em>double angle=0.1</em><big>)</big><a class="headerlink" href="#occmodel.Edge.tesselate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tesselate edge to a tuple of points according to given
+max angle or distance factor</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.translate">
+<tt class="descname">translate</tt><big>(</big><em>self</em>, <em>delta</em><big>)</big><a class="headerlink" href="#occmodel.Edge.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate edge in place.</p>
+<p>delta - (dx,dy,dz)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Edge.end">
+<tt class="descname">end</tt><a class="headerlink" href="#occmodel.Edge.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>end: occmodel.Vertex</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Edge.start">
+<tt class="descname">start</tt><a class="headerlink" href="#occmodel.Edge.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>start: occmodel.Vertex</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="glutviewer">
+<h1>GLUTViewer<a class="headerlink" href="#glutviewer" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.GLUTViewer">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">GLUTViewer</tt><a class="headerlink" href="#occmodel.GLUTViewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>GLUTViewer(width, height, title=&#8217;Viewer (f - zoomFit | esc - Quit)&#8217;)</p>
+<dl class="method">
+<dt id="occmodel.GLUTViewer.OnDisplay">
+<tt class="descname">OnDisplay</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.GLUTViewer.OnDisplay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.GLUTViewer.OnFit">
+<tt class="descname">OnFit</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.GLUTViewer.OnFit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.GLUTViewer.OnKeyboard">
+<tt class="descname">OnKeyboard</tt><big>(</big><em>self</em>, <em>key</em>, <em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#occmodel.GLUTViewer.OnKeyboard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.GLUTViewer.OnMotion">
+<tt class="descname">OnMotion</tt><big>(</big><em>self</em>, <em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#occmodel.GLUTViewer.OnMotion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.GLUTViewer.OnMouse">
+<tt class="descname">OnMouse</tt><big>(</big><em>self</em>, <em>button</em>, <em>state</em>, <em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#occmodel.GLUTViewer.OnMouse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.GLUTViewer.OnReshape">
+<tt class="descname">OnReshape</tt><big>(</big><em>self</em>, <em>width</em>, <em>height</em><big>)</big><a class="headerlink" href="#occmodel.GLUTViewer.OnReshape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.GLUTViewer.Show">
+<tt class="descname">Show</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.GLUTViewer.Show" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="mesh">
+<h1>Mesh<a class="headerlink" href="#mesh" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Mesh">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Mesh</tt><a class="headerlink" href="#occmodel.Mesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mesh()</p>
+<p>Mesh - Represent triangle mesh for viewing purpose</p>
+<dl class="method">
+<dt id="occmodel.Mesh.GLTriangles">
+<tt class="descname">GLTriangles</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.GLTriangles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply function pointer &#8216;glVertex3d&#8217; and
+&#8216;glNormal3d&#8217; to all triangles in mesh.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Mesh.GLVertices">
+<tt class="descname">GLVertices</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.GLVertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply function pointer &#8216;glVertex3d&#8217; to
+all vertices in mesh.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Mesh.normal">
+<tt class="descname">normal</tt><big>(</big><em>self</em>, <em>size_t index</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return normal at given vertex index</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Mesh.ntriangles">
+<tt class="descname">ntriangles</tt><big>(</big><em>self</em><big>)</big> &rarr; size_t<a class="headerlink" href="#occmodel.Mesh.ntriangles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of triangles</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Mesh.nvertices">
+<tt class="descname">nvertices</tt><big>(</big><em>self</em><big>)</big> &rarr; size_t<a class="headerlink" href="#occmodel.Mesh.nvertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of vertices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Mesh.triangle">
+<tt class="descname">triangle</tt><big>(</big><em>self</em>, <em>size_t index</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.triangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return triangle indices at given index</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Mesh.vertex">
+<tt class="descname">vertex</tt><big>(</big><em>self</em>, <em>size_t index</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return vertex at given index</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="plane">
+<h1>Plane<a class="headerlink" href="#plane" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Plane">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Plane</tt><a class="headerlink" href="#occmodel.Plane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plane(origin=&lt;???&gt;, xaxis=&lt;???&gt;, yaxis=&lt;???&gt;)</p>
+<p>Class representing a mathematical infinite plane.</p>
+<dl class="method">
+<dt id="occmodel.Plane.ValueAt">
+<tt class="descname">ValueAt</tt><big>(</big><em>self</em>, <em>pnt</em><big>)</big><a class="headerlink" href="#occmodel.Plane.ValueAt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Plane.closestPoint">
+<tt class="descname">closestPoint</tt><big>(</big><em>self</em>, <em>pnt</em><big>)</big> &rarr; Point<a class="headerlink" href="#occmodel.Plane.closestPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return closest point on plane</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Plane.distanceTo">
+<tt class="descname">distanceTo</tt><big>(</big><em>self</em>, <em>pnt</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Plane.distanceTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signed distance from plane to pnt</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Plane.flip">
+<tt class="descname">flip</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Plane.flip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flip direction of normal</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="occmodel.Plane.fromFrame">
+<em class="property">static </em><tt class="descname">fromFrame</tt><big>(</big><em>cls</em>, <em>origin</em>, <em>xaxis</em>, <em>yaxis</em><big>)</big><a class="headerlink" href="#occmodel.Plane.fromFrame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="occmodel.Plane.fromNormal">
+<em class="property">static </em><tt class="descname">fromNormal</tt><big>(</big><em>cls</em>, <em>origin</em>, <em>normal</em><big>)</big><a class="headerlink" href="#occmodel.Plane.fromNormal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Plane.intersectLine">
+<tt class="descname">intersectLine</tt><big>(</big><em>self</em>, <em>start</em>, <em>end</em><big>)</big><a class="headerlink" href="#occmodel.Plane.intersectLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find intersection with line defined
+by the points start and end</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Plane.transform">
+<tt class="descname">transform</tt><big>(</big><em>self</em>, <em>Transform trans</em><big>)</big><a class="headerlink" href="#occmodel.Plane.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform plane</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Plane.a">
+<tt class="descname">a</tt><a class="headerlink" href="#occmodel.Plane.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>a: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Plane.b">
+<tt class="descname">b</tt><a class="headerlink" href="#occmodel.Plane.b" title="Permalink to this definition">¶</a></dt>
+<dd><p>b: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Plane.c">
+<tt class="descname">c</tt><a class="headerlink" href="#occmodel.Plane.c" title="Permalink to this definition">¶</a></dt>
+<dd><p>c: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Plane.d">
+<tt class="descname">d</tt><a class="headerlink" href="#occmodel.Plane.d" title="Permalink to this definition">¶</a></dt>
+<dd><p>d: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Plane.origin">
+<tt class="descname">origin</tt><a class="headerlink" href="#occmodel.Plane.origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>origin: occmodel.Point</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Plane.xaxis">
+<tt class="descname">xaxis</tt><a class="headerlink" href="#occmodel.Plane.xaxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>xaxis: occmodel.Vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Plane.yaxis">
+<tt class="descname">yaxis</tt><a class="headerlink" href="#occmodel.Plane.yaxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>yaxis: occmodel.Vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Plane.zaxis">
+<tt class="descname">zaxis</tt><a class="headerlink" href="#occmodel.Plane.zaxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>zaxis: occmodel.Vector</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="point">
+<h1>Point<a class="headerlink" href="#point" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Point">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Point</tt><a class="headerlink" href="#occmodel.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point(<a href="#id1"><span class="problematic" id="id2">*</span></a>args)</p>
+<p>Class representing a 3D point in space</p>
+<dl class="staticmethod">
+<dt id="occmodel.Point.__new__">
+<em class="property">static </em><tt class="descname">__new__</tt><big>(</big><em>S</em>, <em>...</em><big>)</big> &rarr; a new object with type S, a subtype of T<a class="headerlink" href="#occmodel.Point.__new__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Point.distanceTo">
+<tt class="descname">distanceTo</tt><big>(</big><em>self</em>, <em>Point arg</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Point.distanceTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute distance between 2 points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Point.isZero">
+<tt class="descname">isZero</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Point.isZero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if arg is all zeros.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Point.maximumCoordinate">
+<tt class="descname">maximumCoordinate</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Point.maximumCoordinate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Point.maximumCoordinateIndex">
+<tt class="descname">maximumCoordinateIndex</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Point.maximumCoordinateIndex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Point.set">
+<tt class="descname">set</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Point.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set one or more coordinates.
+accept both multiple argument and
+sequence like arguments.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__abs__">
+<tt class="descname">__abs__</tt><a class="headerlink" href="#occmodel.Point.__abs__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return absolute value of point: abs(v)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__add__">
+<tt class="descname">__add__</tt><a class="headerlink" href="#occmodel.Point.__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point addition
+The arguments must be of same length</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__div__">
+<tt class="descname">__div__</tt><a class="headerlink" href="#occmodel.Point.__div__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point division by scalar.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__eq__">
+<tt class="descname">__eq__</tt><a class="headerlink" href="#occmodel.Point.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__eq__(y) &lt;==&gt; x==y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__ge__">
+<tt class="descname">__ge__</tt><a class="headerlink" href="#occmodel.Point.__ge__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__ge__(y) &lt;==&gt; x&gt;=y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__getitem__">
+<tt class="descname">__getitem__</tt><a class="headerlink" href="#occmodel.Point.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override the list __getitem__ function to
+return a new point rather than a list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__gt__">
+<tt class="descname">__gt__</tt><a class="headerlink" href="#occmodel.Point.__gt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__gt__(y) &lt;==&gt; x&gt;y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__iadd__">
+<tt class="descname">__iadd__</tt><a class="headerlink" href="#occmodel.Point.__iadd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inline Point addition ( p1 += p2)
+The arguments must be of same length</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__idiv__">
+<tt class="descname">__idiv__</tt><a class="headerlink" href="#occmodel.Point.__idiv__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inline Point division by scalar. (p1 /= 2.)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__imul__">
+<tt class="descname">__imul__</tt><a class="headerlink" href="#occmodel.Point.__imul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inline Point multiplication (v1 <a href="#id3"><span class="problematic" id="id4">*</span></a>= s1)
+We accept multiplication by scalar and
+a 4x4 transformation matrix.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__init__">
+<tt class="descname">__init__</tt><a class="headerlink" href="#occmodel.Point.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept both multiple argument
+and sequence like arguments.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__isub__">
+<tt class="descname">__isub__</tt><a class="headerlink" href="#occmodel.Point.__isub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inline Point subtraction ( p1 -= p2)
+The arguments must be of same length</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__le__">
+<tt class="descname">__le__</tt><a class="headerlink" href="#occmodel.Point.__le__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__le__(y) &lt;==&gt; x&lt;=y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__len__">
+<tt class="descname">__len__</tt><a class="headerlink" href="#occmodel.Point.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Length of sequence</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__lt__">
+<tt class="descname">__lt__</tt><a class="headerlink" href="#occmodel.Point.__lt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__lt__(y) &lt;==&gt; x&lt;y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__mul__">
+<tt class="descname">__mul__</tt><a class="headerlink" href="#occmodel.Point.__mul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point multiplication
+We accept multiplication by a scalar,
+and a 4x4 transformation matrix.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__ne__">
+<tt class="descname">__ne__</tt><a class="headerlink" href="#occmodel.Point.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__ne__(y) &lt;==&gt; x!=y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__neg__">
+<tt class="descname">__neg__</tt><a class="headerlink" href="#occmodel.Point.__neg__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return negated value of point: -v</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__pos__">
+<tt class="descname">__pos__</tt><a class="headerlink" href="#occmodel.Point.__pos__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return positive value of point: +v</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__radd__">
+<tt class="descname">__radd__</tt><a class="headerlink" href="#occmodel.Point.__radd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__radd__(y) &lt;==&gt; y+x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__rdiv__">
+<tt class="descname">__rdiv__</tt><a class="headerlink" href="#occmodel.Point.__rdiv__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__rdiv__(y) &lt;==&gt; y/x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__repr__">
+<tt class="descname">__repr__</tt><a class="headerlink" href="#occmodel.Point.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of a point.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__rmul__">
+<tt class="descname">__rmul__</tt><a class="headerlink" href="#occmodel.Point.__rmul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__rmul__(y) &lt;==&gt; y*x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__rsub__">
+<tt class="descname">__rsub__</tt><a class="headerlink" href="#occmodel.Point.__rsub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__rsub__(y) &lt;==&gt; y-x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__str__">
+<tt class="descname">__str__</tt><a class="headerlink" href="#occmodel.Point.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of a point.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.__sub__">
+<tt class="descname">__sub__</tt><a class="headerlink" href="#occmodel.Point.__sub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point subtraction
+The arguments must be of same length</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.x">
+<tt class="descname">x</tt><a class="headerlink" href="#occmodel.Point.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>x: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.y">
+<tt class="descname">y</tt><a class="headerlink" href="#occmodel.Point.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>y: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Point.z">
+<tt class="descname">z</tt><a class="headerlink" href="#occmodel.Point.z" title="Permalink to this definition">¶</a></dt>
+<dd><p>z: &#8216;double&#8217;</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="quaternion">
+<h1>Quaternion<a class="headerlink" href="#quaternion" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Quaternion">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Quaternion</tt><a class="headerlink" href="#occmodel.Quaternion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quaternion(<a href="#id5"><span class="problematic" id="id6">*</span></a>args)</p>
+<p>Class representing a quaternion usefull for rotation
+transformations.</p>
+<dl class="staticmethod">
+<dt id="occmodel.Quaternion.__new__">
+<em class="property">static </em><tt class="descname">__new__</tt><big>(</big><em>S</em>, <em>...</em><big>)</big> &rarr; a new object with type S, a subtype of T<a class="headerlink" href="#occmodel.Quaternion.__new__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Quaternion.conj">
+<tt class="descname">conj</tt><big>(</big><em>self</em><big>)</big> &rarr; Quaternion<a class="headerlink" href="#occmodel.Quaternion.conj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="occmodel.Quaternion.fromAngleAxis">
+<em class="property">static </em><tt class="descname">fromAngleAxis</tt><big>(</big><em>cls</em>, <em>double angle</em>, <em>Vector axis</em><big>)</big><a class="headerlink" href="#occmodel.Quaternion.fromAngleAxis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Quaternion.imap">
+<tt class="descname">imap</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Quaternion.imap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse rotation.
+We accept point as multiple argument, sequence like arguments and
+sequence of multiple points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Quaternion.map">
+<tt class="descname">map</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Quaternion.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotation.
+We accept point as multiple argument, sequence like arguments and
+sequence of multiple points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Quaternion.set">
+<tt class="descname">set</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Quaternion.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set one or more coordinates.
+accept both multiple argument and
+sequence like arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Quaternion.unit">
+<tt class="descname">unit</tt><big>(</big><em>self</em><big>)</big> &rarr; Quaternion<a class="headerlink" href="#occmodel.Quaternion.unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.__getitem__">
+<tt class="descname">__getitem__</tt><a class="headerlink" href="#occmodel.Quaternion.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getitem__(y) &lt;==&gt; x[y]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.__imul__">
+<tt class="descname">__imul__</tt><a class="headerlink" href="#occmodel.Quaternion.__imul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__imul__(y) &lt;==&gt; x*=y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.__init__">
+<tt class="descname">__init__</tt><a class="headerlink" href="#occmodel.Quaternion.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept both multiple argument
+and sequence like arguments.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.__len__">
+<tt class="descname">__len__</tt><a class="headerlink" href="#occmodel.Quaternion.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Length of sequence</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.__mul__">
+<tt class="descname">__mul__</tt><a class="headerlink" href="#occmodel.Quaternion.__mul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__mul__(y) &lt;==&gt; x*y</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.__repr__">
+<tt class="descname">__repr__</tt><a class="headerlink" href="#occmodel.Quaternion.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of a Quaternion.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.__rmul__">
+<tt class="descname">__rmul__</tt><a class="headerlink" href="#occmodel.Quaternion.__rmul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__rmul__(y) &lt;==&gt; y*x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.__str__">
+<tt class="descname">__str__</tt><a class="headerlink" href="#occmodel.Quaternion.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of a Quaternion.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.length">
+<tt class="descname">length</tt><a class="headerlink" href="#occmodel.Quaternion.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate lenght of Quaternion</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.lengthSquared">
+<tt class="descname">lengthSquared</tt><a class="headerlink" href="#occmodel.Quaternion.lengthSquared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate squared lenght of Quaternion</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.transform">
+<tt class="descname">transform</tt><a class="headerlink" href="#occmodel.Quaternion.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>create the coresponding transformation matrix</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.w">
+<tt class="descname">w</tt><a class="headerlink" href="#occmodel.Quaternion.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>w: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.x">
+<tt class="descname">x</tt><a class="headerlink" href="#occmodel.Quaternion.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>x: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.y">
+<tt class="descname">y</tt><a class="headerlink" href="#occmodel.Quaternion.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>y: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Quaternion.z">
+<tt class="descname">z</tt><a class="headerlink" href="#occmodel.Quaternion.z" title="Permalink to this definition">¶</a></dt>
+<dd><p>z: &#8216;double&#8217;</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="solid">
+<h1>Solid<a class="headerlink" href="#solid" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Solid">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Solid</tt><a class="headerlink" href="#occmodel.Solid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solid()</p>
+<p>Geometry represention solid objects or
+compund solid.</p>
+<dl class="method">
+<dt id="occmodel.Solid.addSolids">
+<tt class="descname">addSolids</tt><big>(</big><em>self</em>, <em>solids</em><big>)</big><a class="headerlink" href="#occmodel.Solid.addSolids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create compund solid from sequence
+of solid objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.area">
+<tt class="descname">area</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Solid.area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return solid area</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.booleanDifference">
+<tt class="descname">booleanDifference</tt><big>(</big><em>self</em>, <em>Solid tool</em><big>)</big><a class="headerlink" href="#occmodel.Solid.booleanDifference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean difference inplace.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.booleanIntersection">
+<tt class="descname">booleanIntersection</tt><big>(</big><em>self</em>, <em>Solid tool</em><big>)</big><a class="headerlink" href="#occmodel.Solid.booleanIntersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean intersection inplace.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.booleanUnion">
+<tt class="descname">booleanUnion</tt><big>(</big><em>self</em>, <em>Solid tool</em><big>)</big><a class="headerlink" href="#occmodel.Solid.booleanUnion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean union inplace.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.boundingBox">
+<tt class="descname">boundingBox</tt><big>(</big><em>self</em><big>)</big> &rarr; Box<a class="headerlink" href="#occmodel.Solid.boundingBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return solid bounding box</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.centreOfMass">
+<tt class="descname">centreOfMass</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Solid.centreOfMass" title="Permalink to this definition">¶</a></dt>
+<dd><p>return center of mass of solid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.chamfer">
+<tt class="descname">chamfer</tt><big>(</big><em>self</em>, <em>double distance</em>, <em>edgefilter=None</em><big>)</big><a class="headerlink" href="#occmodel.Solid.chamfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chamfer edges inplace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Distance :</th><td class="field-body">chamfer distance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Edgefilter :</th><td class="field-body">optional function taking argument of edge
+near, far and return edge selection status (boolean)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.copy">
+<tt class="descname">copy</tt><big>(</big><em>self</em><big>)</big> &rarr; Solid<a class="headerlink" href="#occmodel.Solid.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create copy of solid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.createBox">
+<tt class="descname">createBox</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crate box from points defining diagonal.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.createCone">
+<tt class="descname">createCone</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>double radius1</em>, <em>double radius2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createCone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crate cone</p>
+<p>p1 - axis start
+p2 - axis end
+radius1 - radius at start
+radius2 - radius at end</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.createCylinder">
+<tt class="descname">createCylinder</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>double radius</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createCylinder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create cylinder</p>
+<p>p1 - axis start
+p2 - axis end
+radius - cylinder radius</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.createMesh">
+<tt class="descname">createMesh</tt><big>(</big><em>self</em>, <em>double factor=0.01</em>, <em>double angle=0.25</em><big>)</big> &rarr; Mesh<a class="headerlink" href="#occmodel.Solid.createMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create triangle mesh of solid.</p>
+<p>factor - deflection from true position
+angle - max angle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.createSolid">
+<tt class="descname">createSolid</tt><big>(</big><em>self</em>, <em>faces</em>, <em>double tolerance=1e-06</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createSolid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create general solid from sequence of faces</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.createSphere">
+<tt class="descname">createSphere</tt><big>(</big><em>self</em>, <em>center</em>, <em>double radius</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createSphere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create sphere from center point and
+radius.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.createTorus">
+<tt class="descname">createTorus</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>double radius1</em>, <em>double radius2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createTorus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create torus</p>
+<p>p1 - axis start
+p2 - axis end
+radius1 - inner radius
+radius2 - outer radius</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.extrude">
+<tt class="descname">extrude</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>p1</em>, <em>p2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.extrude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create solid by extruding face from
+p1 to p2.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.fillet">
+<tt class="descname">fillet</tt><big>(</big><em>self</em>, <em>double radius</em>, <em>edgefilter=None</em><big>)</big><a class="headerlink" href="#occmodel.Solid.fillet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fillet edges inplace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Radius :</th><td class="field-body">fillet radius</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Edgefilter :</th><td class="field-body">optional function taking argument of edge
+near, far and return edge selection status (boolean)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.heal">
+<tt class="descname">heal</tt><big>(</big><em>self</em>, <em>double tolerance=0.0</em>, <em>int fixdegenerated=True</em>, <em>int fixsmalledges=True</em>, <em>int fixspotstripfaces=True</em>, <em>int sewfaces=False</em>, <em>int makesolids=False</em><big>)</big><a class="headerlink" href="#occmodel.Solid.heal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Possible heal geometry</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.inertia">
+<tt class="descname">inertia</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Solid.inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>return intertia of solid with respect
+to center of gravity.</p>
+<p>Return Ixx, Iyy, Izz, Ixy, Ixz, Iyz</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.loft">
+<tt class="descname">loft</tt><big>(</big><em>self</em>, <em>wires</em>, <em>int ruled=True</em><big>)</big><a class="headerlink" href="#occmodel.Solid.loft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crate solid by lofting through sequence
+of wires.</p>
+<p>ruled - smooth or rules faces</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.mirror">
+<tt class="descname">mirror</tt><big>(</big><em>self</em>, <em>Plane plane</em><big>)</big><a class="headerlink" href="#occmodel.Solid.mirror" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mirror solid inplace</p>
+<p>plane - mirror plane</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.pipe">
+<tt class="descname">pipe</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>edges</em><big>)</big><a class="headerlink" href="#occmodel.Solid.pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create pipe by extruding face allong
+sequence of edges.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.readBREP">
+<tt class="descname">readBREP</tt><big>(</big><em>self</em>, <em>char *filename</em><big>)</big><a class="headerlink" href="#occmodel.Solid.readBREP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read geometry from BREP file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.readSTEP">
+<tt class="descname">readSTEP</tt><big>(</big><em>self</em>, <em>char *filename</em><big>)</big><a class="headerlink" href="#occmodel.Solid.readSTEP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read geometry from STEP file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.revolve">
+<tt class="descname">revolve</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>p1</em>, <em>p2</em>, <em>double angle</em><big>)</big><a class="headerlink" href="#occmodel.Solid.revolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create solid by revolving face</p>
+<p>p1 - start of axis
+p2 - end of axis
+angle - revolve angle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>angle</em><big>)</big><a class="headerlink" href="#occmodel.Solid.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate solid in place.</p>
+<p>p1 - axis start point
+p2 - axis end point
+angle - rotation angle in radians</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.scale">
+<tt class="descname">scale</tt><big>(</big><em>self</em>, <em>pnt</em>, <em>double scale</em><big>)</big><a class="headerlink" href="#occmodel.Solid.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale solid in place.</p>
+<p>pnt - reference point
+scale - scale factor</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.section">
+<tt class="descname">section</tt><big>(</big><em>self</em>, <em>Plane plane</em><big>)</big><a class="headerlink" href="#occmodel.Solid.section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply section operation between solid and plane.</p>
+<p>plane - section plane</p>
+<p>Result returned as a face.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.shell">
+<tt class="descname">shell</tt><big>(</big><em>self</em>, <em>double offset</em>, <em>facefilter=None</em><big>)</big><a class="headerlink" href="#occmodel.Solid.shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply shell operation no solid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Offset :</th><td class="field-body">shell offset distance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Facefilter :</th><td class="field-body">function taking argument of face
+near, far and return face selection status (boolean)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.translate">
+<tt class="descname">translate</tt><big>(</big><em>self</em>, <em>delta</em><big>)</big><a class="headerlink" href="#occmodel.Solid.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate solid in place.</p>
+<p>delta - (dx,dy,dz)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.volume">
+<tt class="descname">volume</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Solid.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return solid volume</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.writeBREP">
+<tt class="descname">writeBREP</tt><big>(</big><em>self</em>, <em>char *filename</em><big>)</big><a class="headerlink" href="#occmodel.Solid.writeBREP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write solid to BREP file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.writeSTEP">
+<tt class="descname">writeSTEP</tt><big>(</big><em>self</em>, <em>char *filename</em><big>)</big><a class="headerlink" href="#occmodel.Solid.writeSTEP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write solid to STEP file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.writeSTL">
+<tt class="descname">writeSTL</tt><big>(</big><em>self</em>, <em>char *filename</em>, <em>int asciiMode=False</em><big>)</big><a class="headerlink" href="#occmodel.Solid.writeSTL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write solid to STL file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="transform">
+<h1>Transform<a class="headerlink" href="#transform" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Transform">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Transform</tt><a class="headerlink" href="#occmodel.Transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform(<a href="#id7"><span class="problematic" id="id8">*</span></a>args)</p>
+<p>Matrix of 4x4 size. Typical 3D
+transformation matrix.</p>
+<dl class="staticmethod">
+<dt id="occmodel.Transform.__new__">
+<em class="property">static </em><tt class="descname">__new__</tt><big>(</big><em>S</em>, <em>...</em><big>)</big> &rarr; a new object with type S, a subtype of T<a class="headerlink" href="#occmodel.Transform.__new__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.det">
+<tt class="descname">det</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Transform.det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determinand of matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.identity">
+<tt class="descname">identity</tt><big>(</big><em>self</em><big>)</big> &rarr; Transform<a class="headerlink" href="#occmodel.Transform.identity" title="Permalink to this definition">¶</a></dt>
+<dd><p>set identity matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.invert">
+<tt class="descname">invert</tt><big>(</big><em>self</em><big>)</big> &rarr; Transform<a class="headerlink" href="#occmodel.Transform.invert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse of matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.map">
+<tt class="descname">map</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Transform.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept point as multiple argument, sequence like arguments and
+sequence of multiple points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.rotateAxisCenter">
+<tt class="descname">rotateAxisCenter</tt><big>(</big><em>self</em>, <em>double angle</em>, <em>_axis</em>, <em>_center=(0.0</em>, <em>0.0</em>, <em>0.0)</em><big>)</big> &rarr; Transform<a class="headerlink" href="#occmodel.Transform.rotateAxisCenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct 4x4 rotation matrix.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.rotateX">
+<tt class="descname">rotateX</tt><big>(</big><em>self</em>, <em>double x</em><big>)</big> &rarr; Transform<a class="headerlink" href="#occmodel.Transform.rotateX" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept both multiple argument
+and sequence like arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.rotateY">
+<tt class="descname">rotateY</tt><big>(</big><em>self</em>, <em>double y</em><big>)</big> &rarr; Transform<a class="headerlink" href="#occmodel.Transform.rotateY" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept both multiple argument
+and sequence like arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.rotateZ">
+<tt class="descname">rotateZ</tt><big>(</big><em>self</em>, <em>double z</em><big>)</big> &rarr; Transform<a class="headerlink" href="#occmodel.Transform.rotateZ" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept both multiple argument
+and sequence like arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.scale">
+<tt class="descname">scale</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Transform.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept both multiple argument
+and sequence like arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.set">
+<tt class="descname">set</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Transform.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept 16 arguments setting all values.
+Sequence of sequence of size 3x3 setting all values.</p>
+<blockquote>
+<div>m11 m12 m13 m14</div></blockquote>
+<dl class="docutils">
+<dt>Matrix =   m21 m22 m23 m24</dt>
+<dd>m31 m32 m33 m34
+m41 m42 m43 m44</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.translate">
+<tt class="descname">translate</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Transform.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept both multiple argument
+and sequence like arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.transpose">
+<tt class="descname">transpose</tt><big>(</big><em>self</em><big>)</big> &rarr; Transform<a class="headerlink" href="#occmodel.Transform.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transpose of matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Transform.zero">
+<tt class="descname">zero</tt><big>(</big><em>self</em><big>)</big> &rarr; Transform<a class="headerlink" href="#occmodel.Transform.zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>set all values to zero</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__abs__">
+<tt class="descname">__abs__</tt><a class="headerlink" href="#occmodel.Transform.__abs__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return absolute value of matrix: abs(m)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__add__">
+<tt class="descname">__add__</tt><a class="headerlink" href="#occmodel.Transform.__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix addition
+They must be of same shape.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__div__">
+<tt class="descname">__div__</tt><a class="headerlink" href="#occmodel.Transform.__div__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix division
+We accept only division by a scalar.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__getitem__">
+<tt class="descname">__getitem__</tt><a class="headerlink" href="#occmodel.Transform.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return rows as a tuple object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__iadd__">
+<tt class="descname">__iadd__</tt><a class="headerlink" href="#occmodel.Transform.__iadd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inline Matrix addition ( m1 += m2)
+They must be of same shape.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__idiv__">
+<tt class="descname">__idiv__</tt><a class="headerlink" href="#occmodel.Transform.__idiv__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inline Matrix division (v1 <a href="#id9"><span class="problematic" id="id10">*</span></a>= v2)
+We accept only division by a scalar.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__imul__">
+<tt class="descname">__imul__</tt><a class="headerlink" href="#occmodel.Transform.__imul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix multiplication
+We accept both multiplication by a scalar and
+a other matrix. This is the matrix
+multiplication known from linear algebra.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__init__">
+<tt class="descname">__init__</tt><a class="headerlink" href="#occmodel.Transform.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>We accept 16 arguments setting all values.
+Sequence of sequence of size 3x3 setting all values.</p>
+<blockquote>
+<div>m11 m12 m13 m14</div></blockquote>
+<dl class="docutils">
+<dt>Matrix =      m21 m22 m23 m24</dt>
+<dd>m31 m32 m33 m34
+m41 m42 m43 m44</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__isub__">
+<tt class="descname">__isub__</tt><a class="headerlink" href="#occmodel.Transform.__isub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inline Matrix subtraction ( m1 -= m2)
+They must be of same shape.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__len__">
+<tt class="descname">__len__</tt><a class="headerlink" href="#occmodel.Transform.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>We have 4 rows</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__mul__">
+<tt class="descname">__mul__</tt><a class="headerlink" href="#occmodel.Transform.__mul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix multiplication
+We accept both multiplication by a scalar and
+a other matrix. This is the matrix
+multiplication known from linear algebra. See the
+Matrix.dot function for this.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__neg__">
+<tt class="descname">__neg__</tt><a class="headerlink" href="#occmodel.Transform.__neg__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return negated value of matrix: -v</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__pos__">
+<tt class="descname">__pos__</tt><a class="headerlink" href="#occmodel.Transform.__pos__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return positive value of matrix: +v</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__radd__">
+<tt class="descname">__radd__</tt><a class="headerlink" href="#occmodel.Transform.__radd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__radd__(y) &lt;==&gt; y+x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__rdiv__">
+<tt class="descname">__rdiv__</tt><a class="headerlink" href="#occmodel.Transform.__rdiv__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__rdiv__(y) &lt;==&gt; y/x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__repr__">
+<tt class="descname">__repr__</tt><a class="headerlink" href="#occmodel.Transform.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of a matrix.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__rmul__">
+<tt class="descname">__rmul__</tt><a class="headerlink" href="#occmodel.Transform.__rmul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__rmul__(y) &lt;==&gt; y*x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__rsub__">
+<tt class="descname">__rsub__</tt><a class="headerlink" href="#occmodel.Transform.__rsub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__rsub__(y) &lt;==&gt; y-x</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__str__">
+<tt class="descname">__str__</tt><a class="headerlink" href="#occmodel.Transform.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of a matrix.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Transform.__sub__">
+<tt class="descname">__sub__</tt><a class="headerlink" href="#occmodel.Transform.__sub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix subtraction
+They must be of same shape.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="vector">
+<h1>Vector<a class="headerlink" href="#vector" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Vector">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Vector</tt><a class="headerlink" href="#occmodel.Vector" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="occmodel.Vector.distanceTo">
+<tt class="descname">distanceTo</tt><big>(</big><em>self</em>, <em>Point arg</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vector.distanceTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute distance between 2 points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Vector.isZero">
+<tt class="descname">isZero</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Vector.isZero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if arg is all zeros.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Vector.maximumCoordinate">
+<tt class="descname">maximumCoordinate</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vector.maximumCoordinate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Vector.maximumCoordinateIndex">
+<tt class="descname">maximumCoordinateIndex</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Vector.maximumCoordinateIndex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Vector.set">
+<tt class="descname">set</tt><big>(</big><em>self</em>, <em>*args</em><big>)</big><a class="headerlink" href="#occmodel.Vector.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set one or more coordinates.
+accept both multiple argument and
+sequence like arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Vector.unit">
+<tt class="descname">unit</tt><big>(</big><em>self</em><big>)</big> &rarr; Vector<a class="headerlink" href="#occmodel.Vector.unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the vector (arg.lenght = 1.)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Vector.length">
+<tt class="descname">length</tt><a class="headerlink" href="#occmodel.Vector.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate lenght of vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Vector.lengthSquared">
+<tt class="descname">lengthSquared</tt><a class="headerlink" href="#occmodel.Vector.lengthSquared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate squared lenght of vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Vector.x">
+<tt class="descname">x</tt><a class="headerlink" href="#occmodel.Vector.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>x: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Vector.y">
+<tt class="descname">y</tt><a class="headerlink" href="#occmodel.Vector.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>y: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Vector.z">
+<tt class="descname">z</tt><a class="headerlink" href="#occmodel.Vector.z" title="Permalink to this definition">¶</a></dt>
+<dd><p>z: &#8216;double&#8217;</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="vertex">
+<h1>Vertex<a class="headerlink" href="#vertex" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Vertex">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Vertex</tt><a class="headerlink" href="#occmodel.Vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vertex(double x, double y, double z)</p>
+<p>Vertex</p>
+<dl class="method">
+<dt id="occmodel.Vertex.x">
+<tt class="descname">x</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Vertex.y">
+<tt class="descname">y</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Vertex.z">
+<tt class="descname">z</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.z" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="viewer">
+<h1>Viewer<a class="headerlink" href="#viewer" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Viewer">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Viewer</tt><a class="headerlink" href="#occmodel.Viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Viewer()</p>
+<p>General viewer class</p>
+<dl class="method">
+<dt id="occmodel.Viewer.Clear">
+<tt class="descname">Clear</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewer.Clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewer.OnDraw">
+<tt class="descname">OnDraw</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewer.OnDraw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewer.OnSetup">
+<tt class="descname">OnSetup</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewer.OnSetup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewer.addObject">
+<tt class="descname">addObject</tt><big>(</big><em>self</em>, <em>obj</em>, <em>bbox</em>, <em>color='grey'</em><big>)</big><a class="headerlink" href="#occmodel.Viewer.addObject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewer.dls">
+<tt class="descname">dls</tt><a class="headerlink" href="#occmodel.Viewer.dls" title="Permalink to this definition">¶</a></dt>
+<dd><p>dls: object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewer.objects">
+<tt class="descname">objects</tt><a class="headerlink" href="#occmodel.Viewer.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>objects: set</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="viewport">
+<h1>Viewport<a class="headerlink" href="#viewport" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="occmodel.Viewport">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Viewport</tt><a class="headerlink" href="#occmodel.Viewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Viewport(projection=PARALLEL)</p>
+<dl class="method">
+<dt id="occmodel.Viewport.cameraToClip">
+<tt class="descname">cameraToClip</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.cameraToClip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.cameraToWorld">
+<tt class="descname">cameraToWorld</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.cameraToWorld" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.clipToCamera">
+<tt class="descname">clipToCamera</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.clipToCamera" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.extents">
+<tt class="descname">extents</tt><big>(</big><em>self</em>, <em>angle</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.extents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.getDollyCameraVector">
+<tt class="descname">getDollyCameraVector</tt><big>(</big><em>self</em>, <em>x0</em>, <em>y0</em>, <em>x1</em>, <em>y1</em>, <em>distance_to_camera</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.getDollyCameraVector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.loadModelViewMatrix">
+<tt class="descname">loadModelViewMatrix</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.loadModelViewMatrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.loadProjectionMatrix">
+<tt class="descname">loadProjectionMatrix</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.loadProjectionMatrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.resizeGL">
+<tt class="descname">resizeGL</tt><big>(</big><em>self</em>, <em>width</em>, <em>height</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.resizeGL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.rotateCamera">
+<tt class="descname">rotateCamera</tt><big>(</big><em>self</em>, <em>angle</em>, <em>axis</em>, <em>center</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.rotateCamera" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.setCameraAngle">
+<tt class="descname">setCameraAngle</tt><big>(</big><em>self</em>, <em>angle</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.setCameraAngle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.setFrustumAspect">
+<tt class="descname">setFrustumAspect</tt><big>(</big><em>self</em>, <em>frustum_aspect</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.setFrustumAspect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.setFrustumNearFar">
+<tt class="descname">setFrustumNearFar</tt><big>(</big><em>self</em>, <em>n</em>, <em>f</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.setFrustumNearFar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.setViewportSize">
+<tt class="descname">setViewportSize</tt><big>(</big><em>self</em>, <em>width</em>, <em>height</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.setViewportSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.updateCameraFrame">
+<tt class="descname">updateCameraFrame</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.updateCameraFrame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.worldToCamera">
+<tt class="descname">worldToCamera</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.worldToCamera" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.zoomFactor">
+<tt class="descname">zoomFactor</tt><big>(</big><em>self</em>, <em>magnification_factor</em>, <em>fixed_screen_point=None</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.zoomFactor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Viewport.zoomToFit">
+<tt class="descname">zoomToFit</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Viewport.zoomToFit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.bbox">
+<tt class="descname">bbox</tt><a class="headerlink" href="#occmodel.Viewport.bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>bbox: occmodel.Box</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.camDir">
+<tt class="descname">camDir</tt><a class="headerlink" href="#occmodel.Viewport.camDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>camDir: occmodel.Vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.camLoc">
+<tt class="descname">camLoc</tt><a class="headerlink" href="#occmodel.Viewport.camLoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>camLoc: occmodel.Point</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.camUp">
+<tt class="descname">camUp</tt><a class="headerlink" href="#occmodel.Viewport.camUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>camUp: occmodel.Vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.camX">
+<tt class="descname">camX</tt><a class="headerlink" href="#occmodel.Viewport.camX" title="Permalink to this definition">¶</a></dt>
+<dd><p>camX: occmodel.Vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.camY">
+<tt class="descname">camY</tt><a class="headerlink" href="#occmodel.Viewport.camY" title="Permalink to this definition">¶</a></dt>
+<dd><p>camY: occmodel.Vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.camZ">
+<tt class="descname">camZ</tt><a class="headerlink" href="#occmodel.Viewport.camZ" title="Permalink to this definition">¶</a></dt>
+<dd><p>camZ: occmodel.Vector</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.fvBottom">
+<tt class="descname">fvBottom</tt><a class="headerlink" href="#occmodel.Viewport.fvBottom" title="Permalink to this definition">¶</a></dt>
+<dd><p>fvBottom: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.fvFar">
+<tt class="descname">fvFar</tt><a class="headerlink" href="#occmodel.Viewport.fvFar" title="Permalink to this definition">¶</a></dt>
+<dd><p>fvFar: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.fvLeft">
+<tt class="descname">fvLeft</tt><a class="headerlink" href="#occmodel.Viewport.fvLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>fvLeft: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.fvNear">
+<tt class="descname">fvNear</tt><a class="headerlink" href="#occmodel.Viewport.fvNear" title="Permalink to this definition">¶</a></dt>
+<dd><p>fvNear: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.fvRight">
+<tt class="descname">fvRight</tt><a class="headerlink" href="#occmodel.Viewport.fvRight" title="Permalink to this definition">¶</a></dt>
+<dd><p>fvRight: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.fvTop">
+<tt class="descname">fvTop</tt><a class="headerlink" href="#occmodel.Viewport.fvTop" title="Permalink to this definition">¶</a></dt>
+<dd><p>fvTop: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.projection">
+<tt class="descname">projection</tt><a class="headerlink" href="#occmodel.Viewport.projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>projection: &#8216;int&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.scrBottom">
+<tt class="descname">scrBottom</tt><a class="headerlink" href="#occmodel.Viewport.scrBottom" title="Permalink to this definition">¶</a></dt>
+<dd><p>scrBottom: &#8216;int&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.scrFar">
+<tt class="descname">scrFar</tt><a class="headerlink" href="#occmodel.Viewport.scrFar" title="Permalink to this definition">¶</a></dt>
+<dd><p>scrFar: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.scrLeft">
+<tt class="descname">scrLeft</tt><a class="headerlink" href="#occmodel.Viewport.scrLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>scrLeft: &#8216;int&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.scrNear">
+<tt class="descname">scrNear</tt><a class="headerlink" href="#occmodel.Viewport.scrNear" title="Permalink to this definition">¶</a></dt>
+<dd><p>scrNear: &#8216;double&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.scrRight">
+<tt class="descname">scrRight</tt><a class="headerlink" href="#occmodel.Viewport.scrRight" title="Permalink to this definition">¶</a></dt>
+<dd><p>scrRight: &#8216;int&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.scrTop">
+<tt class="descname">scrTop</tt><a class="headerlink" href="#occmodel.Viewport.scrTop" title="Permalink to this definition">¶</a></dt>
+<dd><p>scrTop: &#8216;int&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Viewport.target">
+<tt class="descname">target</tt><a class="headerlink" href="#occmodel.Viewport.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>target: occmodel.Point</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">occmodel</a></li>
+<li><a class="reference internal" href="#box">Box</a></li>
+<li><a class="reference internal" href="#edge">Edge</a></li>
+<li><a class="reference internal" href="#glutviewer">GLUTViewer</a></li>
+<li><a class="reference internal" href="#mesh">Mesh</a></li>
+<li><a class="reference internal" href="#plane">Plane</a></li>
+<li><a class="reference internal" href="#point">Point</a></li>
+<li><a class="reference internal" href="#quaternion">Quaternion</a></li>
+<li><a class="reference internal" href="#solid">Solid</a></li>
+<li><a class="reference internal" href="#transform">Transform</a></li>
+<li><a class="reference internal" href="#vector">Vector</a></li>
+<li><a class="reference internal" href="#vertex">Vertex</a></li>
+<li><a class="reference internal" href="#viewer">Viewer</a></li>
+<li><a class="reference internal" href="#viewport">Viewport</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="previous chapter">Introduction</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/content.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="examples.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">occmodel  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Runar Tenfjord.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
