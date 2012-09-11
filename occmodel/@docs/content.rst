@@ -1,5 +1,28 @@
-occmodel
---------
+Geometry
+========
+
+Vertex
+------
+.. autoclass:: occmodel.Vertex
+    :members:
+    
+Edge
+----
+.. autoclass:: occmodel.Edge
+    :members:
+
+Face
+----
+.. autoclass:: occmodel.Face
+    :members:
+
+Solid
+-----
+.. autoclass:: occmodel.Solid
+    :members:
+
+Geometry Base
+=============
 
 .. autofunction:: occmodel.cross
 
@@ -7,15 +30,11 @@ occmodel
 
 .. autofunction:: occmodel.dot
 
-.. autofunction:: occmodel.demo
-
 .. autofunction:: occmodel.isParallell
 
 .. autofunction:: occmodel.isPerpendicular
 
 .. autofunction:: occmodel.perpendicular
-
-.. autofunction:: occmodel.viewer
 
 Box
 ---
@@ -24,23 +43,6 @@ Box
     :special-members:
 
 
-Edge
-----
-.. autoclass:: occmodel.Edge
-    :members:
-
-
-GLUTViewer
-----------
-.. autoclass:: occmodel.GLUTViewer
-    :members:
-
-
-Mesh
-----
-.. autoclass:: occmodel.Mesh
-    :members:
-    
 Plane
 -----
 .. autoclass:: occmodel.Plane
@@ -53,18 +55,17 @@ Point
     :members:
     :special-members:
 
+Mesh
+----
+.. autoclass:: occmodel.Mesh
+    :members:
+
 
 Quaternion
 ----------
 .. autoclass:: occmodel.Quaternion
     :members:
     :special-members:
-
-
-Solid
------
-.. autoclass:: occmodel.Solid
-    :members:
 
 
 Transform
@@ -80,12 +81,12 @@ Vector
     :members:
     :inherited-members:
 
+Visualization
+=============
 
-Vertex
-------
-.. autoclass:: occmodel.Vertex
-    :members:
+.. autofunction:: occmodel.demo
 
+.. autofunction:: occmodel.viewer
 
 Viewer
 ------
@@ -97,3 +98,10 @@ Viewport
 --------
 .. autoclass:: occmodel.Viewport
     :members:
+
+
+GLUTViewer
+----------
+.. autoclass:: occmodel.GLUTViewer
+    :members:
+

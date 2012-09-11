@@ -1,4 +1,4 @@
-#!python -u
+#!/usr/bin/python2
 # -*- coding: utf-8 -*-
 # This is code is commercial software.
 # Copyright 2007 by Runar Tenfjord, Tenko.
