@@ -193,6 +193,38 @@ int OCCEdge::createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor)
     return 0;
 }
 
+int OCCEdge::createHelix(double pitch, double height, double radius, double angle, bool leftHanded)
+{
+    try {
+        gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
+        Handle_Geom_Surface surf;
+        if (angle <= 0.0) {
+            surf = new Geom_CylindricalSurface(cylAx2, radius);
+        } else {
+            surf = new Geom_ConicalSurface(gp_Ax3(cylAx2), angle, radius);
+        }
+        
+        gp_Pnt2d aPnt(0, 0);
+        gp_Dir2d aDir(2. * M_PI, pitch);
+        if (leftHanded) {
+            aPnt.SetCoord(2. * M_PI, 0.0);
+            aDir.SetCoord(-2. * M_PI, pitch);
+        }
+        gp_Ax2d aAx2d(aPnt, aDir);
+
+        Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
+        gp_Pnt2d beg = line->Value(0);
+        gp_Pnt2d end = line->Value(sqrt(4.0*M_PI*M_PI+pitch*pitch)*(height/pitch));
+        Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
+
+        edge = BRepBuilderAPI_MakeEdge(segm , surf);
+        BRepLib::BuildCurves3d(edge);
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;
+}
+
 int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> points)
 {
     try {

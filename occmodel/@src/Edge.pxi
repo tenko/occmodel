@@ -273,6 +273,23 @@ cdef class Edge:
             raise OCCError('Failed to create ellipse')
             
         return self
+    
+    cpdef createHelix(self, double pitch, double height, double radius, double angle = 0., bint leftHanded = False):
+        '''
+        Create helix curve
+        '''
+        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        cdef int ret
+        
+        self.start = None
+        self.end = None
+        
+        ret = occ.createHelix(pitch, height, radius, angle, leftHanded)
+        
+        if ret != 0:
+            raise OCCError('Failed to create ellipse')
+            
+        return self
         
     cpdef createBezier(self, Vertex start = None, Vertex end = None, points = None):
         '''

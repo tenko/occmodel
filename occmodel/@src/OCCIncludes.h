@@ -14,6 +14,7 @@ using std::iostream;
 #include <TColStd_HArray1OfInteger.hxx>
 #include <GC_MakeLine.hxx>
 #include <GC_MakeArcOfCircle.hxx>
+# include<GCE2d_MakeSegment.hxx>
 #include <gce_MakeCirc.hxx>
 #include <gce_MakeElips.hxx>
 #include <gce_MakePln.hxx>
@@ -48,6 +49,8 @@ using std::iostream;
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 #include <Geom_Surface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Solid.hxx>
@@ -55,7 +58,9 @@ using std::iostream;
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>

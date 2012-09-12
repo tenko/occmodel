@@ -75,14 +75,15 @@ print 'volume = ', solid.volume()
 viewer((face, e1), ('red', 'green'))
 '''
 
-
+'''
 e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 e2 = Edge().createCircle(center=(0.,0.,5.),normal=(0.,0.,1.),radius = 1.5)
 e3 = Edge().createCircle(center=(0.,0.,10.),normal=(0.,0.,1.),radius = 1.0)
 solid = Solid().loft(((e1,),(e2,),(e3,)), True)
 print solid.volume()
 #solid.writeSTEP('test.stp')
-viewer(solid)
+#viewer(solid)
+'''
 
 '''
 solid = Solid()
@@ -257,3 +258,6 @@ print e1.boundingBox()
 pnts = e1.tesselate()
 print pnts
 '''
+
+e1 = Edge().createHelix(.5, 2., 1.0, 0.)
+print e1.length()
