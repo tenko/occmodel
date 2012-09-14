@@ -139,5 +139,6 @@ cdef class Mesh:
         
 include "Vertex.pxi"
 include "Edge.pxi"
+include "Wire.pxi"
 include "Face.pxi"
 include "Solid.pxi"

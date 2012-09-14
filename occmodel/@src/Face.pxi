@@ -51,10 +51,27 @@ cdef class Face:
         
         ret.thisptr = mesh
         return ret
-        
-    cpdef createFace(self, edges, points = None):
+    
+    cpdef createFace(self, arg):
         '''
-        Create general face
+        Create from wire or single closed edge.
+        '''
+        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        cdef Wire wire
+        
+        if isinstance(arg, Edge):
+            wire = Wire().createWire((arg,))
+        else:
+            wire = arg
+            
+        occ.createFace(<c_OCCWire *>wire.thisptr)
+        
+        return self
+        
+    cpdef createConstrained(self, edges, points = None):
+        '''
+        Create general face constrained by edges
+        and optional points.
         
         edges - sequence of face edges
         points - optional sequence of point constraints
@@ -81,7 +98,7 @@ cdef class Face:
                 tmp.push_back(point[2])
                 cpoints.push_back(tmp)
             
-        ret = occ.createFace(cedges, cpoints)
+        ret = occ.createConstrained(cedges, cpoints)
         if ret != 0:
             raise OCCError('Failed to create face')
             

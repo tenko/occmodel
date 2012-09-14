@@ -754,12 +754,12 @@ edge = Edge().createArc3P(start,end,pnt)
             SRC = \
 """
 e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
-face = Face().createFace(e1, ((0.,.5,.25),))
+face = Face().createConstrained(e1, ((0.,.5,.25),))
 """
             print >>sys.stdout, SRC
             
             e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
-            face = Face().createFace(e1, ((0.,.5,.25),))
+            face = Face().createConstrained(e1, ((0.,.5,.25),))
         
         elif value == BOX:
             SRC = \
@@ -785,7 +785,7 @@ e1 = Edge().createArc(start,end,cen)
 e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 f1 = Face().createFace(e2)
 
-solid = Solid().pipe(f1, (e1,))
+solid = Solid().pipe(f1, e1)
 """
             print >>sys.stdout, SRC
             
@@ -797,7 +797,7 @@ solid = Solid().pipe(f1, (e1,))
             e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
             f1 = Face().createFace(e2)
             
-            solid = Solid().pipe(f1, (e1,))
+            solid = Solid().pipe(f1, e1)
         
         elif value == LOFT:
             SRC = \
@@ -805,14 +805,14 @@ solid = Solid().pipe(f1, (e1,))
 e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 e2 = Edge().createEllipse(center=(0.,0.,5.),normal=(0.,0.,1.), rMajor = 2.0, rMinor=1.0)
 e3 = Edge().createCircle(center=(0.,0.,10.),normal=(0.,0.,1.),radius = 1.0)
-solid = Solid().loft(((e1,),(e2,),(e3,)))
+solid = Solid().loft((e1,e2,e3))
 """
             print >>sys.stdout, SRC
             
             e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
             e2 = Edge().createEllipse(center=(0.,0.,5.),normal=(0.,0.,1.), rMajor = 2.0, rMinor=1.0)
             e3 = Edge().createCircle(center=(0.,0.,10.),normal=(0.,0.,1.),radius = 1.0)
-            solid = Solid().loft(((e1,),(e2,),(e3,)))
+            solid = Solid().loft((e1,e2,e3))
         
         elif value == UNION:
             SRC = \
@@ -893,10 +893,10 @@ def viewer(objs, colors = None):
         colors = COLORS
         
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
-        if isinstance(obj, Edge):
-            data = obj.tesselate()
-        else:
+        if isinstance(obj, (Face,Solid)):
             data = obj.createMesh()
+        else:
+            data = obj.tesselate()
         
         viewer.addObject(data, obj.boundingBox(), color)
     

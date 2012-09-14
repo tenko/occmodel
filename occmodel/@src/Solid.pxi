@@ -402,21 +402,21 @@ cdef class Solid:
     cpdef loft(self, wires, bint ruled = True):
         '''
         Crate solid by lofting through sequence
-        of wires.
+        of wires or closed edges.
         
         ruled - smooth or rules faces
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[vector[c_OCCEdge]] cwires
-        cdef vector[c_OCCEdge] tmp
-        cdef Edge edge
+        cdef vector[c_OCCWire] cwires
+        cdef Wire wire
         cdef int ret
         
-        for wire in wires:
-            tmp.clear()
-            for edge in wire:
-                tmp.push_back((<c_OCCEdge *>edge.thisptr)[0])
-            cwires.push_back(tmp)
+        for obj in wires:
+            if isinstance(obj, Edge):
+                wire = Wire().createWire((obj,))
+            else:
+                wire = obj
+            cwires.push_back((<c_OCCWire *>wire.thisptr)[0])
         
         ret = occ.loft(cwires, ruled)
             
@@ -425,20 +425,21 @@ cdef class Solid:
             
         return self
     
-    cpdef pipe(self, Face face, edges):
+    cpdef pipe(self, Face face, path):
         '''
         Create pipe by extruding face allong
-        sequence of edges.
+        wire or edge.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[c_OCCEdge *] cedges
-        cdef Edge edge
+        cdef Wire wire
         cdef int ret
         
-        for edge in edges:
-            cedges.push_back((<c_OCCEdge *>edge.thisptr))
-        
-        ret = occ.pipe(<c_OCCFace *>face.thisptr, cedges)
+        if isinstance(path, Edge):
+            wire = Wire().createWire((path,))
+        else:
+            wire = path
+                
+        ret = occ.pipe(<c_OCCFace *>face.thisptr, <c_OCCWire *>wire.thisptr)
             
         if ret != 0:
             raise OCCError('Failed to make pipe')

@@ -84,7 +84,16 @@ int OCCFace::mirror(DVec pnt, DVec nor)
     return 0;
 }
 
-int OCCFace::createFace(std::vector<OCCEdge *> edges, std::vector<DVec> points) {
+int OCCFace::createFace(OCCWire *wire) {
+    try {
+        face = BRepBuilderAPI_MakeFace(wire->getShape());
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;
+}
+
+int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> points) {
     try {
         BRepOffsetAPI_MakeFilling aGenerator;
         for (unsigned i = 0; i < edges.size(); i++) {

@@ -11,6 +11,11 @@ Edge
 .. autoclass:: occmodel.Edge
     :members:
 
+Wire
+----
+.. autoclass:: occmodel.Wire
+    :members:
+    
 Face
 ----
 .. autoclass:: occmodel.Face

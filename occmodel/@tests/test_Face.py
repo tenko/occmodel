@@ -7,7 +7,7 @@ import unittest
 from math import pi, sin, cos, sqrt
 
 sys.path.insert(0, '..')
-from occmodel import Vertex, Edge, Face
+from occmodel import Vertex, Edge, Wire, Face
 
 class test_Face(unittest.TestCase):
     
@@ -23,8 +23,9 @@ class test_Face(unittest.TestCase):
         e2 = Edge().createLine(p2,p3)
         e3 = Edge().createLine(p3,p4)
         e4 = Edge().createLine(p4,p1)
-
-        face = Face().createFace((e1,e2,e3,e4))
+        w1 = Wire().createWire((e1,e2,e3,e4))
+        
+        face = Face().createFace(w1)
         eq(face.area(), 1.)
         
         # circular face

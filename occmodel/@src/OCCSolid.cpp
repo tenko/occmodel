@@ -337,15 +337,10 @@ int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
     return 0;
 }
 
-int OCCSolid::pipe(OCCFace *face, std::vector<OCCEdge *> edges)
+int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
 {
     try {
-        BRepBuilderAPI_MakeWire wm;
-        for (unsigned i=0; i<edges.size(); i++) {
-            OCCEdge *edge = edges[i];
-            wm.Add(edge->getShape());
-        }
-        BRepOffsetAPI_MakePipe MP(wm.Wire(), face->getShape());
+        BRepOffsetAPI_MakePipe MP(wire->getShape(), face->getShape());
         solid = TopoDS::Solid(MP.Shape());
     } catch(Standard_Failure &err) {
         return 1;
@@ -353,7 +348,7 @@ int OCCSolid::pipe(OCCFace *face, std::vector<OCCEdge *> edges)
     return 0;
 }
 
-int OCCSolid::loft(std::vector< std::vector<OCCEdge> > wires, bool ruled)
+int OCCSolid::loft(std::vector<OCCWire>wires, bool ruled)
 {
     try {
         Standard_Boolean isSolid = Standard_True;
@@ -364,12 +359,7 @@ int OCCSolid::loft(std::vector< std::vector<OCCEdge> > wires, bool ruled)
         BRepOffsetAPI_ThruSections TS(isSolid, isRuled);
         
         for (unsigned i=0; i<wires.size(); i++) {
-            BRepBuilderAPI_MakeWire wm;
-            for (unsigned j=0; j<wires[i].size(); j++) {
-                OCCEdge edge = wires[i][j];
-                wm.Add(edge.getShape());
-            }
-            TS.AddWire(wm.Wire());
+            TS.AddWire(wires[i].getShape());
         }
         //TS.CheckCompatibility(Standard_False);  
         TS.Build();

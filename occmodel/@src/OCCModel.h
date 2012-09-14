@@ -65,26 +65,30 @@ class OCCEdge {
         TopoDS_Edge getShape() { return edge; }
 };
 
-/*
 class OCCWire {
     public:
         TopoDS_Wire wire;
         OCCWire() { ; }
         OCCWire *copy();
         int createWire(std::vector<OCCEdge *> edges);
+        std::vector<DVec> tesselate(double factor, double angle);
+        int translate(DVec delta);
+        int rotate(DVec p1, DVec p2, double angle);
+        int scale(DVec pnt, double scale);
+        int mirror(DVec pnt, DVec nor);
         double length();
         DVec boundingBox();
         void *getNativePtr() const { return (void*)&wire; }
         TopoDS_Wire getShape() { return wire; }
 };
-*/
 
 class OCCFace {
     public:
         TopoDS_Face face;
         OCCFace() { ; }
         OCCFace *copy();
-        int createFace(std::vector<OCCEdge *> edges, std::vector<DVec> points);
+        int createFace(OCCWire *wire);
+        int createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> points);
         DVec boundingBox();
         double area();
         DVec inertia();
@@ -128,8 +132,8 @@ class OCCSolid {
         int createBox(DVec p1, DVec p2);
         int extrude(OCCFace *face, DVec p1, DVec p2);
         int revolve(OCCFace *face, DVec p1, DVec p2, double angle);
-        int loft(std::vector< std::vector<OCCEdge> > wires, bool ruled);
-        int pipe(OCCFace *face, std::vector<OCCEdge *> edges);
+        int loft(std::vector<OCCWire> wires, bool ruled);
+        int pipe(OCCFace *face, OCCWire *wire);
         int booleanUnion(OCCSolid *tool);
         int booleanDifference(OCCSolid *tool);
         int booleanIntersection(OCCSolid *tool);

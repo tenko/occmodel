@@ -79,7 +79,7 @@ viewer((face, e1), ('red', 'green'))
 e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 e2 = Edge().createCircle(center=(0.,0.,5.),normal=(0.,0.,1.),radius = 1.5)
 e3 = Edge().createCircle(center=(0.,0.,10.),normal=(0.,0.,1.),radius = 1.0)
-solid = Solid().loft(((e1,),(e2,),(e3,)), True)
+solid = Solid().loft((e1,e2,e3), True)
 print solid.volume()
 #solid.writeSTEP('test.stp')
 #viewer(solid)
@@ -219,7 +219,7 @@ e1 = Edge().createArc(start,end,cen)
 e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 face = Face().createFace(e2)
 
-s1 = Solid().pipe(face, (e1,))
+s1 = Solid().pipe(face, e1)
 print s1.volume()
 '''
 
@@ -259,7 +259,31 @@ pnts = e1.tesselate()
 print pnts
 '''
 
+'''
 e1 = Edge().createHelix(.5, 2., 1.0, 0.)
 print e1.length()
 print e1.start
 print e1.end
+'''
+
+'''
+p1 = Vertex(0.,0.,0.)
+p2 = Vertex(1.,0.,0.)
+p3 = Vertex(1.,1.,0.)
+p4 = Vertex(0.,1.,0.)
+e1 = Edge().createLine(p1,p2)
+e2 = Edge().createLine(p2,p3)
+e3 = Edge().createLine(p3,p4)
+e4 = Edge().createLine(p4,p1)
+w1 = Wire().createWire((e1,e2,e3,e4))
+print w1.length()
+f1 = Face().createFace(w1)
+print f1.area()
+'''
+
+e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+e2 = Edge().createEllipse(center=(0.,0.,5.),normal=(0.,0.,1.), rMajor = 2.0, rMinor=1.0)
+e3 = Edge().createCircle(center=(0.,0.,10.),normal=(0.,0.,1.),radius = 1.0)
+solid = Solid().loft((e1,e2,e3), False)
+print solid.volume()
+

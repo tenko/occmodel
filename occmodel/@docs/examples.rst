@@ -32,6 +32,9 @@ points of edges in order to properly join edges.
 circles and ellipsis does not need to define start and end points to
 be valid.
 
+**Wire** are composite curves created from edges constraining faces or
+for lofting shaped etc.
+
 **Face** are 3d surfaces which can be lofted, extruded etc. to form
 solids objects. Faces are created from 
 
@@ -111,7 +114,7 @@ Create face from circle edge and interior point.
 .. code-block:: python
 
     e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
-    face = Face().createFace(e1, ((0.,.5,.25),))
+    face = Face().createConstrained(e1, ((0.,.5,.25),))
 
 Face edge sequence
 ------------------
@@ -127,7 +130,8 @@ Create face from sequence of edges.
     pnt = (0.,1.,0.)
     e2 = Edge().createArc3P(start,end,pnt)
     
-    face = Face().createFace((e1,e2))
+    w1 = Wire().createWire((e1,e2))
+    face = Face().createFace(w1)
 
 Polygonal face
 --------------
@@ -254,7 +258,7 @@ Loft through edges.
     e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
     e2 = Edge().createEllipse(center=(0.,0.,5.),normal=(0.,0.,1.), rMajor = 2.0, rMinor=1.0)
     e3 = Edge().createCircle(center=(0.,0.,10.),normal=(0.,0.,1.),radius = 1.0)
-    solid = Solid().loft(((e1,),(e2,),(e3,)))
+    solid = Solid().loft((e1,e2,e3))
     
 Pipe
 ----
@@ -271,7 +275,7 @@ Extrude circle along arc edge
     e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
     f1 = Face().createFace(e2)
 
-    solid = Solid().pipe(f1, (e1,))
+    solid = Solid().pipe(f1, e1)
 
 Advanced solids
 ---------------
