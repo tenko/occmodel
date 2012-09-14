@@ -193,7 +193,7 @@ int OCCEdge::createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor)
     return 0;
 }
 
-int OCCEdge::createHelix(double pitch, double height, double radius, double angle, bool leftHanded)
+int OCCEdge::createHelix(OCCVertex *start, OCCVertex *end, double pitch, double height, double radius, double angle, bool leftHanded)
 {
     try {
         gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
@@ -213,12 +213,29 @@ int OCCEdge::createHelix(double pitch, double height, double radius, double angl
         gp_Ax2d aAx2d(aPnt, aDir);
 
         Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
-        gp_Pnt2d beg = line->Value(0);
-        gp_Pnt2d end = line->Value(sqrt(4.0*M_PI*M_PI+pitch*pitch)*(height/pitch));
-        Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(beg , end);
+        gp_Pnt2d pnt_beg = line->Value(0);
+        gp_Pnt2d pnt_end = line->Value(sqrt(4.0*M_PI*M_PI+pitch*pitch)*(height/pitch));
+        Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(pnt_beg , pnt_end);
 
         edge = BRepBuilderAPI_MakeEdge(segm , surf);
         BRepLib::BuildCurves3d(edge);
+        
+        if (start != NULL && end != NULL) {
+            // find start and end vertices
+            start->vertex = TopExp::FirstVertex(edge);
+            gp_Pnt start_pnt = BRep_Tool::Pnt(start->vertex);
+            start->_x = start_pnt.X();
+            start->_y = start_pnt.Y();
+            start->_z = start_pnt.Z();
+            
+            end->vertex = TopExp::LastVertex(edge);
+            gp_Pnt end_pnt = BRep_Tool::Pnt(end->vertex);
+            end->_x = end_pnt.Z();
+            end->_y = end_pnt.Y();
+            end->_z = end_pnt.Z();
+        }
+        
+        
     } catch(Standard_Failure &err) {
         return 1;
     }

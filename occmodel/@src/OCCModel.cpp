@@ -16,7 +16,6 @@ int extractFaceMesh(TopoDS_Face face, OCCMesh *mesh)
     Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(face, loc);
     
     if(tri.IsNull())
-        
         return 1;
     
     gp_Trsf tr = loc;
@@ -49,10 +48,14 @@ int extractFaceMesh(TopoDS_Face face, OCCMesh *mesh)
         Standard_Integer n1,n2,n3;
         
         if(reversed)
-            tri.Get(n3,n2,n1);
+            tri.Get(n2,n1,n3);
         else
             tri.Get(n1,n2,n3);
         
+        // make sure that we don't process invalid triangle
+        if (n1 == n2 or n2 == n3 or n3 == n1)
+            continue;
+            
         // Calculate face normal
         const gp_Pnt& P1 = narr(n1);
         const gp_Pnt& P2 = narr(n2);

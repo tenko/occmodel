@@ -281,10 +281,12 @@ cdef class Edge:
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef int ret
         
-        self.start = None
-        self.end = None
+        self.start = Vertex(0.,0.,0.)
+        self.end = Vertex(0.,0.,0.)
         
-        ret = occ.createHelix(pitch, height, radius, angle, leftHanded)
+        ret = occ.createHelix(<c_OCCVertex *>self.start.thisptr,
+                              <c_OCCVertex *>self.end.thisptr,
+                              pitch, height, radius, angle, leftHanded)
         
         if ret != 0:
             raise OCCError('Failed to create ellipse')

@@ -261,3 +261,5 @@ print pnts
 
 e1 = Edge().createHelix(.5, 2., 1.0, 0.)
 print e1.length()
+print e1.start
+print e1.end

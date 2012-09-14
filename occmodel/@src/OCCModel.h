@@ -18,11 +18,11 @@ class OCCMesh {
         OCCMesh() { ; }
 };
 
-class OCCVertex {
-    protected:
+class OCCVertex { 
+    public:
         TopoDS_Vertex vertex;
         double _x, _y, _z;
-    public:
+        OCCVertex() { ; }
         OCCVertex(double x, double y, double z) {
             _x = x; _y = y; _z = z;
             gp_Pnt aPnt;
@@ -52,7 +52,8 @@ class OCCEdge {
         int createArc3P(OCCVertex *start, OCCVertex *end, DVec pnt);
         int createCircle(DVec center, DVec normal, double radius);
         int createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor);
-        int createHelix(double pitch, double height, double radius, double angle, bool leftHanded);
+        int createHelix(OCCVertex *start, OCCVertex *end, double pitch,
+                        double height, double radius, double angle, bool leftHanded);
         int createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> points);
         int createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
                          double tolerance);
@@ -63,6 +64,20 @@ class OCCEdge {
         void *getNativePtr() const { return (void*)&edge; }
         TopoDS_Edge getShape() { return edge; }
 };
+
+/*
+class OCCWire {
+    public:
+        TopoDS_Wire wire;
+        OCCWire() { ; }
+        OCCWire *copy();
+        int createWire(std::vector<OCCEdge *> edges);
+        double length();
+        DVec boundingBox();
+        void *getNativePtr() const { return (void*)&wire; }
+        TopoDS_Wire getShape() { return wire; }
+};
+*/
 
 class OCCFace {
     public:
