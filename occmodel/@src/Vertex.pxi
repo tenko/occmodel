@@ -6,7 +6,7 @@ cdef class Vertex:
     '''
     cdef void *thisptr
     
-    def __init__(self, double x, double y, double z):
+    def __init__(self, double x = 0., double y = 0., double z = 0.):
         self.thisptr = new c_OCCVertex(x,y,z)
       
     def __dealloc__(self):

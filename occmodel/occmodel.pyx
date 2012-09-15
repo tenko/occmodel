@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #cython: embedsignature=True
 from libc.stdlib cimport malloc, free
-from libc.math cimport M_PI, fmin, fmax, fabs
-from libc.math cimport sqrt, sin, cos, tan
+from libc.math cimport fmin, fmax, fabs, copysign
+from libc.math cimport M_PI, sqrt, sin, cos, tan
 
 from OCCModelLib cimport *
 

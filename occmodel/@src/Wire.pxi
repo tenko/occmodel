@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+INSCRIBE = 'inscribe'
+CIRCUMSCRIBE = 'circumscribe'
+    
 cdef class Wire:
     '''
     Wire - represent wire geometry (composite curve forming face border).
@@ -44,6 +47,9 @@ cdef class Wire:
         cdef Edge edge
         cdef int ret
         
+        if isinstance(edges, Edge):
+            edges = (edges,)
+            
         for edge in edges:
             cedges.push_back((<c_OCCEdge *>edge.thisptr))
         
@@ -174,7 +180,171 @@ cdef class Wire:
             raise OCCError('Failed to mirror wire')
             
         return self
+    
+    cpdef createRectangle(self, double width = 1., double height = 1., double radius = 0.):
+        '''
+        Create planar rectangle in the xy plan.
+        
+        The rectangle is centered at 0,0 with given
+        width, height and optional corner radius.
+        '''
+        hw, hh = .5*width, .5*height
+        
+        # types
+        NORMAL,ROUNDED,HROUNDED,VROUNDED,CIRCLE = range(5)
+        
+        rtyp = NORMAL
+        if radius > 1e-16:
+            rtyp = ROUNDED
+            if radius > hh:
+                raise OCCError('Height to small for radius')
+            elif hh - radius < 1e-16 or hh - radius == 0.:
+                rtyp = VROUNDED
+                radius = hh
+            
+            if radius > hw:
+                raise OCCError('Width to small for radius')
+            elif hw - radius < 1e-16:
+                if rtyp == VROUNDED:
+                    rtyp = CIRCLE
+                else:
+                    rtyp = HROUNDED
+                    radius = hw
+        else:
+            radius = 0.
+        
+        if rtyp == NORMAL:
+            p1 = Vertex(-hw,-hh,0.)
+            p2 = Vertex(+hw,-hh,0.)
+            p3 = Vertex(+hw,+hh,0.)
+            p4 = Vertex(-hw,+hh,0.)
+            e1 = Edge().createLine(p1,p2)
+            e2 = Edge().createLine(p2,p3)
+            e3 = Edge().createLine(p3,p4)
+            e4 = Edge().createLine(p4,p1)
+            self.createWire((e1,e2,e3,e4))
+            
+        elif rtyp == CIRCLE:
+            e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = radius)
+            self.createWire(e1)
+        
+        elif rtyp == VROUNDED:
+            r = radius
+            p1 = Vertex(-hw + r,-hh,0.)
+            p2 = Vertex(+hw - r,-hh,0.)
+            p3 = Vertex(+hw - r,+hh,0.)
+            p4 = Vertex(-hw + r,+hh,0.)
+            
+            a1 = (hw,0.,0.)
+            a2 = (-hw,0.,0.)
+            
+            e1 = Edge().createLine(p1,p2)
+            e2 = Edge().createArc3P(p2,p3,a1)
+            e3 = Edge().createLine(p3,p4)
+            e4 = Edge().createArc3P(p4,p1,a2)
+            self.createWire((e1,e2,e3,e4))
+        
+        elif rtyp == HROUNDED:
+            r = radius
+            p1 = Vertex(-hw,-hh + r,0.)
+            p2 = Vertex(+hw,-hh + r,0.)
+            p3 = Vertex(+hw,+hh - r,0.)
+            p4 = Vertex(-hw,+hh - r,0.)
+            
+            a1 = (0.,-hh,0.)
+            a2 = (0.,+hh,0.)
+            
+            e1 = Edge().createArc3P(p1,p2,a1)
+            e2 = Edge().createLine(p2,p3)
+            e3 = Edge().createArc3P(p3,p4,a2)
+            e4 = Edge().createLine(p4,p1)
+            
+            self.createWire((e1,e2,e3,e4))
+            
+        elif rtyp == ROUNDED:
+            r = radius
+            p1 = Vertex(-hw + r,-hh + 0,0.)
+            p2 = Vertex(+hw - r,-hh + 0,0.)
+            p3 = Vertex(+hw + 0,-hh + r,0.)
+            p4 = Vertex(+hw + 0,+hh - r,0.)
+            p5 = Vertex(+hw - r,+hh + 0,0.)
+            p6 = Vertex(-hw + r,+hh + 0,0.)
+            p7 = Vertex(-hw + 0,+hh - r,0.)
+            p8 = Vertex(-hw + 0,-hh + r,0.)
+            
+            c1 = (-hw + r,-hh + r,0.)
+            c2 = (+hw - r,-hh + r,0.)
+            c3 = (+hw - r,+hh - r,0.)
+            c4 = (-hw + r,+hh - r,0.)
+            
+            e1 = Edge().createArc(p8,p1,c1)
+            e2 = Edge().createLine(p1,p2)
+            e3 = Edge().createArc(p2,p3,c2)
+            e4 = Edge().createLine(p3,p4)
+            e5 = Edge().createArc(p4,p5,c3)
+            e6 = Edge().createLine(p5,p6)
+            e7 = Edge().createArc(p6,p7,c4)
+            e8 = Edge().createLine(p7,p8)
+            
+            self.createWire((e1,e2,e3,e4,e5,e6,e7,e8))
+        else:
+            raise OCCError('Unknown type %d' % rtyp)
+            
+        return self
+    
+    cpdef createPolygon(self, points):
+        '''
+        Create a polygon from given points.
+        
+        Note: The polygon is closed automatic.
+        '''
+        edges = [Edge().createLine(Vertex(*points[0]),Vertex(*points[1]))]
+        for point in points[2:]:
+            edge = Edge().createLine(edges[-1].end,Vertex(*point))
+            edges.append(edge)
+        # close
+        edge = Edge().createLine(edges[-1].end,edges[0].start)
+        edges.append(edge)
+            
+        self.createWire(edges)
+        return self
+        
 
+    cpdef createRegularPolygon(self, double radius = 1., int sides = 6, mode = INSCRIBE):
+        '''
+        Create a planar regular polygon in the xy plane centered at (0,0).
+        
+        The polygon can either be inscribed or circumscribe the circle by setting
+        the mode argument.
+        '''
+        if sides < 3 or radius < 1e-16:
+            raise OCCError('Arguments not consistent')
+            
+        points = []
+        delta = 2.*M_PI/sides
+        
+        r = radius
+        if mode == CIRCUMSCRIBE:
+            r /= cos(.5*delta)
+        elif mode != INSCRIBE:
+            raise OCCError('Unknown mode %s' % mode)
+        
+        angle = .5*delta
+        for i in range(sides):
+            x = cos(angle)*r
+            if abs(x - radius) < 1e-8:
+                x = copysign(radius, x)
+                
+            y = sin(angle)*r
+            if abs(y - radius) < 1e-8:
+                y = copysign(radius, y)
+                
+            points.append((x, y))
+            angle += delta
+        
+        self.createPolygon(points)
+        return self
+        
     cpdef double length(self):
         '''
         Return wire length
