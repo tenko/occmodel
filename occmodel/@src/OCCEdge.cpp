@@ -10,7 +10,7 @@ OCCEdge *OCCEdge::copy()
     try {
         BRepBuilderAPI_Copy A;
         A.Perform(edge);
-        ret->edge = TopoDS::Edge(A.Shape());
+        ret->setShape(TopoDS::Edge(A.Shape()));
     } catch(Standard_Failure &err) {
         return NULL;
     }
@@ -27,7 +27,7 @@ std::vector<DVec> OCCEdge::tesselate(double angular, double curvature)
         TopLoc_Location loc = edge.Location();
         gp_Trsf location = loc.Transformation();
         
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, start, end);
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(this->edge, start, end);
         GeomAdaptor_Curve aCurve(curve);
 		
         GCPnts_TangentialDeflection TD(aCurve, start, end, angular, curvature);
@@ -47,79 +47,12 @@ std::vector<DVec> OCCEdge::tesselate(double angular, double curvature)
     return ret;
 }
 
-int OCCEdge::translate(DVec delta)
-{
-    try {
-        gp_Trsf trans;
-        trans.SetTranslation(gp_Pnt(0,0,0), gp_Pnt(delta[0],delta[1],delta[2]));
-        TopLoc_Location loc = edge.Location();
-        gp_Trsf placement = loc.Transformation();
-        trans = placement * trans;
-        BRepBuilderAPI_Transform aTrans(edge, trans, Standard_False);
-        edge = TopoDS::Edge(aTrans.Shape());
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
-int OCCEdge::rotate(DVec p1, DVec p2, double angle)
-{
-    try {
-        gp_Trsf trans;
-        gp_Vec dir(gp_Pnt(p1[0], p1[1], p1[2]), gp_Pnt(p2[0], p2[1], p2[2]));
-        gp_Ax1 axis(gp_Pnt(p1[0], p1[1], p1[2]), dir);
-        trans.SetRotation(axis, angle);
-        TopLoc_Location loc = edge.Location();
-        gp_Trsf placement = loc.Transformation();
-        trans = placement * trans;
-        BRepBuilderAPI_Transform aTrans(edge, trans, Standard_False);
-        edge = TopoDS::Edge(aTrans.Shape());
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
-int OCCEdge::scale(DVec pnt, double scale)
-{
-    try {
-        gp_Trsf trans;
-        trans.SetScale(gp_Pnt(pnt[0],pnt[1],pnt[2]), scale);
-        TopLoc_Location loc = edge.Location();
-        gp_Trsf placement = loc.Transformation();
-        trans = placement * trans;
-        BRepBuilderAPI_Transform aTrans(edge, trans, Standard_True);
-        edge = TopoDS::Edge(aTrans.Shape());
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
-int OCCEdge::mirror(DVec pnt, DVec nor)
-{
-    try {
-        gp_Ax2 ax2(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
-        gp_Trsf trans;
-        trans.SetMirror(ax2);
-        TopLoc_Location loc = edge.Location();
-        gp_Trsf placement = loc.Transformation();
-        trans = placement * trans;
-        BRepBuilderAPI_Transform aTrans(edge, trans, Standard_False);
-        edge = TopoDS::Edge(aTrans.Shape());
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
 int OCCEdge::createLine(OCCVertex *start, OCCVertex *end) {
     try {
         gp_Pnt aP1(start->x(), start->y(), start->z());
         gp_Pnt aP2(end->x(), end->y(), end->z());
         GC_MakeLine line(aP1, aP2);
-        edge = BRepBuilderAPI_MakeEdge(line, start->getShape(), end->getShape());
+        this->setShape(BRepBuilderAPI_MakeEdge(line, start->vertex, end->vertex));
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -141,7 +74,7 @@ int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, DVec center) {
         Handle(Geom_Circle) C = new Geom_Circle(Circ);
         Handle(Geom_TrimmedCurve) arc = new Geom_TrimmedCurve(C, Alpha1, Alpha2, false);
         
-        edge = BRepBuilderAPI_MakeEdge(arc, start->getShape(), end->getShape());
+        this->setShape(BRepBuilderAPI_MakeEdge(arc, start->vertex, end->vertex));
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -154,7 +87,7 @@ int OCCEdge::createArc3P(OCCVertex *start, OCCVertex *end, DVec aPoint) {
         gp_Pnt aP2(aPoint[0], aPoint[1], aPoint[2]);
         gp_Pnt aP3(end->x(), end->y(), end->z());
         GC_MakeArcOfCircle arc(aP1, aP2, aP3);
-        edge = BRepBuilderAPI_MakeEdge(arc, start->getShape(), end->getShape());
+        this->setShape(BRepBuilderAPI_MakeEdge(arc, start->vertex, end->vertex));
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -170,7 +103,7 @@ int OCCEdge::createCircle(DVec center, DVec normal, double radius)
         if (!circle.IsDone()) {
             return 1;
         }
-        edge = BRepBuilderAPI_MakeEdge(circle);
+        this->setShape(BRepBuilderAPI_MakeEdge(circle));
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -186,7 +119,7 @@ int OCCEdge::createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor)
         if (!ellipse.IsDone()) {
             return 1;
         }
-        edge = BRepBuilderAPI_MakeEdge(ellipse);
+        this->setShape(BRepBuilderAPI_MakeEdge(ellipse));
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -217,24 +150,14 @@ int OCCEdge::createHelix(OCCVertex *start, OCCVertex *end, double pitch, double 
         gp_Pnt2d pnt_end = line->Value(sqrt(4.0*M_PI*M_PI+pitch*pitch)*(height/pitch));
         Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(pnt_beg , pnt_end);
 
-        edge = BRepBuilderAPI_MakeEdge(segm , surf);
+        this->setShape(BRepBuilderAPI_MakeEdge(segm , surf));
         BRepLib::BuildCurves3d(edge);
         
         if (start != NULL && end != NULL) {
             // find start and end vertices
-            start->vertex = TopExp::FirstVertex(edge);
-            gp_Pnt start_pnt = BRep_Tool::Pnt(start->vertex);
-            start->_x = start_pnt.X();
-            start->_y = start_pnt.Y();
-            start->_z = start_pnt.Z();
-            
-            end->vertex = TopExp::LastVertex(edge);
-            gp_Pnt end_pnt = BRep_Tool::Pnt(end->vertex);
-            end->_x = end_pnt.Z();
-            end->_y = end_pnt.Y();
-            end->_z = end_pnt.Z();
+            start->setShape(TopExp::FirstVertex(edge));
+            end->setShape(TopExp::LastVertex(edge));
         }
-        
         
     } catch(Standard_Failure &err) {
         return 1;
@@ -273,9 +196,9 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         Handle(Geom_BezierCurve) bezier = new Geom_BezierCurve(ctrlPoints);
         
         if (vertices) {
-            edge = BRepBuilderAPI_MakeEdge(bezier, start->getShape(), end->getShape());
+            this->setShape(BRepBuilderAPI_MakeEdge(bezier, start->vertex, end->vertex));
         } else {
-            edge = BRepBuilderAPI_MakeEdge(bezier);
+            this->setShape(BRepBuilderAPI_MakeEdge(bezier));
         }
         
     } catch(Standard_Failure &err) {
@@ -325,9 +248,9 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         
         Handle(Geom_BSplineCurve) curve = INT.Curve();
         if (vertices) {
-            edge = BRepBuilderAPI_MakeEdge(curve, start->getShape(), end->getShape());
+            this->setShape(BRepBuilderAPI_MakeEdge(curve, start->vertex, end->vertex));
         } else {
-            edge = BRepBuilderAPI_MakeEdge(curve);
+            this->setShape(BRepBuilderAPI_MakeEdge(curve));
         }
     } catch(Standard_Failure &err) {
         return 1;
@@ -389,9 +312,9 @@ int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> poi
         (ctrlPoints, _weights, _knots, _mult, degree, periodic);
         
         if (!periodic) {
-            edge = BRepBuilderAPI_MakeEdge(NURBS, start->getShape(), end->getShape());
+            this->setShape(BRepBuilderAPI_MakeEdge(NURBS, start->vertex, end->vertex));
         } else {
-            edge = BRepBuilderAPI_MakeEdge(NURBS);
+            this->setShape(BRepBuilderAPI_MakeEdge(NURBS));
         }
     } catch(Standard_Failure &err) {
         return 1;
@@ -403,30 +326,4 @@ double OCCEdge::length() {
     GProp_GProps prop;
     BRepGProp::LinearProperties(edge, prop);
     return prop.Mass();
-}
-
-DVec OCCEdge::boundingBox()
-{
-    DVec ret;
-    try {
-        Bnd_Box aBox;
-        BRepBndLib::Add(edge, aBox);
-        Standard_Real aXmin, aYmin, aZmin;
-        Standard_Real aXmax, aYmax, aZmax;
-        aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-        ret.push_back(aXmin);
-        ret.push_back(aYmin);
-        ret.push_back(aZmin);
-        ret.push_back(aXmax);
-        ret.push_back(aYmax);
-        ret.push_back(aZmax);
-    } catch(Standard_Failure &err) {
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-    }
-    return ret;
 }

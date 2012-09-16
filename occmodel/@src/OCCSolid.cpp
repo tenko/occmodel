@@ -9,14 +9,14 @@ int OCCSolid::createSolid(std::vector<OCCFace *> faces, double tolerance)
     try {
         BRepOffsetAPI_Sewing SW(tolerance);
         for (unsigned i=0; i<faces.size(); i++) {
-            SW.Add(faces[i]->getShape());
+            SW.Add(faces[i]->face);
         }
         SW.Perform();
         
         if (SW.SewedShape().IsNull())
           return 1;
         
-        solid = SW.SewedShape();
+        this->setShape(SW.SewedShape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -30,7 +30,7 @@ OCCSolid *OCCSolid::copy()
     try {
         BRepBuilderAPI_Copy A;
         A.Perform(solid);
-        ret->solid = A.Shape();
+        ret->setShape(A.Shape());
     } catch(Standard_Failure &err) {
         return NULL;
     }
@@ -71,99 +71,6 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
     return mesh;
 }
 
-DVec OCCSolid::boundingBox()
-{
-    DVec ret;
-    try {
-        Bnd_Box aBox;
-        BRepBndLib::Add(solid, aBox);
-        Standard_Real aXmin, aYmin, aZmin;
-        Standard_Real aXmax, aYmax, aZmax;
-        aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-        ret.push_back(aXmin);
-        ret.push_back(aYmin);
-        ret.push_back(aZmin);
-        ret.push_back(aXmax);
-        ret.push_back(aYmax);
-        ret.push_back(aZmax);
-    } catch(Standard_Failure &err) {
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-    }
-    return ret;
-}
-
-int OCCSolid::translate(DVec delta)
-{
-    try {
-        gp_Trsf trans;
-        trans.SetTranslation(gp_Pnt(0,0,0), gp_Pnt(delta[0],delta[1],delta[2]));
-        TopLoc_Location loc = solid.Location();
-        gp_Trsf placement = loc.Transformation();
-        trans = placement * trans;
-        BRepBuilderAPI_Transform aTrans(solid, trans, Standard_False);
-        solid = aTrans.Shape();
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
-int OCCSolid::rotate(DVec p1, DVec p2, double angle)
-{
-    try {
-        gp_Trsf trans;
-        gp_Vec dir(gp_Pnt(p1[0], p1[1], p1[2]), gp_Pnt(p2[0], p2[1], p2[2]));
-        gp_Ax1 axis(gp_Pnt(p1[0], p1[1], p1[2]), dir);
-        trans.SetRotation(axis, angle);
-        TopLoc_Location loc = solid.Location();
-        gp_Trsf placement = loc.Transformation();
-        trans = placement * trans;
-        BRepBuilderAPI_Transform aTrans(solid, trans, Standard_False);
-        solid = aTrans.Shape();
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
-int OCCSolid::scale(DVec pnt, double scale)
-{
-    try {
-        gp_Trsf trans;
-        trans.SetScale(gp_Pnt(pnt[0],pnt[1],pnt[2]), scale);
-        TopLoc_Location loc = solid.Location();
-        gp_Trsf placement = loc.Transformation();
-        trans = placement * trans;
-        BRepBuilderAPI_Transform aTrans(solid, trans, Standard_True);
-        solid = aTrans.Shape();
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
-int OCCSolid::mirror(DVec pnt, DVec nor)
-{
-    try {
-        gp_Ax2 ax2(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
-        gp_Trsf trans;
-        trans.SetMirror(ax2);
-        TopLoc_Location loc = solid.Location();
-        gp_Trsf placement = loc.Transformation();
-        trans = placement * trans;
-        BRepBuilderAPI_Transform aTrans(solid, trans, Standard_False);
-        solid = aTrans.Shape();
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
 int OCCSolid::addSolids(std::vector<OCCSolid *> solids)
 {
     try {
@@ -171,9 +78,9 @@ int OCCSolid::addSolids(std::vector<OCCSolid *> solids)
         TopoDS_Compound C;
         B.MakeCompound(C);
         for (unsigned i = 0; i < solids.size(); i++) {
-            B.Add(C, solids[i]->solid);
+            B.Add(C, solids[i]->getShape());
         }
-        solid = C;
+        this->setShape(C);
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -184,7 +91,7 @@ int OCCSolid::createSphere(DVec center, double radius)
 {
     try {
         gp_Pnt aP(center[0], center[1], center[2]);
-        solid = BRepPrimAPI_MakeSphere(aP, radius).Shape();
+        this->setShape(BRepPrimAPI_MakeSphere(aP, radius).Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -206,7 +113,7 @@ int OCCSolid::createCylinder(DVec p1, DVec p2, double radius)
         if (!MC.IsDone()) {
             return 1;
         }
-        solid = MC.Shape();
+        this->setShape(MC.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -227,7 +134,7 @@ int OCCSolid::createTorus(DVec p1, DVec p2, double radius1, double radius2) {
         if (!MC.IsDone()) {
             return 1;
         }
-        solid = MC.Shape();
+        this->setShape(MC.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -248,7 +155,7 @@ int OCCSolid::createCone(DVec p1, DVec p2, double radius1, double radius2) {
         if (!MC.IsDone()) {
             return 1;
         }
-        solid = MC.Shape();
+        this->setShape(MC.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -264,7 +171,7 @@ int OCCSolid::createBox(DVec p1, DVec p2) {
         if (!MB.IsDone()) {
             return 1;
         }
-        solid = MB.Shape();
+        this->setShape(MB.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -317,7 +224,7 @@ int OCCSolid::extrude(OCCFace *face, DVec p1, DVec p2)
 
         BRepPrimAPI_MakePrism MP(face->getShape(), direction,
                                  Standard_False);
-        solid = MP.Shape();
+        this->setShape(MP.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -330,7 +237,7 @@ int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
         gp_Dir direction(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
         BRepPrimAPI_MakeRevol MR(face->getShape(), axisOfRevolution, angle, Standard_False);
-        solid = MR.Shape();
+        this->setShape(MR.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -340,8 +247,8 @@ int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
 int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
 {
     try {
-        BRepOffsetAPI_MakePipe MP(wire->getShape(), face->getShape());
-        solid = TopoDS::Solid(MP.Shape());
+        BRepOffsetAPI_MakePipe MP(wire->wire, face->face);
+        this->setShape(TopoDS::Solid(MP.Shape()));
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -359,7 +266,7 @@ int OCCSolid::loft(std::vector<OCCWire>wires, bool ruled)
         BRepOffsetAPI_ThruSections TS(isSolid, isRuled);
         
         for (unsigned i=0; i<wires.size(); i++) {
-            TS.AddWire(wires[i].getShape());
+            TS.AddWire(wires[i].wire);
         }
         //TS.CheckCompatibility(Standard_False);  
         TS.Build();

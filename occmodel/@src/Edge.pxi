@@ -16,10 +16,6 @@ cdef class Edge:
         if self.thisptr != NULL:
             tmp = <c_OCCEdge *>self.thisptr
             del tmp
-    
-    cdef void *getNativePtr(self):
-        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        return occ.getNativePtr()
         
     def __str__(self):
         return "Edge%s" % repr(self)

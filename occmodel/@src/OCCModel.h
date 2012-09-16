@@ -18,35 +18,49 @@ class OCCMesh {
         OCCMesh() { ; }
 };
 
-class OCCVertex { 
+class OCCBase {
+    public:
+        int translate(DVec delta);
+        int rotate(DVec p1, DVec p2, double angle);
+        int scale(DVec pnt, double scale);
+        int mirror(DVec pnt, DVec nor);
+        DVec boundingBox();
+        virtual TopoDS_Shape getShape() { return TopoDS_Shape(); }
+        virtual void setShape(TopoDS_Shape shape) { ; }
+};
+
+class OCCVertex : public OCCBase { 
     public:
         TopoDS_Vertex vertex;
-        double _x, _y, _z;
         OCCVertex() { ; }
         OCCVertex(double x, double y, double z) {
-            _x = x; _y = y; _z = z;
             gp_Pnt aPnt;
             aPnt = gp_Pnt(x, y, z);
             BRepBuilderAPI_MakeVertex mkVertex(aPnt);
-            vertex = mkVertex.Vertex();
+            this->setShape(mkVertex.Vertex());
         }
-        double x() const { return _x; }
-        double y() const { return _y; }
-        double z() const { return _z; }
-        void * getNativePtr() const { return (void*)&vertex; }
-        TopoDS_Vertex getShape() { return vertex; }
+        double x() const { 
+            gp_Pnt pnt = BRep_Tool::Pnt(vertex);
+            return pnt.X();
+        }
+        double y() const { 
+            gp_Pnt pnt = BRep_Tool::Pnt(vertex);
+            return pnt.Y();
+        }
+        double z() const { 
+            gp_Pnt pnt = BRep_Tool::Pnt(vertex);
+            return pnt.Z();
+        }
+        TopoDS_Shape getShape() { return vertex; }
+        void setShape(TopoDS_Shape shape) { vertex = TopoDS::Vertex(shape); }
 };
 
-class OCCEdge {
+class OCCEdge : public OCCBase {
     public:
         TopoDS_Edge edge;
         OCCEdge() { ; }
         OCCEdge *copy();
         std::vector<DVec> tesselate(double factor, double angle);
-        int translate(DVec delta);
-        int rotate(DVec p1, DVec p2, double angle);
-        int scale(DVec pnt, double scale);
-        int mirror(DVec pnt, DVec nor);
         int createLine(OCCVertex *start, OCCVertex *end);
         int createArc(OCCVertex *start, OCCVertex *end, DVec center);
         int createArc3P(OCCVertex *start, OCCVertex *end, DVec pnt);
@@ -60,70 +74,54 @@ class OCCEdge {
         int createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
                         DVec knots, DVec weights, IVec mult);
         double length();
-        DVec boundingBox();
-        void *getNativePtr() const { return (void*)&edge; }
-        TopoDS_Edge getShape() { return edge; }
+        TopoDS_Shape getShape() { return edge; }
+        void setShape(TopoDS_Shape shape) { edge = TopoDS::Edge(shape); }
 };
 
-class OCCWire {
+class OCCWire : public OCCBase {
     public:
         TopoDS_Wire wire;
         OCCWire() { ; }
         OCCWire *copy();
         int createWire(std::vector<OCCEdge *> edges);
         std::vector<DVec> tesselate(double factor, double angle);
-        int translate(DVec delta);
-        int rotate(DVec p1, DVec p2, double angle);
-        int scale(DVec pnt, double scale);
-        int mirror(DVec pnt, DVec nor);
         double length();
-        DVec boundingBox();
-        void *getNativePtr() const { return (void*)&wire; }
-        TopoDS_Wire getShape() { return wire; }
+        TopoDS_Shape getShape() { return wire; }
+        void setShape(TopoDS_Shape shape) { wire = TopoDS::Wire(shape); }
 };
 
-class OCCFace {
+class OCCFace : public OCCBase {
     public:
         TopoDS_Face face;
         OCCFace() { ; }
         OCCFace *copy();
         int createFace(OCCWire *wire);
         int createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> points);
-        DVec boundingBox();
         double area();
         DVec inertia();
         DVec centreOfMass();
         std::vector<DVec> tesselate(double factor, double angle);
-        int translate(DVec delta);
-        int rotate(DVec p1, DVec p2, double angle);
-        int scale(DVec pnt, double scale);
-        int mirror(DVec pnt, DVec nor);
         int createPolygonal(std::vector<DVec> points);
         int extrude(OCCEdge *edge, DVec p1, DVec p2);
         int revolve(OCCEdge *edge, DVec p1, DVec p2, double angle);
         OCCMesh *createMesh(double defle, double angle);
-        void *getNativePtr() const { return (void*)&face; }
-        TopoDS_Face getShape() { return face; }
+        TopoDS_Shape getShape() { return face; }
+        void setShape(TopoDS_Shape shape) { face = TopoDS::Face(shape); }
 };
 
 typedef int (*filter_func)(void *user_data, double *near, double *far);
 
-class OCCSolid {
+class OCCSolid : public OCCBase {
     public:
         TopoDS_Shape solid;
         OCCSolid() { ; }
         int createSolid(std::vector<OCCFace *> faces, double tolerance);
-        DVec boundingBox();
         double area();
         double volume();
         DVec inertia();
         DVec centreOfMass();
         OCCSolid *copy();
         OCCMesh *createMesh(double defle, double angle);
-        int translate(DVec delta);
-        int rotate(DVec p1, DVec p2, double angle);
-        int scale(DVec pnt, double scale);
-        int mirror(DVec pnt, DVec nor);
         int addSolids(std::vector<OCCSolid *> solids);
         int createSphere(DVec center, double radius);
         int createCylinder(DVec p1, DVec p2, double radius);
@@ -149,8 +147,8 @@ class OCCSolid {
         void heal(double tolerance, bool fixdegenerated,
                   bool fixsmalledges, bool fixspotstripfaces, 
                   bool sewfaces, bool makesolids);
-        void *getNativePtr() const { return (void*)&solid; }
         TopoDS_Shape getShape() { return solid; }
+        void setShape(TopoDS_Shape shape) { solid = shape; }
 };
 
 int extractFaceMesh(TopoDS_Face face, OCCMesh *mesh);

@@ -43,7 +43,7 @@ class test_Face(unittest.TestCase):
         
         pnts = ((0.,0.,0.), (1.,0.,0.), (1.,1.,0.), (0.,1.,0.))
         face = Face().createPolygonal(pnts)
-        #eq(face.area(), 1.)
+        eq(face.area(), 1.)
     
     def test_extrude(self):
         eq = self.assertAlmostEqual

@@ -5,7 +5,7 @@ CC=g++
 CFLAGS=-Wall -fPIC -O2 -frtti -fexceptions -Isrc -I/usr/include/oce
 LIB=liboccmodel.a
     
-LIBSRC = @src/OCCModel.cpp @src/OCCEdge.cpp @src/OCCWire.cpp @src/OCCFace.cpp @src/OCCSolid.cpp
+LIBSRC = @src/OCCModel.cpp @src/OCCBase.cpp @src/OCCEdge.cpp @src/OCCWire.cpp @src/OCCFace.cpp @src/OCCSolid.cpp
  
 LIBOBJ=$(LIBSRC:.cpp=.o)
 

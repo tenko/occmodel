@@ -18,10 +18,6 @@ cdef class Wire:
         if self.thisptr != NULL:
             tmp = <c_OCCWire *>self.thisptr
             del tmp
-    
-    cdef void *getNativePtr(self):
-        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
-        return occ.getNativePtr()
         
     def __str__(self):
         return "Wire%s" % repr(self)
@@ -194,17 +190,17 @@ cdef class Wire:
         NORMAL,ROUNDED,HROUNDED,VROUNDED,CIRCLE = range(5)
         
         rtyp = NORMAL
-        if radius > 1e-16:
+        if radius > EPSILON:
             rtyp = ROUNDED
             if radius > hh:
                 raise OCCError('Height to small for radius')
-            elif hh - radius < 1e-16 or hh - radius == 0.:
+            elif hh - radius < EPSILON or hh - radius == 0.:
                 rtyp = VROUNDED
                 radius = hh
             
             if radius > hw:
                 raise OCCError('Width to small for radius')
-            elif hw - radius < 1e-16:
+            elif hw - radius < EPSILON:
                 if rtyp == VROUNDED:
                     rtyp = CIRCLE
                 else:
@@ -332,11 +328,11 @@ cdef class Wire:
         angle = .5*delta
         for i in range(sides):
             x = cos(angle)*r
-            if abs(x - radius) < 1e-8:
+            if abs(x - radius) < SQRT_EPSILON:
                 x = copysign(radius, x)
                 
             y = sin(angle)*r
-            if abs(y - radius) < 1e-8:
+            if abs(y - radius) < SQRT_EPSILON:
                 y = copysign(radius, y)
                 
             points.append((x, y))

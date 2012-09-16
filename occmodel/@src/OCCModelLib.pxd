@@ -21,7 +21,11 @@ cdef extern from "OCCModel.h":
         double x()
         double y()
         double z()
-        void * getNativePtr()
+        int translate(vector[double] delta)
+        int rotate(vector[double] p1, vector[double] p2, double angle)
+        int scale(vector[double] pnt, double scale)
+        int mirror(vector[double] pnt, vector[double] nor)
+        vector[double] boundingBox()
         
     cdef cppclass c_OCCEdge "OCCEdge":
         c_OCCEdge()
@@ -43,7 +47,6 @@ cdef extern from "OCCModel.h":
                         vector[double] knots, vector[double] weights, vector[int] mult)
         double length()
         vector[double] boundingBox()
-        void * getNativePtr()
     
     cdef cppclass c_OCCWire "OCCWire":
         c_OCCWire()
@@ -56,7 +59,6 @@ cdef extern from "OCCModel.h":
         int createWire(vector[c_OCCEdge *] edges)
         double length()
         vector[double] boundingBox()
-        void *getNativePtr()
         
     cdef cppclass c_OCCFace "OCCFace":
         c_OCCFace()
@@ -75,7 +77,6 @@ cdef extern from "OCCModel.h":
         int extrude(c_OCCEdge *edge, vector[double] p1, vector[double] p2)
         int revolve(c_OCCEdge *edge, vector[double] p1, vector[double] p2, double angle)
         c_OCCMesh *createMesh(double factor, double angle)
-        void *getNativePtr()
     
     ctypedef int (*filter_func)(void *user_data, double *near, double *far)
     
@@ -117,7 +118,5 @@ cdef extern from "OCCModel.h":
         int writeSTL(char *filename, bint asciiMode)
         void heal(double tolerance, bint fixdegenerated,
                   bint fixsmalledges, bint fixspotstripfaces, 
-                  bint sewfaces, bint makesolids)
-        void *getNativePtr()
-        
+                  bint sewfaces, bint makesolids)        
         

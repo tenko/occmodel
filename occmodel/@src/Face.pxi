@@ -15,10 +15,6 @@ cdef class Face:
         if self.thisptr != NULL:
             tmp = <c_OCCFace *>self.thisptr
             del tmp
-    
-    cdef void *getNativePtr(self):
-        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
-        return occ.getNativePtr()
         
     def __str__(self):
         return "Face%s" % repr(self)
