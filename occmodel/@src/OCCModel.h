@@ -20,6 +20,7 @@ class OCCMesh {
 
 class OCCBase {
     public:
+        int transform(DVec mat);
         int translate(DVec delta);
         int rotate(DVec p1, DVec p2, double angle);
         int scale(DVec pnt, double scale);

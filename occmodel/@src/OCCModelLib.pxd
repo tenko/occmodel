@@ -20,6 +20,7 @@ cdef extern from "OCCModel.h":
         bint isEqual(c_OCCBase *other)
         bint isNull()
         bint isValid()
+        int transform(vector[double] mat)
         int translate(vector[double] delta)
         int rotate(vector[double] p1, vector[double] p2, double angle)
         int scale(vector[double] pnt, double scale)

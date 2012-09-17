@@ -117,6 +117,7 @@ using std::iostream;
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
+#include <BRepBuilderAPI_GTransform.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>

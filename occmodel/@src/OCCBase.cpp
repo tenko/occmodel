@@ -4,6 +4,36 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
+int OCCBase::transform(DVec mat)
+{
+    try {
+        TopoDS_Shape shape = this->getShape();
+        gp_Trsf trans;
+        trans.SetValues(
+            mat[0], mat[1], mat[2], mat[3], 
+            mat[4], mat[5], mat[6], mat[7], 
+            mat[8], mat[9], mat[10], mat[11], 
+            0.00001,0.00001
+        );
+        // Check if scaling is non-uniform
+        double scaleTol = mat[0]*mat[5]*mat[10] - 1.0;
+        if (scaleTol > 1e-6) {
+            BRepBuilderAPI_GTransform aTrans(shape, trans, Standard_False);
+            aTrans.Build();
+            aTrans.Check();
+            this->setShape(aTrans.Shape());
+        } else {
+            BRepBuilderAPI_Transform aTrans(shape, trans, Standard_False);
+            aTrans.Build();
+            aTrans.Check();
+            this->setShape(aTrans.Shape());
+        }
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;
+}
+
 int OCCBase::translate(DVec delta)
 {
     try {
@@ -84,6 +114,7 @@ DVec OCCBase::boundingBox()
         TopoDS_Shape shape = this->getShape();
         Bnd_Box aBox;
         BRepBndLib::Add(shape, aBox);
+        aBox.SetGap(0.0);
         Standard_Real aXmin, aYmin, aZmin;
         Standard_Real aXmax, aYmax, aZmax;
         aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);

@@ -63,6 +63,39 @@ cdef class Base:
         ret.far = Point(bbox[3], bbox[4], bbox[5])
         return ret
     
+    cpdef transform(self, Transform mat):
+        '''
+        Set transformation matrix for object.
+        
+        mat - Transformation matrix
+        '''
+        self.CheckPtr()
+        
+        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
+        cdef vector[double] cmat
+        cdef int ret
+        
+        cmat.push_back(mat.m[0][0])
+        cmat.push_back(mat.m[0][1])
+        cmat.push_back(mat.m[0][2])
+        cmat.push_back(mat.m[0][3])
+        
+        cmat.push_back(mat.m[1][0])
+        cmat.push_back(mat.m[1][1])
+        cmat.push_back(mat.m[1][2])
+        cmat.push_back(mat.m[1][3])
+        
+        cmat.push_back(mat.m[2][0])
+        cmat.push_back(mat.m[2][1])
+        cmat.push_back(mat.m[2][2])
+        cmat.push_back(mat.m[2][3])
+        
+        ret = occ.transform(cmat)
+        if ret != 0:
+            raise OCCError('Failed to transform object')
+            
+        return self
+        
     cpdef translate(self, delta):
         '''
         Translate object in place.
