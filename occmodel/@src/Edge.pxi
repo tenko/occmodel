@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-cdef class Edge:
+cdef class Edge(Base):
     '''
     Edge - represent edge geometry (curve).
     '''
-    cdef void *thisptr
     cdef public Vertex start, end
     
     def __init__(self):
@@ -31,17 +30,6 @@ cdef class Edge:
         cdef Edge ret = Edge.__new__(Edge, None)
         ret.thisptr = occ.copy()
         return ret
-        
-    cpdef Box boundingBox(self):
-        '''
-        Return edge bounding box
-        '''
-        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] bbox = occ.boundingBox()
-        cdef Box ret = Box.__new__(Box, None)
-        ret.near = Point(bbox[0], bbox[1], bbox[2])
-        ret.far = Point(bbox[3], bbox[4], bbox[5])
-        return ret
     
     cpdef tesselate(self, double factor = .1, double angle = .1):
         '''
@@ -61,97 +49,6 @@ cdef class Edge:
         ret = [(pnts[i][0], pnts[i][1], pnts[i][2]) for i in range(size)]
         
         return tuple(ret)
-        
-    cpdef translate(self, delta):
-        '''
-        Translate edge in place.
-        
-        delta - (dx,dy,dz)
-        '''
-        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] cdelta
-        cdef int ret
-        
-        cdelta.push_back(delta[0])
-        cdelta.push_back(delta[1])
-        cdelta.push_back(delta[2])
-        
-        ret = occ.translate(cdelta)
-        if ret != 0:
-            raise OCCError('Failed to translate edge')
-            
-        return self
-    
-    cpdef rotate(self, p1, p2, angle):
-        '''
-        Rotate edge in place.
-        
-        p1 - axis start point
-        p2 - axis end point
-        angle - rotation angle in radians
-        '''
-        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] cp1, cp2
-        cdef int ret
-        
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
-        
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
-        
-        ret = occ.rotate(cp1, cp2, angle)
-        if ret != 0:
-            raise OCCError('Failed to rotate edge')
-            
-        return self
-
-    cpdef scale(self, pnt, double scale):
-        '''
-        Scale edge in place.
-        
-        pnt - reference point
-        scale - scale factor
-        '''
-        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] cpnt
-        cdef int ret
-        
-        cpnt.push_back(pnt[0])
-        cpnt.push_back(pnt[1])
-        cpnt.push_back(pnt[2])
-        
-        ret = occ.scale(cpnt, scale)
-        if ret != 0:
-            raise OCCError('Failed to scale edge')
-            
-        return self
-    
-    cpdef mirror(self, Plane plane):
-        '''
-        Mirror edge inplace
-        
-        plane - mirror plane
-        '''
-        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] cpnt, cnor
-        cdef int ret
-        
-        cpnt.push_back(plane.origin.x)
-        cpnt.push_back(plane.origin.y)
-        cpnt.push_back(plane.origin.z)
-        
-        cnor.push_back(plane.zaxis.x)
-        cnor.push_back(plane.zaxis.y)
-        cnor.push_back(plane.zaxis.z)
-        
-        ret = occ.mirror(cpnt, cnor)
-        if ret != 0:
-            raise OCCError('Failed to mirror edge')
-            
-        return self
         
     cpdef createLine(self, Vertex start, Vertex end):
         '''

@@ -25,6 +25,20 @@ class OCCBase {
         int scale(DVec pnt, double scale);
         int mirror(DVec pnt, DVec nor);
         DVec boundingBox();
+        bool isEqual(OCCBase *other) {
+            if (this->getShape().IsEqual(other->getShape()))
+                return true;
+            return false;
+        }
+        bool isNull() {
+            return this->getShape().IsNull() ? true : false;
+        }
+        bool isValid() {
+            if (this->getShape().IsNull())
+                return false;
+            BRepCheck_Analyzer aChecker(this->getShape());
+            return aChecker.IsValid() ? true : false;
+        }
         virtual TopoDS_Shape getShape() { return TopoDS_Shape(); }
         virtual void setShape(TopoDS_Shape shape) { ; }
 };

@@ -15,6 +15,16 @@ cdef extern from "OCCModel.h":
         vector[vector[double]] normals
         vector[vector[int]] triangles
         c_OCCMesh()
+    
+    cdef cppclass c_OCCBase "OCCBase":
+        bint isEqual(c_OCCBase *other)
+        bint isNull()
+        bint isValid()
+        int translate(vector[double] delta)
+        int rotate(vector[double] p1, vector[double] p2, double angle)
+        int scale(vector[double] pnt, double scale)
+        int mirror(vector[double] pnt, vector[double] nor)
+        vector[double] boundingBox()
         
     cdef cppclass c_OCCVertex "OCCVertex":
         c_OCCVertex(double x, double y, double z)

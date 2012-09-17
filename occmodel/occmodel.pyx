@@ -31,7 +31,7 @@ include "Viewer.pxi"
 
 class OCCError(Exception):
     pass
-
+  
 cdef class Mesh:
     '''
     Mesh - Represent triangle mesh for viewing purpose
@@ -135,8 +135,9 @@ cdef class Mesh:
             glVertex3d(b[0],b[1],b[2])
             
             glNormal3d(nc[0],nc[1],nc[2])
-            glVertex3d(c[0],c[1],c[2])
-        
+            glVertex3d(c[0],c[1],c[2])        
+            
+include "Base.pxi"
 include "Vertex.pxi"
 include "Edge.pxi"
 include "Wire.pxi"
