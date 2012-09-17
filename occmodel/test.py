@@ -302,14 +302,3 @@ print w1.length()
 f1 = Face().createFace(w1)
 print f1.area()
 '''
-
-b1 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
-print b1.volume()
-print b1 == b1
-print b1.isValid()
-print b1.boundingBox()
-b1.translate((1.,2.,3.))
-print b1.boundingBox()
-tr = Transform().translate((-1.,-2.,-3.))
-b1.transform(tr)
-print b1.boundingBox()
