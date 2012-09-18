@@ -224,6 +224,9 @@ int OCCSolid::extrude(OCCFace *face, DVec p1, DVec p2)
 
         BRepPrimAPI_MakePrism MP(face->getShape(), direction,
                                  Standard_False);
+        if (!MP.IsDone()) {
+            return 1;
+        }
         this->setShape(MP.Shape());
     } catch(Standard_Failure &err) {
         return 1;
@@ -237,6 +240,9 @@ int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
         gp_Dir direction(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
         BRepPrimAPI_MakeRevol MR(face->getShape(), axisOfRevolution, angle, Standard_False);
+        if (!MR.IsDone()) {
+            return 1;
+        }
         this->setShape(MR.Shape());
     } catch(Standard_Failure &err) {
         return 1;
@@ -248,6 +254,9 @@ int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
 {
     try {
         BRepOffsetAPI_MakePipe MP(wire->wire, face->face);
+        if (!MP.IsDone()) {
+            return 1;
+        }
         this->setShape(TopoDS::Solid(MP.Shape()));
     } catch(Standard_Failure &err) {
         return 1;
@@ -255,7 +264,7 @@ int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
     return 0;
 }
 
-int OCCSolid::loft(std::vector<OCCWire>wires, bool ruled)
+int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
 {
     try {
         Standard_Boolean isSolid = Standard_True;
@@ -263,14 +272,21 @@ int OCCSolid::loft(std::vector<OCCWire>wires, bool ruled)
         
         if (!ruled) isRuled = Standard_False;
         
-        BRepOffsetAPI_ThruSections TS(isSolid, isRuled);
+        BRepOffsetAPI_ThruSections TS(isSolid, isRuled, tolerance);
         
-        for (unsigned i=0; i<wires.size(); i++) {
-            TS.AddWire(wires[i].wire);
+        for (unsigned i=0; i<profiles.size(); i++) {
+            if (profiles[i]->getShape().ShapeType() == TopAbs_WIRE) {
+                TS.AddWire(TopoDS::Wire(profiles[i]->getShape()));
+            } else {
+                TS.AddVertex(TopoDS::Vertex(profiles[i]->getShape()));
+            }
         }
         //TS.CheckCompatibility(Standard_False);  
         TS.Build();
-        solid = TS.Shape();
+        if (!TS.IsDone()) {
+            return 1;
+        }
+        this->setShape(TS.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
@@ -282,7 +298,7 @@ int OCCSolid::booleanUnion(OCCSolid *tool) {
     if (!BO.IsDone()) {
       return 1;
     }
-    solid = BO.Shape();
+    this->setShape(BO.Shape());
     return 0;
 }
 
@@ -291,7 +307,7 @@ int OCCSolid::booleanDifference(OCCSolid *tool) {
     if (!BO.IsDone()) {
       return 1;
     }
-    solid = BO.Shape();
+    this->setShape(BO.Shape());
     return 0;
 }
 
@@ -300,7 +316,7 @@ int OCCSolid::booleanIntersection(OCCSolid *tool) {
     if (!BO.IsDone()) {
       return 1;
     }
-    solid = BO.Shape();
+    this->setShape(BO.Shape());
     return 0;
 }
 
@@ -341,7 +357,7 @@ int OCCSolid::chamfer(double distance, filter_func userfunc, void *userdata) {
         return 1;
     }
   
-    solid = tmp;
+    this->setShape(tmp);
     return 0;
 }
 
@@ -380,7 +396,7 @@ int OCCSolid::fillet(double radius, filter_func userfunc, void *userdata) {
         return 1;
     }
   
-    solid = tmp;
+    this->setShape(tmp);
     return 0;
 }
 
@@ -418,7 +434,7 @@ int OCCSolid::shell(double offset, filter_func userfunc, void *userdata) {
         return 1;
     }
   
-    solid = tmp;
+    this->setShape(tmp);
     return 0;
 }
 
@@ -457,8 +473,7 @@ OCCFace *OCCSolid::section(DVec pnt, DVec nor)
         MFRes.Build();
         if (!MFRes.IsDone()) return NULL;
         
-        ret->face = MFRes.Face();
-        
+        ret->setShape(MFRes.Face());
     } catch(Standard_Failure &err) {
         return NULL;
     }

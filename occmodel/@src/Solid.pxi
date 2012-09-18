@@ -295,7 +295,7 @@ cdef class Solid(Base):
             
         return self
         
-    cpdef loft(self, wires, bint ruled = True):
+    cpdef loft(self, profiles, bint ruled = True, double tolerance = 1e-6):
         '''
         Crate solid by lofting through sequence
         of wires or closed edges.
@@ -303,21 +303,25 @@ cdef class Solid(Base):
         ruled - smooth or rules faces
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[c_OCCWire] cwires
-        cdef Wire wire
+        cdef vector[c_OCCBase *] cprofiles
+        cdef Base cobj
         cdef int ret
         
-        for obj in wires:
+        ref = []
+        for obj in profiles:
             if isinstance(obj, Edge):
-                wire = Wire().createWire((obj,))
-            else:
-                wire = obj
-            cwires.push_back((<c_OCCWire *>wire.thisptr)[0])
+                obj = Wire().createWire((obj,))
+                # keep reference to temporary object
+                ref.append(obj)
+            elif not isinstance(obj, (Wire, Vertex)):
+                raise OCCError('Expected wire, edge or vertex')
+            cobj = obj
+            cprofiles.push_back((<c_OCCBase *>cobj.thisptr))
         
-        ret = occ.loft(cwires, ruled)
-            
+        ret = occ.loft(cprofiles, ruled, tolerance)
+        
         if ret != 0:
-            raise OCCError('Failed to loft wires')
+            raise OCCError('Failed to loft profiles')
             
         return self
     
@@ -349,7 +353,7 @@ cdef class Solid(Base):
         Multiple objects are supported.
         
         Planar edges, wires and planes are extrude in the
-        planar direction to cut the solid.
+        planar direction to cut through the solid.
         '''
         if not isinstance(tool, Solid):
             if not isinstance(tool, (tuple,list,set)):
@@ -394,10 +398,6 @@ cdef class Solid(Base):
             for arg in args:
                 if isinstance(arg, Edge):
                     edge = arg.copy()
-                    
-                    if not edge.hasPlane(origin, normal):
-                        raise OCCError('edge not planar')
-                
                     start, end = translate(edge)
                     wire = Wire().createWire(edge)
                     face = Face().createFace(wire)
@@ -405,20 +405,12 @@ cdef class Solid(Base):
                 
                 elif isinstance(arg, Wire):
                     wire = arg.copy()
-                    
-                    if not wire.hasPlane(origin, normal):
-                        raise OCCError('wire not planar')
-                
                     start, end = translate(wire)
                     face = Face().createFace(wire)
                     solid = Solid().extrude(face, start, end)
                 
                 elif isinstance(arg, Face):
                     face = arg.copy()
-                    
-                    if not face.hasPlane(origin, normal):
-                        raise OCCError('face not planar')
-                
                     start, end = translate(face)
                     solid = Solid().extrude(face, start, end)
                     

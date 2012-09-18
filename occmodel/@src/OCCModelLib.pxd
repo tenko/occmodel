@@ -89,7 +89,7 @@ cdef extern from "OCCModel.h":
         int createBox(vector[double] p1, vector[double] p2)
         int extrude(c_OCCFace *face, vector[double] p1, vector[double] p2)
         int revolve(c_OCCFace *face, vector[double] p1, vector[double] p2, double angle)
-        int loft(vector[c_OCCWire] wires, bint ruled)
+        int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
         int pipe(c_OCCFace *face, c_OCCWire *wire)
         int booleanUnion(c_OCCSolid *tool)
         int booleanDifference(c_OCCSolid *tool)

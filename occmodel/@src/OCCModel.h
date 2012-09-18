@@ -146,7 +146,7 @@ class OCCSolid : public OCCBase {
         int createBox(DVec p1, DVec p2);
         int extrude(OCCFace *face, DVec p1, DVec p2);
         int revolve(OCCFace *face, DVec p1, DVec p2, double angle);
-        int loft(std::vector<OCCWire> wires, bool ruled);
+        int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
         int pipe(OCCFace *face, OCCWire *wire);
         int booleanUnion(OCCSolid *tool);
         int booleanDifference(OCCSolid *tool);

@@ -310,6 +310,7 @@ print e1.hasPlane(plane = plane)
 print plane
 '''
 
+'''
 solid = Solid().createBox((0.,0.,0.),(1.,1.,1.))
 e1 = Edge().createCircle(center=(0.5,0.,.5),normal=(0.,0.,1.),radius = 0.25)
 e2 = Edge().createCircle(center=(0.5,0.5,1.),normal=(0.,0.,1.),radius = 0.1)
@@ -317,3 +318,10 @@ w1 = Wire().createWire(e2)
 e3 = Edge().createCircle(center=(1.0,0.5,1.),normal=(0.,0.,1.),radius = 0.25)
 f1 = Face().createFace(e3)
 solid.cut((e1,w1,f1))
+'''
+
+e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+e2 = Edge().createCircle(center=(0.,0.,.5),normal=(0.,0.,1.),radius = 1.5)
+v1 = Vertex(0.,0.,1.)
+solid = Solid().loft((e1,e2,v1))
+print solid.volume()
