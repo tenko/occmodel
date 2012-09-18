@@ -25,7 +25,7 @@ cdef extern from "OCCModel.h":
         int rotate(vector[double] p1, vector[double] p2, double angle)
         int scale(vector[double] pnt, double scale)
         int mirror(vector[double] pnt, vector[double] nor)
-        vector[double] boundingBox()
+        vector[double] boundingBox(double tolerance)
         
     cdef cppclass c_OCCVertex "OCCVertex":
         c_OCCVertex(double x, double y, double z)

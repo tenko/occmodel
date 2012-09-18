@@ -302,3 +302,6 @@ print w1.length()
 f1 = Face().createFace(w1)
 print f1.area()
 '''
+
+solid = Solid().createSphere((0.,0.,0.),.5)
+print solid.boundingBox(0.001)

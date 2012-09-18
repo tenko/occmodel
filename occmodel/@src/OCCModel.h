@@ -25,7 +25,7 @@ class OCCBase {
         int rotate(DVec p1, DVec p2, double angle);
         int scale(DVec pnt, double scale);
         int mirror(DVec pnt, DVec nor);
-        DVec boundingBox();
+        DVec boundingBox(double tolerance);
         bool isEqual(OCCBase *other) {
             if (this->getShape().IsEqual(other->getShape()))
                 return true;

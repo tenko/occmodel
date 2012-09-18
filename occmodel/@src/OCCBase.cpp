@@ -107,14 +107,14 @@ int OCCBase::mirror(DVec pnt, DVec nor)
     return 0;
 }
 
-DVec OCCBase::boundingBox()
+DVec OCCBase::boundingBox(double tolerance = 1e-12)
 {
     DVec ret;
     try {
         TopoDS_Shape shape = this->getShape();
         Bnd_Box aBox;
         BRepBndLib::Add(shape, aBox);
-        aBox.SetGap(0.0);
+        aBox.SetGap(tolerance);
         Standard_Real aXmin, aYmin, aZmin;
         Standard_Real aXmax, aYmax, aZmax;
         aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);

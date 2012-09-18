@@ -49,14 +49,14 @@ cdef class Base:
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         return occ.isValid()
         
-    cpdef Box boundingBox(self):
+    cpdef Box boundingBox(self, double tolerance = 1e-12):
         '''
         Return bounding box
         '''
         self.CheckPtr()
         
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
-        cdef vector[double] bbox = occ.boundingBox()
+        cdef vector[double] bbox = occ.boundingBox(tolerance)
         cdef Box ret = Box.__new__(Box, None)
         
         ret.near = Point(bbox[0], bbox[1], bbox[2])
