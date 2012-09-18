@@ -368,27 +368,6 @@ cdef class Solid(Base):
             
         return self
     
-    cpdef pipe(self, Face face, path):
-        '''
-        Create pipe by extruding face allong
-        wire or edge.
-        '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef Wire wire
-        cdef int ret
-        
-        if isinstance(path, Edge):
-            wire = Wire().createWire((path,))
-        else:
-            wire = path
-                
-        ret = occ.pipe(<c_OCCFace *>face.thisptr, <c_OCCWire *>wire.thisptr)
-            
-        if ret != 0:
-            raise OCCError('Failed to make pipe')
-            
-        return self
-    
     def cut(self, tool):
         '''
         Cut solid with given object.

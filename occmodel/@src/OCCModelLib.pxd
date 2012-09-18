@@ -91,7 +91,6 @@ cdef extern from "OCCModel.h":
         int revolve(c_OCCFace *face, vector[double] p1, vector[double] p2, double angle)
         int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
         int sweep(c_OCCWire *spine, vector[c_OCCBase *] profiles, int cornerMode)
-        int pipe(c_OCCFace *face, c_OCCWire *wire)
         int booleanUnion(c_OCCSolid *tool)
         int booleanDifference(c_OCCSolid *tool)
         int booleanIntersection(c_OCCSolid *tool)

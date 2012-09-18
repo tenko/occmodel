@@ -250,20 +250,6 @@ int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
     return 0;
 }
 
-int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
-{
-    try {
-        BRepOffsetAPI_MakePipe MP(wire->wire, face->face);
-        if (!MP.IsDone()) {
-            return 1;
-        }
-        this->setShape(TopoDS::Solid(MP.Shape()));
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
 int OCCSolid::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode = 0)
 {
     try {
