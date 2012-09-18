@@ -184,7 +184,7 @@ cdef class Wire(Base):
             
         return self
     
-    cpdef createPolygon(self, points):
+    cpdef createPolygon(self, points, bint close = True):
         '''
         Create a polygon from given points.
         
@@ -195,8 +195,9 @@ cdef class Wire(Base):
             edge = Edge().createLine(edges[-1].end,Vertex(*point))
             edges.append(edge)
         # close
-        edge = Edge().createLine(edges[-1].end,edges[0].start)
-        edges.append(edge)
+        if close:
+            edge = Edge().createLine(edges[-1].end,edges[0].start)
+            edges.append(edge)
             
         self.createWire(edges)
         return self

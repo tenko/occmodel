@@ -264,6 +264,37 @@ int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
     return 0;
 }
 
+int OCCSolid::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode = 0)
+{
+    try {
+        BRepOffsetAPI_MakePipeShell PS(spine->wire);
+        // set corner mode
+        switch (cornerMode) {
+            case 1: PS.SetTransitionMode(BRepBuilderAPI_RightCorner);
+                break;
+            case 2: PS.SetTransitionMode(BRepBuilderAPI_RoundCorner);
+                break;
+            default: PS.SetTransitionMode(BRepBuilderAPI_Transformed);
+                break;
+        }
+        // add profiles
+        for (unsigned i=0; i<profiles.size(); i++) {
+            PS.Add(profiles[i]->getShape());
+        }
+        if (!PS.IsReady()) {
+            return 1;
+        }
+        PS.Build();
+        if (!PS.MakeSolid()) {
+            return 1;
+        }
+        this->setShape(TopoDS::Solid(PS.Shape()));
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;
+}
+
 int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
 {
     try {
