@@ -26,6 +26,7 @@ class OCCBase {
         int scale(DVec pnt, double scale);
         int mirror(DVec pnt, DVec nor);
         DVec boundingBox(double tolerance);
+        int findPlane(double *origin, double *normal, double tolerance);
         bool isEqual(OCCBase *other) {
             if (this->getShape().IsEqual(other->getShape()))
                 return true;

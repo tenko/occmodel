@@ -107,6 +107,30 @@ int OCCBase::mirror(DVec pnt, DVec nor)
     return 0;
 }
 
+int OCCBase::findPlane(double *origin, double *normal, double tolerance = 1e-6)
+{
+    try {
+        TopoDS_Shape shape = this->getShape();
+        BRepBuilderAPI_FindPlane FP(shape, tolerance);
+        if(!FP.Found()) return 1;
+        const Handle_Geom_Plane plane = FP.Plane();
+        const gp_Ax1 axis = plane->Axis();
+        
+        const gp_Pnt loc = axis.Location();
+        origin[0] = loc.X();
+        origin[1] = loc.Y();
+        origin[2] = loc.Z();
+        
+        const gp_Dir dir = axis.Direction();
+        normal[0] = dir.X();
+        normal[1] = dir.Y();
+        normal[2] = dir.Z();
+        
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;   
+}
 DVec OCCBase::boundingBox(double tolerance = 1e-12)
 {
     DVec ret;

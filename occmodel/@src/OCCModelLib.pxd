@@ -26,6 +26,7 @@ cdef extern from "OCCModel.h":
         int scale(vector[double] pnt, double scale)
         int mirror(vector[double] pnt, vector[double] nor)
         vector[double] boundingBox(double tolerance)
+        int findPlane(double *origin, double *normal, double tolerance)
         
     cdef cppclass c_OCCVertex "OCCVertex":
         c_OCCVertex(double x, double y, double z)

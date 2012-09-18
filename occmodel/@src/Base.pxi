@@ -48,6 +48,26 @@ cdef class Base:
         self.CheckPtr()
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         return occ.isValid()
+    
+    cpdef bint hasPlane(self, Point origin = None, Vector normal = None, double tolerance = 1e-12):
+        '''
+        Check if object has plane defined.
+        '''
+        self.CheckPtr()
+        
+        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
+        cdef double corigin[3], cnormal[3]
+        
+        if occ.findPlane(corigin, cnormal, tolerance) == 1:
+            return False
+        
+        if not normal is None:
+            normal.set(cnormal[0], cnormal[1], cnormal[2])
+        
+        if not origin is None:
+            origin.set(corigin[0], corigin[1], corigin[2])
+            
+        return True
         
     cpdef Box boundingBox(self, double tolerance = 1e-12):
         '''

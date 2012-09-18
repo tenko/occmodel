@@ -30,6 +30,7 @@ using std::iostream;
 #include <BRep_Tool.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
@@ -39,6 +40,7 @@ using std::iostream;
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeShell.hxx>
 #include <BRepBuilderAPI_MakeSolid.hxx>
+#include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepOffsetAPI_Sewing.hxx>
 #include <BRepLProp_SLProps.hxx>
 #include <BRepAdaptor_Surface.hxx>

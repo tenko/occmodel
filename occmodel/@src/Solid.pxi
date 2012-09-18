@@ -341,34 +341,162 @@ cdef class Solid(Base):
             raise OCCError('Failed to make pipe')
             
         return self
+    
+    def cut(self, tool):
+        '''
+        Cut solid with given object.
         
-    cpdef booleanUnion(self, Solid tool):
+        Multiple objects are supported.
+        
+        Planar edges, wires and planes are extrude in the
+        planar direction to cut the solid.
+        '''
+        if not isinstance(tool, Solid):
+            if not isinstance(tool, (tuple,list,set)):
+                args = tool,
+            else:
+                args = tool
+            
+            solids = []
+            origin = Point()
+            normal = Vector()
+            bbox = self.boundingBox()
+            
+            def translate(obj):
+                if not obj.hasPlane(origin, normal):
+                        raise OCCError('Object not planar')
+                    
+                plane = Plane().fromNormal(origin, normal)
+                dist = plane.distanceTo(bbox.near)
+                
+                # distance below plane
+                start = plane.origin
+                if dist < 0.:
+                    # we are above : move object
+                    dist *= 1.25
+                
+                    dvec = dist * plane.zaxis
+                    start += dvec
+                    obj.translate(dvec)
+                
+                # distance above plan
+                dist = plane.distanceTo(bbox.far)
+                if dist < 0.:
+                    dist *= .75
+                else:
+                    dist *= 1.25
+                
+                # calculate end point of extrusion
+                end = plane.origin + dist*plane.zaxis
+                
+                return start, end
+                    
+            for arg in args:
+                if isinstance(arg, Edge):
+                    edge = arg.copy()
+                    
+                    if not edge.hasPlane(origin, normal):
+                        raise OCCError('edge not planar')
+                
+                    start, end = translate(edge)
+                    wire = Wire().createWire(edge)
+                    face = Face().createFace(wire)
+                    solid = Solid().extrude(face, start, end)
+                
+                elif isinstance(arg, Wire):
+                    wire = arg.copy()
+                    
+                    if not wire.hasPlane(origin, normal):
+                        raise OCCError('wire not planar')
+                
+                    start, end = translate(wire)
+                    face = Face().createFace(wire)
+                    solid = Solid().extrude(face, start, end)
+                
+                elif isinstance(arg, Face):
+                    face = arg.copy()
+                    
+                    if not face.hasPlane(origin, normal):
+                        raise OCCError('face not planar')
+                
+                    start, end = translate(face)
+                    solid = Solid().extrude(face, start, end)
+                    
+                elif isinstance(arg, Solid):
+                    solid = arg
+                
+                else:
+                    raise OCCError('unknown object type %s' % arg)
+                    
+                # todo: check if bounding boxes overlap
+                solids.append(solid)
+                
+            if not solids:
+                raise OCCError('No objects created')
+            
+            # create compound of solid objects
+            tool = Solid().addSolids(solids)
+            
+        return Solid.booleanDifference(self, tool)
+        
+    cpdef booleanUnion(self, arg):
         '''
         Create boolean union inplace.
+        
+        Multiple objects are supported.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef Solid tool
+        
+        if not isinstance(arg, Solid):
+            # create compound of solid objects
+            tool = Solid().addSolids(arg)
+        else:
+            tool = arg
+            
         cdef int ret = occ.booleanUnion(<c_OCCSolid *>tool.thisptr)
         if ret != 0:
             raise OCCError('Failed to create boolean union')
         
         return self
         
-    cpdef booleanDifference(self, Solid tool):
+    cpdef booleanDifference(self, arg):
         '''
         Create boolean difference inplace.
+        
+        Multiple objects are supported.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef Solid tool
+        
+        if not isinstance(arg, Solid):
+            # create compound of solid objects
+            tool = Solid().addSolids(arg)
+        else:
+            tool = arg
+            
         cdef int ret = occ.booleanDifference(<c_OCCSolid *>tool.thisptr)
         if ret != 0:
             raise OCCError('Failed to create boolean difference')
         
         return self
         
-    cpdef booleanIntersection(self, Solid tool):
+    cpdef booleanIntersection(self, arg):
         '''
         Create boolean intersection inplace.
+        
+        Multiple objects are supported.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        
+        cdef Solid tool
+        
+        if not isinstance(arg, Solid):
+            # create compound of solid objects
+            tool = Solid().addSolids(arg)
+        else:
+            tool = arg
+            
         cdef int ret = occ.booleanIntersection(<c_OCCSolid *>tool.thisptr)
         if ret != 0:
             raise OCCError('Failed to create boolean intersection')
