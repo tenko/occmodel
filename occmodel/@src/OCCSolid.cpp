@@ -178,6 +178,24 @@ int OCCSolid::createBox(DVec p1, DVec p2) {
     return 0;
 }
 
+int OCCSolid::createPrism(OCCFace *face, DVec normal, bool isInfinite) {
+    try {
+        gp_Dir direction(normal[0], normal[1], normal[2]);
+        
+        Standard_Boolean inf = Standard_True;
+        if (!isInfinite) inf = Standard_False;
+        
+        BRepPrimAPI_MakePrism MP(face->getShape(), direction, inf);
+        if (!MP.IsDone()) {
+            return 1;
+        }
+        this->setShape(MP.Shape());
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;
+}
+
 double OCCSolid::area() {
     GProp_GProps prop;
     BRepGProp::SurfaceProperties(solid, prop);

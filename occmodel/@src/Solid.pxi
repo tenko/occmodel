@@ -171,7 +171,7 @@ cdef class Solid(Base):
     
     cpdef createCone(self, p1, p2, double radius1, double radius2):
         '''
-        Crate cone
+        Create cone
         
         p1 - axis start
         p2 - axis end
@@ -198,7 +198,7 @@ cdef class Solid(Base):
     
     cpdef createBox(self, p1, p2):
         '''
-        Crate box from points defining diagonal.
+        Create box from points defining diagonal.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[double] cp1, cp2
@@ -215,6 +215,35 @@ cdef class Solid(Base):
         ret = occ.createBox(cp1, cp2)
         if ret != 0:
             raise OCCError('Failed to create solid')
+            
+        return self
+    
+    cpdef createPrism(self, obj, normal, bint isInfinite):
+        '''
+        Create prism from edge/wire/face in direction of normal.
+        
+        This solid is infinite/semi-infinite and usefull for cutting and
+        intersection.
+        '''
+        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef Face face
+        cdef vector[double] cnormal
+        cdef int ret
+        
+        if isinstance(obj, (Edge,Wire)):
+            face = Face().createFace(obj)
+        elif isinstance(obj, Face):
+            face = obj
+        else:
+            raise OCCError('Expected edge, wire or face')
+            
+        cnormal.push_back(normal[0])
+        cnormal.push_back(normal[1])
+        cnormal.push_back(normal[2])
+        
+        ret = occ.createPrism(<c_OCCFace *>face.thisptr, cnormal, isInfinite)
+        if ret != 0:
+            raise OCCError('Failed to create prism solid')
             
         return self
         
@@ -368,154 +397,111 @@ cdef class Solid(Base):
             
         return self
     
-    def cut(self, tool):
-        '''
-        Cut solid with given object.
+    cdef boolean(self, arg, char *op):
+        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef Solid tool
+        cdef int ret
         
-        Multiple objects are supported.
+        assert op in (b'union',b'difference',b'intersection')
         
-        Planar edges, wires and planes are extrude in the
-        planar direction to cut through the solid.
-        '''
-        if not isinstance(tool, Solid):
-            if not isinstance(tool, (tuple,list,set)):
-                args = tool,
+        if not isinstance(arg, Solid):
+            if not isinstance(arg, (tuple,list,set)):
+                args = arg,
             else:
-                args = tool
+                args = arg
             
             solids = []
             origin = Point()
             normal = Vector()
-            bbox = self.boundingBox()
             
-            def translate(obj):
-                if not obj.hasPlane(origin, normal):
-                        raise OCCError('Object not planar')
-                    
-                plane = Plane().fromNormal(origin, normal)
-                dist = plane.distanceTo(bbox.near)
-                
-                # distance below plane
-                start = plane.origin
-                if dist < 0.:
-                    # we are above : move object
-                    dist *= 1.25
-                
-                    dvec = dist * plane.zaxis
-                    start += dvec
-                    obj.translate(dvec)
-                
-                # distance above plan
-                dist = plane.distanceTo(bbox.far)
-                if dist < 0.:
-                    dist *= .75
-                else:
-                    dist *= 1.25
-                
-                # calculate end point of extrusion
-                end = plane.origin + dist*plane.zaxis
-                
-                return start, end
-                    
             for arg in args:
-                if isinstance(arg, Edge):
-                    edge = arg.copy()
-                    start, end = translate(edge)
-                    wire = Wire().createWire(edge)
-                    face = Face().createFace(wire)
-                    solid = Solid().extrude(face, start, end)
-                
-                elif isinstance(arg, Wire):
-                    wire = arg.copy()
-                    start, end = translate(wire)
-                    face = Face().createFace(wire)
-                    solid = Solid().extrude(face, start, end)
-                
-                elif isinstance(arg, Face):
-                    face = arg.copy()
-                    start, end = translate(face)
-                    solid = Solid().extrude(face, start, end)
+                if isinstance(arg, (Edge,Wire,Face)):
+                    if op == b'union':
+                        raise OCCError('Solid expected for union')
                     
+                    if not arg.hasPlane(origin, normal):
+                        raise OCCError('Plane not defined for object')
+                    
+                    isInfinite = True
+                    
+                    if isinstance(arg, Edge):
+                        wire = Wire().createWire(arg)
+                    elif isinstance(arg, Wire):
+                        wire = arg
+                    
+                    if not isinstance(arg, Face):
+                        face = Face().createFace(wire)
+                    else:
+                        face = arg
+                        isInfinite = False
+                    
+                    # create semi-infinite or infinite cutting object
+                    # in direction of normal
+                    solid = Solid().createPrism(face, normal, isInfinite)
+                 
+                    solids.append(solid)
+                 
                 elif isinstance(arg, Solid):
-                    solid = arg
+                    solids.append(arg)
                 
                 else:
                     raise OCCError('unknown object type %s' % arg)
-                    
-                # todo: check if bounding boxes overlap
-                solids.append(solid)
                 
             if not solids:
                 raise OCCError('No objects created')
             
             # create compound of solid objects
             tool = Solid().addSolids(solids)
-            
-        return Solid.booleanDifference(self, tool)
+        else:
+            tool = arg
+        
+        if op == b'union':
+            ret = occ.booleanUnion(<c_OCCSolid *>tool.thisptr)
+        elif op == b'difference':
+            ret = occ.booleanDifference(<c_OCCSolid *>tool.thisptr)
+        else:
+            ret = occ.booleanIntersection(<c_OCCSolid *>tool.thisptr)
+        
+        if ret != 0:
+            raise OCCError('Failed to create boolean %s' % op)
+        
+        return self
         
     cpdef booleanUnion(self, arg):
         '''
         Create boolean union inplace.
         
-        Multiple objects are supported.
+        Multiple solids are supported.
         '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef Solid tool
-        
-        if not isinstance(arg, Solid):
-            # create compound of solid objects
-            tool = Solid().addSolids(arg)
-        else:
-            tool = arg
-            
-        cdef int ret = occ.booleanUnion(<c_OCCSolid *>tool.thisptr)
-        if ret != 0:
-            raise OCCError('Failed to create boolean union')
-        
-        return self
+        return self.boolean(arg, 'union')
         
     cpdef booleanDifference(self, arg):
         '''
         Create boolean difference inplace.
         
         Multiple objects are supported.
+        
+        Edges, wires and faces are extruded in the normal
+        directions to intersect the solid.
+        
+        Edges and wires allways cut through all, but faces
+        are limited by the face itself.
         '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef Solid tool
-        
-        if not isinstance(arg, Solid):
-            # create compound of solid objects
-            tool = Solid().addSolids(arg)
-        else:
-            tool = arg
-            
-        cdef int ret = occ.booleanDifference(<c_OCCSolid *>tool.thisptr)
-        if ret != 0:
-            raise OCCError('Failed to create boolean difference')
-        
-        return self
+        return self.boolean(arg, 'difference')
         
     cpdef booleanIntersection(self, arg):
         '''
         Create boolean intersection inplace.
         
         Multiple objects are supported.
+        
+        Edges, wires and faces are extruded in the normal
+        directions to intersect the solid.
+        
+        Edges and wires allways cut through all, but faces
+        are limited by the face itself.
         '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        
-        cdef Solid tool
-        
-        if not isinstance(arg, Solid):
-            # create compound of solid objects
-            tool = Solid().addSolids(arg)
-        else:
-            tool = arg
-            
-        cdef int ret = occ.booleanIntersection(<c_OCCSolid *>tool.thisptr)
-        if ret != 0:
-            raise OCCError('Failed to create boolean intersection')
-        
-        return self
+        return self.boolean(arg, 'intersection')
         
     cpdef fillet(self, double radius, edgefilter = None):
         '''

@@ -144,6 +144,7 @@ class OCCSolid : public OCCBase {
         int createTorus(DVec p1, DVec p2, double radius1, double radius2);
         int createCone(DVec p1, DVec p2, double radius1, double radius2);
         int createBox(DVec p1, DVec p2);
+        int createPrism(OCCFace *face, DVec normal, bool isInfinite);
         int extrude(OCCFace *face, DVec p1, DVec p2);
         int revolve(OCCFace *face, DVec p1, DVec p2, double angle);
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
