@@ -371,7 +371,7 @@ int OCCSolid::chamfer(double distance, filter_func userfunc, void *userdata) {
         BRepBndLib::Add(edge, aBox);
         aBox.Get(near[0], near[1], near[2], far[0], far[1], far[2]);
         
-        if (userfunc(userdata, near, far) == 0) {
+        if (userfunc != NULL && userfunc(userdata, near, far) == 0) {
             continue;
         }
         const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge).First());
@@ -408,7 +408,7 @@ int OCCSolid::fillet(double radius, filter_func userfunc, void *userdata) {
         BRepBndLib::Add(edge, aBox);
         aBox.Get(near[0], near[1], near[2], far[0], far[1], far[2]);
         
-        if (userfunc(userdata, near, far) == 0) {
+        if (userfunc != NULL && userfunc(userdata, near, far) == 0) {
             continue;
         }
         

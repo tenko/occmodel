@@ -280,15 +280,23 @@ cdef class Solid(Base):
         cdef vector[double] cg = occ.centreOfMass()
         return cg[0],cg[1],cg[2]
         
-    cpdef extrude(self, Face face, p1, p2):
+    cpdef extrude(self, obj, p1, p2):
         '''
-        Create solid by extruding face from
+        Create solid by extruding edge, wire or face from
         p1 to p2.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef Face face
         cdef vector[double] cp1, cp2
         cdef int ret
         
+        if isinstance(obj, (Edge,Wire)):
+            face = Face().createFace(obj)
+        elif isinstance(obj, Face):
+            face = obj
+        else:
+            raise OCCError('Expected edge, wire or face')
+            
         cp1.push_back(p1[0])
         cp1.push_back(p1[1])
         cp1.push_back(p1[2])
@@ -510,9 +518,17 @@ cdef class Solid(Base):
         :radius: fillet radius
         :edgefilter: optional function taking argument of edge
                      near, far and return edge selection status (boolean)
+        
+        By not supplying a edgefilter all edges are filleted.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef int ret = occ.fillet(radius, py_filter_func, <void *>edgefilter)
+        cdef int ret
+        
+        if edgefilter is None:
+            ret = occ.fillet(radius, NULL, NULL)
+        else:
+            ret = occ.fillet(radius, py_filter_func, <void *>edgefilter)
+            
         if ret != 0:
             raise OCCError('Failed to create fillet')
         
@@ -525,15 +541,23 @@ cdef class Solid(Base):
         :distance: chamfer distance
         :edgefilter: optional function taking argument of edge
                      near, far and return edge selection status (boolean)
+        
+        By not supplying a edgefilter all edges are chamfered.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef int ret = occ.chamfer(distance, py_filter_func, <void *>edgefilter)
+        cdef int ret
+        
+        if edgefilter is None:
+            ret = occ.chamfer(distance, NULL, NULL)
+        else:
+            ret = occ.chamfer(distance, py_filter_func, <void *>edgefilter)
+        
         if ret != 0:
             raise OCCError('Failed to create chamfer')
         
         return self
         
-    cpdef shell(self, double offset, facefilter = None):
+    cpdef shell(self, double offset, facefilter):
         '''
         Apply shell operation no solid.
         

@@ -327,6 +327,7 @@ solid = Solid().loft((e1,e2,v1))
 print solid.volume()
 '''
 
+'''
 w1 = Wire().createPolygon((
     (0.,0.,0.),
     (0.,0.,5.),
@@ -336,4 +337,11 @@ w1 = Wire().createPolygon((
 
 e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 solid = Solid().sweep(w1, e1, cornerMode = SWEEP_RIGHT_CORNER)
+print solid.volume()
+'''
+
+solid = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+#solid.fillet(.1)
+solid.chamfer(.1)
+print solid.isValid()
 print solid.volume()
