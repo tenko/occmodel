@@ -4,6 +4,44 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
+void printShapeType(TopoDS_Shape shape)
+{
+    if (!shape.IsNull()) {
+        TopAbs_ShapeEnum type = shape.ShapeType();
+        switch (type)
+        {
+        case TopAbs_COMPOUND:
+            printf("TopAbs_COMPOUND\n");
+            break;
+        case TopAbs_COMPSOLID:
+            printf("TopAbs_COMPSOLID\n");
+            break;
+        case TopAbs_SOLID:
+            printf("TopAbs_SOLID\n");
+            break;
+        case TopAbs_SHELL:
+            printf("TopAbs_SHELL\n");
+            break;
+        case TopAbs_FACE:
+            printf("TopAbs_FACE\n");
+            break;
+        case TopAbs_WIRE:
+            printf("TopAbs_WIRE\n");
+            break;
+        case TopAbs_EDGE:
+            printf("TopAbs_EDGE\n");
+        case TopAbs_VERTEX:
+            printf("TopAbs_VERTEX\n");
+            break;
+        default:
+            printf("Unknown\n");
+            break;
+        }
+    }
+    else {
+        printf("Empty shape\n");
+    }
+}
 int extractFaceMesh(TopoDS_Face face, OCCMesh *mesh)
 {
     int vsize = mesh->vertices.size();

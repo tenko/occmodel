@@ -40,10 +40,11 @@ OCCSolid *OCCSolid::copy()
 OCCMesh *OCCSolid::createMesh(double factor, double angle)
 {
     OCCMesh *mesh = new OCCMesh();
+    const TopoDS_Shape& shape = this->getShape();
     
     try {
         Bnd_Box aBox;
-        BRepBndLib::Add(this->getSolid(), aBox);
+        BRepBndLib::Add(shape, aBox);
         
         Standard_Real aXmin, aYmin, aZmin;
         Standard_Real aXmax, aYmax, aZmax;
@@ -56,15 +57,27 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
         BRepMesh_FastDiscret MSH(factor*maxd, angle, aBox, Standard_True, Standard_True, 
                                  Standard_True, Standard_True);
         
-        MSH.Perform(solid);
+        MSH.Perform(shape);
         
-        // TODO : Handle comp solid!!
-        TopExp_Explorer exFace;
-        for (exFace.Init(solid, TopAbs_FACE); exFace.More(); exFace.Next()) {
-            const TopoDS_Face& face = TopoDS::Face(exFace.Current());
-            extractFaceMesh(face, mesh);
+        if (shape.ShapeType() == TopAbs_COMPSOLID || shape.ShapeType() == TopAbs_COMPOUND) {
+            TopExp_Explorer exSolid, exFace;
+            for (exSolid.Init(shape, TopAbs_SOLID); exSolid.More(); exSolid.Next()) {
+                const TopoDS_Solid& solid= TopoDS::Solid(exSolid.Current());
+                for (exFace.Init(solid, TopAbs_FACE); exFace.More(); exFace.Next()) {
+                    const TopoDS_Face& face = TopoDS::Face(exFace.Current());
+                    extractFaceMesh(face, mesh);
+                }
+            }
+        }  else {
+            TopExp_Explorer exFace;
+            for (exFace.Init(shape, TopAbs_FACE); exFace.More(); exFace.Next()) {
+                const TopoDS_Face& face = TopoDS::Face(exFace.Current());
+                extractFaceMesh(face, mesh);
+            }
         }
     } catch(Standard_Failure &err) {
+        //Handle_Standard_Failure e = Standard_Failure::Caught();
+        //printf("ERROR: %s\n", e->GetMessageString());
         return NULL;
     }
     return mesh;
@@ -267,6 +280,22 @@ int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
     return 0;
 }
 
+int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
+{
+    try {
+        BRepOffsetAPI_MakePipe MP(wire->wire, face->getShape());
+        if (!MP.IsDone()) {
+            return 1;
+        }
+        this->setShape(MP.Shape());
+    } catch(Standard_Failure &err) {
+        //Handle_Standard_Failure e = Standard_Failure::Caught();
+        //printf("ERROR: %s\n", e->GetMessageString());
+        return 1;
+    }
+    return 0;
+}
+
 int OCCSolid::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode = 0)
 {
     try {
@@ -291,7 +320,7 @@ int OCCSolid::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerM
         if (!PS.MakeSolid()) {
             return 1;
         }
-        this->setShape(TopoDS::Solid(PS.Shape()));
+        this->setShape(PS.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
