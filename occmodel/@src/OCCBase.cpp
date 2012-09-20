@@ -110,7 +110,7 @@ int OCCBase::mirror(DVec pnt, DVec nor)
 int OCCBase::findPlane(double *origin, double *normal, double tolerance = 1e-6)
 {
     try {
-        TopoDS_Shape shape = this->getShape();
+        const TopoDS_Shape& shape = this->getShape();
         BRepBuilderAPI_FindPlane FP(shape, tolerance);
         if(!FP.Found()) return 1;
         const Handle_Geom_Plane plane = FP.Plane();
@@ -135,7 +135,7 @@ DVec OCCBase::boundingBox(double tolerance = 1e-12)
 {
     DVec ret;
     try {
-        TopoDS_Shape shape = this->getShape();
+        const TopoDS_Shape& shape = this->getShape();
         Bnd_Box aBox;
         BRepBndLib::Add(shape, aBox);
         aBox.SetGap(tolerance);

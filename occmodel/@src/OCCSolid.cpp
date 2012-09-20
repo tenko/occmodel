@@ -29,7 +29,7 @@ OCCSolid *OCCSolid::copy()
     OCCSolid *ret = new OCCSolid();
     try {
         BRepBuilderAPI_Copy A;
-        A.Perform(solid);
+        A.Perform(this->getSolid());
         ret->setShape(A.Shape());
     } catch(Standard_Failure &err) {
         return NULL;
@@ -43,7 +43,7 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
     
     try {
         Bnd_Box aBox;
-        BRepBndLib::Add(solid, aBox);
+        BRepBndLib::Add(this->getSolid(), aBox);
         
         Standard_Real aXmin, aYmin, aZmin;
         Standard_Real aXmax, aYmax, aZmax;
@@ -61,7 +61,7 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
         // TODO : Handle comp solid!!
         TopExp_Explorer exFace;
         for (exFace.Init(solid, TopAbs_FACE); exFace.More(); exFace.Next()) {
-            TopoDS_Face face = TopoDS::Face(exFace.Current());
+            const TopoDS_Face& face = TopoDS::Face(exFace.Current());
             if (extractFaceMesh(face, mesh) == 1)
                 return NULL;
         }
@@ -198,20 +198,20 @@ int OCCSolid::createPrism(OCCFace *face, DVec normal, bool isInfinite) {
 
 double OCCSolid::area() {
     GProp_GProps prop;
-    BRepGProp::SurfaceProperties(solid, prop);
+    BRepGProp::SurfaceProperties(this->getSolid(), prop);
     return prop.Mass();
 }
 
 double OCCSolid::volume() {
     GProp_GProps prop;
-    BRepGProp::VolumeProperties(solid, prop);
+    BRepGProp::VolumeProperties(this->getSolid(), prop);
     return prop.Mass();
 }
 
 DVec OCCSolid::inertia() {
     DVec ret;
     GProp_GProps prop;
-    BRepGProp::VolumeProperties(solid, prop);
+    BRepGProp::VolumeProperties(this->getSolid(), prop);
     gp_Mat mat = prop.MatrixOfInertia();
     ret.push_back(mat(1,1)); // Ixx
     ret.push_back(mat(2,2)); // Iyy
@@ -225,7 +225,7 @@ DVec OCCSolid::inertia() {
 DVec OCCSolid::centreOfMass() {
     DVec ret;
     GProp_GProps prop;
-    BRepGProp::VolumeProperties(solid, prop);
+    BRepGProp::VolumeProperties(this->getSolid(), prop);
     gp_Pnt cg = prop.CentreOfMass();
     ret.push_back(cg.X());
     ret.push_back(cg.Y());
@@ -365,7 +365,7 @@ int OCCSolid::chamfer(double distance, filter_func userfunc, void *userdata) {
     TopExp::MapShapesAndAncestors(solid, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
     
     for(exp.Init(solid, TopAbs_EDGE); exp.More(); exp.Next()) {
-        TopoDS_Edge edge = TopoDS::Edge(exp.Current());
+        const TopoDS_Edge& edge = TopoDS::Edge(exp.Current());
         
         Bnd_Box aBox;
         BRepBndLib::Add(edge, aBox);
@@ -402,7 +402,7 @@ int OCCSolid::fillet(double radius, filter_func userfunc, void *userdata) {
     double near[3], far[3];
     
     for(exp.Init(solid, TopAbs_EDGE); exp.More(); exp.Next()) {
-        TopoDS_Edge edge = TopoDS::Edge(exp.Current());
+        const TopoDS_Edge& edge = TopoDS::Edge(exp.Current());
         
         Bnd_Box aBox;
         BRepBndLib::Add(edge, aBox);
@@ -421,7 +421,7 @@ int OCCSolid::fillet(double radius, filter_func userfunc, void *userdata) {
     
     if (!fill.IsDone()) return 1;
     
-    TopoDS_Shape tmp = fill.Shape();
+    const TopoDS_Shape& tmp = fill.Shape();
     
     if (tmp.IsNull()) return 1;
     
@@ -441,7 +441,7 @@ int OCCSolid::shell(double offset, filter_func userfunc, void *userdata) {
     TopTools_ListOfShape faces;
     
     for(exp.Init(solid, TopAbs_FACE); exp.More(); exp.Next()) {
-        TopoDS_Face face = TopoDS::Face(exp.Current());
+        const TopoDS_Face& face = TopoDS::Face(exp.Current());
         
         Bnd_Box aBox;
         BRepBndLib::Add(face, aBox);
@@ -459,7 +459,7 @@ int OCCSolid::shell(double offset, filter_func userfunc, void *userdata) {
     
     if (!TS.IsDone()) return 1;
     
-    TopoDS_Shape tmp = TS.Shape();
+    const TopoDS_Shape& tmp = TS.Shape();
     
     if (tmp.IsNull()) return 1;
     
@@ -520,7 +520,7 @@ int OCCSolid::writeBREP(const char *fn)
   std::ofstream myFile;
   myFile.open(fn);
   try {
-    BRepTools::Write(solid, myFile);
+    BRepTools::Write(this->getSolid(), myFile);
   }
   catch(Standard_Failure &err){
     return 1;
@@ -544,7 +544,7 @@ int OCCSolid::readBREP(const char *fn)
 int OCCSolid::writeSTEP(const char *fn)
 {
   STEPControl_Writer writer;
-  IFSelect_ReturnStatus status = writer.Transfer(getShape(), STEPControl_ManifoldSolidBrep);
+  IFSelect_ReturnStatus status = writer.Transfer(this->getSolid(), STEPControl_ManifoldSolidBrep);
   if (status == IFSelect_RetDone) 
     status = writer.Write((char*)fn);
   if (status == IFSelect_RetDone) 

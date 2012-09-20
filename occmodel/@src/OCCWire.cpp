@@ -9,8 +9,8 @@ OCCWire *OCCWire::copy()
     OCCWire *ret = new OCCWire();
     try {
         BRepBuilderAPI_Copy A;
-        A.Perform(wire);
-        ret->setShape(TopoDS::Wire(A.Shape()));
+        A.Perform(this->getWire());
+        ret->setShape(A.Shape());
     } catch(Standard_Failure &err) {
         return NULL;
     }
@@ -41,13 +41,13 @@ std::vector<DVec> OCCWire::tesselate(double angular, double curvature)
         
         // explore wire edges in connected order
         BRepTools_WireExplorer exWire;
-        for (exWire.Init(wire); exWire.More(); exWire.Next()) {
-            TopoDS_Edge edge = exWire.Current();
+        for (exWire.Init(this->getWire()); exWire.More(); exWire.Next()) {
+            const TopoDS_Edge& edge = exWire.Current();
             TopLoc_Location loc = edge.Location();
             gp_Trsf location = loc.Transformation();
             
-            Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, start, end);
-            GeomAdaptor_Curve aCurve(curve);
+            const Handle(Geom_Curve)& curve = BRep_Tool::Curve(edge, start, end);
+            const GeomAdaptor_Curve& aCurve(curve);
             
             GCPnts_TangentialDeflection TD(aCurve, start, end, angular, curvature);
             
@@ -69,6 +69,6 @@ std::vector<DVec> OCCWire::tesselate(double angular, double curvature)
 
 double OCCWire::length() {
     GProp_GProps prop;
-    BRepGProp::LinearProperties(wire, prop);
+    BRepGProp::LinearProperties(this->getWire(), prop);
     return prop.Mass();
 }

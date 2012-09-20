@@ -9,8 +9,8 @@ OCCFace *OCCFace::copy()
     OCCFace *ret = new OCCFace();
     try {
         BRepBuilderAPI_Copy A;
-        A.Perform(face);
-        ret->setShape(TopoDS::Face(A.Shape()));
+        A.Perform(this->getFace());
+        ret->setShape(A.Shape());
     } catch(Standard_Failure &err) {
         return NULL;
     }
@@ -38,7 +38,7 @@ int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> p
             aGenerator.Add(aPnt);
         }
         aGenerator.Build();
-        this->setShape(TopoDS::Face(aGenerator.Shape()));
+        this->setShape(aGenerator.Shape());
         
     } catch(Standard_Failure &err) {
         return 1;
@@ -48,14 +48,14 @@ int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> p
 
 double OCCFace::area() {
     GProp_GProps prop;
-    BRepGProp::SurfaceProperties(face, prop);
+    BRepGProp::SurfaceProperties(this->getFace(), prop);
     return prop.Mass();
 }
 
 DVec OCCFace::inertia() {
     DVec ret;
     GProp_GProps prop;
-    BRepGProp::SurfaceProperties(face, prop);
+    BRepGProp::SurfaceProperties(this->getFace(), prop);
     gp_Mat mat = prop.MatrixOfInertia();
     ret.push_back(mat(1,1)); // Ixx
     ret.push_back(mat(2,2)); // Iyy
@@ -69,7 +69,7 @@ DVec OCCFace::inertia() {
 DVec OCCFace::centreOfMass() {
     DVec ret;
     GProp_GProps prop;
-    BRepGProp::SurfaceProperties(face, prop);
+    BRepGProp::SurfaceProperties(this->getFace(), prop);
     gp_Pnt cg = prop.CentreOfMass();
     ret.push_back(cg.X());
     ret.push_back(cg.Y());
@@ -129,7 +129,7 @@ OCCMesh *OCCFace::createMesh(double factor, double angle)
     
     try {
         Bnd_Box aBox;
-        BRepBndLib::Add(face, aBox);
+        BRepBndLib::Add(this->getFace(), aBox);
         
         Standard_Real aXmin, aYmin, aZmin;
         Standard_Real aXmax, aYmax, aZmax;

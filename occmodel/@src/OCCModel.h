@@ -41,7 +41,7 @@ class OCCBase {
             BRepCheck_Analyzer aChecker(this->getShape());
             return aChecker.IsValid() ? true : false;
         }
-        virtual TopoDS_Shape getShape() { return TopoDS_Shape(); }
+        virtual const TopoDS_Shape& getShape() { return TopoDS_Shape(); }
         virtual void setShape(TopoDS_Shape shape) { ; }
 };
 
@@ -67,7 +67,8 @@ class OCCVertex : public OCCBase {
             gp_Pnt pnt = BRep_Tool::Pnt(vertex);
             return pnt.Z();
         }
-        TopoDS_Shape getShape() { return vertex; }
+        const TopoDS_Shape& getShape() { return vertex; }
+        const TopoDS_Vertex& getVertex() { return vertex; }
         void setShape(TopoDS_Shape shape) { vertex = TopoDS::Vertex(shape); }
 };
 
@@ -90,7 +91,8 @@ class OCCEdge : public OCCBase {
         int createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
                         DVec knots, DVec weights, IVec mult);
         double length();
-        TopoDS_Shape getShape() { return edge; }
+        const TopoDS_Shape& getShape() { return edge; }
+        const TopoDS_Edge& getEdge() { return edge; }
         void setShape(TopoDS_Shape shape) { edge = TopoDS::Edge(shape); }
 };
 
@@ -102,7 +104,8 @@ class OCCWire : public OCCBase {
         int createWire(std::vector<OCCEdge *> edges);
         std::vector<DVec> tesselate(double factor, double angle);
         double length();
-        TopoDS_Shape getShape() { return wire; }
+        const TopoDS_Shape& getShape() { return wire; }
+        const TopoDS_Wire& getWire() { return wire; }
         void setShape(TopoDS_Shape shape) { wire = TopoDS::Wire(shape); }
 };
 
@@ -121,7 +124,8 @@ class OCCFace : public OCCBase {
         int extrude(OCCEdge *edge, DVec p1, DVec p2);
         int revolve(OCCEdge *edge, DVec p1, DVec p2, double angle);
         OCCMesh *createMesh(double defle, double angle);
-        TopoDS_Shape getShape() { return face; }
+        const TopoDS_Shape& getShape() { return face; }
+        const TopoDS_Face& getFace() { return face; }
         void setShape(TopoDS_Shape shape) { face = TopoDS::Face(shape); }
 };
 
@@ -132,7 +136,7 @@ class OCCSolid : public OCCBase {
         TopoDS_Shape solid;
         OCCSolid() { ; }
         int createSolid(std::vector<OCCFace *> faces, double tolerance);
-        double area();
+        double area() ;
         double volume();
         DVec inertia();
         DVec centreOfMass();
@@ -164,7 +168,8 @@ class OCCSolid : public OCCBase {
         void heal(double tolerance, bool fixdegenerated,
                   bool fixsmalledges, bool fixspotstripfaces, 
                   bool sewfaces, bool makesolids);
-        TopoDS_Shape getShape() { return solid; }
+        const TopoDS_Shape& getShape() { return solid; }
+        const TopoDS_Shape& getSolid() { return solid; }
         void setShape(TopoDS_Shape shape) { solid = shape; }
 };
 

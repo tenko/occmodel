@@ -9,8 +9,8 @@ OCCEdge *OCCEdge::copy()
     OCCEdge *ret = new OCCEdge();
     try {
         BRepBuilderAPI_Copy A;
-        A.Perform(edge);
-        ret->setShape(TopoDS::Edge(A.Shape()));
+        A.Perform(this->getEdge());
+        ret->setShape(A.Shape());
     } catch(Standard_Failure &err) {
         return NULL;
     }
@@ -24,11 +24,11 @@ std::vector<DVec> OCCEdge::tesselate(double angular, double curvature)
         Standard_Real start, end;
         DVec dtmp;
         
-        TopLoc_Location loc = edge.Location();
+        TopLoc_Location loc = this->getEdge().Location();
         gp_Trsf location = loc.Transformation();
         
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(this->edge, start, end);
-        GeomAdaptor_Curve aCurve(curve);
+        const Handle(Geom_Curve)& curve = BRep_Tool::Curve(this->getEdge(), start, end);
+        const GeomAdaptor_Curve& aCurve(curve);
 		
         GCPnts_TangentialDeflection TD(aCurve, start, end, angular, curvature);
         
@@ -148,7 +148,7 @@ int OCCEdge::createHelix(OCCVertex *start, OCCVertex *end, double pitch, double 
         Handle(Geom2d_Line) line = new Geom2d_Line(aAx2d);
         gp_Pnt2d pnt_beg = line->Value(0);
         gp_Pnt2d pnt_end = line->Value(sqrt(4.0*M_PI*M_PI+pitch*pitch)*(height/pitch));
-        Handle(Geom2d_TrimmedCurve) segm = GCE2d_MakeSegment(pnt_beg , pnt_end);
+        const Handle(Geom2d_TrimmedCurve)& segm = GCE2d_MakeSegment(pnt_beg , pnt_end);
 
         this->setShape(BRepBuilderAPI_MakeEdge(segm , surf));
         BRepLib::BuildCurves3d(edge);
@@ -324,6 +324,6 @@ int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> poi
 
 double OCCEdge::length() {
     GProp_GProps prop;
-    BRepGProp::LinearProperties(edge, prop);
+    BRepGProp::LinearProperties(this->getEdge(), prop);
     return prop.Mass();
 }
