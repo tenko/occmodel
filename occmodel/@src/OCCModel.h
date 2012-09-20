@@ -10,6 +10,8 @@ typedef std::vector<float> FVec;
 typedef std::vector<double> DVec;
 typedef std::vector<int> IVec;
 
+class OCCSolid;
+
 class OCCMesh {
     public:
         std::vector<DVec> normals;
@@ -111,7 +113,7 @@ class OCCWire : public OCCBase {
 
 class OCCFace : public OCCBase {
     public:
-        TopoDS_Face face;
+        TopoDS_Shape face;
         OCCFace() { ; }
         OCCFace *copy();
         int createFace(OCCWire *wire);
@@ -123,10 +125,13 @@ class OCCFace : public OCCBase {
         int createPolygonal(std::vector<DVec> points);
         int extrude(OCCEdge *edge, DVec p1, DVec p2);
         int revolve(OCCEdge *edge, DVec p1, DVec p2, double angle);
+        int booleanDifference(OCCSolid *tool);
+        int booleanIntersection(OCCSolid *tool);
         OCCMesh *createMesh(double defle, double angle);
         const TopoDS_Shape& getShape() { return face; }
-        const TopoDS_Face& getFace() { return face; }
-        void setShape(TopoDS_Shape shape) { face = TopoDS::Face(shape); }
+        const TopoDS_Face& getFace() { return TopoDS::Face(face); }
+        const TopoDS_Shell& getShell() { return TopoDS::Shell(face); }
+        void setShape(TopoDS_Shape shape) { face = shape; }
 };
 
 typedef int (*filter_func)(void *user_data, double *near, double *far);

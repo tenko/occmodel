@@ -194,3 +194,87 @@ cdef class Face(Base):
             raise OCCError('Failed to create face')
             
         return self
+    
+    cdef boolean(self, arg, char *op):
+        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        cdef Solid tool
+        cdef int ret
+        
+        assert op in (b'difference',b'intersection')
+        
+        if not isinstance(arg, Solid):
+            if not isinstance(arg, (tuple,list,set)):
+                args = arg,
+            else:
+                args = arg
+            
+            solids = []
+            origin = Point()
+            normal = Vector()
+            
+            for arg in args:
+                if isinstance(arg, (Edge,Wire,Face)):
+                    if not arg.hasPlane(origin, normal):
+                        raise OCCError('Plane not defined for object')
+                    
+                    if isinstance(arg, Edge):
+                        wire = Wire().createWire(arg)
+                    elif isinstance(arg, Wire):
+                        wire = arg
+                    
+                    if not isinstance(arg, Face):
+                        face = Face().createFace(wire)
+                    else:
+                        face = arg
+                    
+                    # create infinite cutting object
+                    # in direction of normal
+                    solid = Solid().createPrism(face, normal, True)
+                 
+                    solids.append(solid)
+                 
+                elif isinstance(arg, Solid):
+                    solids.append(arg)
+                
+                else:
+                    raise OCCError('unknown object type %s' % arg)
+                
+            if not solids:
+                raise OCCError('No objects created')
+            
+            # create compound of solid objects
+            tool = Solid().addSolids(solids)
+        else:
+            tool = arg
+        
+        if op == b'difference':
+            ret = occ.booleanDifference(<c_OCCSolid *>tool.thisptr)
+        else:
+            ret = occ.booleanIntersection(<c_OCCSolid *>tool.thisptr)
+        
+        if ret != 0:
+            raise OCCError('Failed to create boolean %s' % op)
+        
+        return self
+        
+    cpdef booleanDifference(self, arg):
+        '''
+        Create boolean difference inplace.
+        
+        Multiple objects are supported.
+        
+        Edges, wires and faces are extruded in the normal
+        directions to intersect the solid.
+        '''
+        return self.boolean(arg, 'difference')
+        
+    cpdef booleanIntersection(self, arg):
+        '''
+        Create boolean intersection inplace.
+        
+        Multiple objects are supported.
+        
+        Edges, wires and faces are extruded in the normal
+        directions to intersect the solid.
+        '''
+        return self.boolean(arg, 'intersection')

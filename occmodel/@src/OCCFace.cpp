@@ -48,14 +48,14 @@ int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> p
 
 double OCCFace::area() {
     GProp_GProps prop;
-    BRepGProp::SurfaceProperties(this->getFace(), prop);
+    BRepGProp::SurfaceProperties(this->getShape(), prop);
     return prop.Mass();
 }
 
 DVec OCCFace::inertia() {
     DVec ret;
     GProp_GProps prop;
-    BRepGProp::SurfaceProperties(this->getFace(), prop);
+    BRepGProp::SurfaceProperties(this->getShape(), prop);
     gp_Mat mat = prop.MatrixOfInertia();
     ret.push_back(mat(1,1)); // Ixx
     ret.push_back(mat(2,2)); // Iyy
@@ -69,7 +69,7 @@ DVec OCCFace::inertia() {
 DVec OCCFace::centreOfMass() {
     DVec ret;
     GProp_GProps prop;
-    BRepGProp::SurfaceProperties(this->getFace(), prop);
+    BRepGProp::SurfaceProperties(this->getShape(), prop);
     gp_Pnt cg = prop.CentreOfMass();
     ret.push_back(cg.X());
     ret.push_back(cg.Y());
@@ -123,13 +123,78 @@ int OCCFace::revolve(OCCEdge *edge, DVec p1, DVec p2, double angle)
     return 0;
 }
 
+int OCCFace::booleanDifference(OCCSolid *tool) {
+    BRepAlgoAPI_Cut BO (getShape(), tool->getShape());
+    if (!BO.IsDone()) {
+      return 1;
+    }
+    
+    const TopoDS_Shape& res = BO.Shape();
+    
+    // extract single face or shell
+    int idx = 0;
+    TopExp_Explorer exBO;
+    for (exBO.Init(res, TopAbs_SHELL); exBO.More(); exBO.Next()) {
+        if (idx > 0) return 1;
+        const TopoDS_Shape& cur = exBO.Current();
+        this->setShape(cur);
+        idx++;
+    }
+    
+    if (idx == 0) {
+        idx = 0;
+        for (exBO.Init(res, TopAbs_FACE); exBO.More(); exBO.Next()) {
+            if (idx > 0) return 1;
+            const TopoDS_Shape& cur = exBO.Current();
+            this->setShape(cur);
+            idx++;
+        }
+    }
+    
+    if (idx == 0) return 1;
+    
+    return 0;
+}
+
+int OCCFace::booleanIntersection(OCCSolid *tool) {
+    BRepAlgoAPI_Common BO (getShape(), tool->getShape());
+    if (!BO.IsDone()) {
+      return 1;
+    }
+    const TopoDS_Shape& res = BO.Shape();
+    
+    // extract single face or shell
+    int idx = 0;
+    TopExp_Explorer exBO;
+    for (exBO.Init(res, TopAbs_SHELL); exBO.More(); exBO.Next()) {
+        if (idx > 0) return 1;
+        const TopoDS_Shape& cur = exBO.Current();
+        this->setShape(cur);
+        idx++;
+    }
+    
+    if (idx == 0) {
+        idx = 0;
+        for (exBO.Init(res, TopAbs_FACE); exBO.More(); exBO.Next()) {
+            if (idx > 0) return 1;
+            const TopoDS_Shape& cur = exBO.Current();
+            this->setShape(cur);
+            idx++;
+        }
+    }
+    
+    if (idx == 0) return 1;
+    
+    return 0;
+}
+
 OCCMesh *OCCFace::createMesh(double factor, double angle)
 {
     OCCMesh *mesh = new OCCMesh();
     
     try {
         Bnd_Box aBox;
-        BRepBndLib::Add(this->getFace(), aBox);
+        BRepBndLib::Add(this->getShape(), aBox);
         
         Standard_Real aXmin, aYmin, aZmin;
         Standard_Real aXmax, aYmax, aZmax;
@@ -142,13 +207,23 @@ OCCMesh *OCCFace::createMesh(double factor, double angle)
         BRepMesh_FastDiscret MSH(factor*maxd, angle, aBox, Standard_False, Standard_False, 
                                  Standard_True, Standard_True);
         
-        MSH.Perform(face);
+        MSH.Perform(this->getShape());
         
-        BRepMesh::Mesh(face,factor*maxd);
+        BRepMesh::Mesh(this->getShape(),factor*maxd);
         
-        if (extractFaceMesh(face, mesh) == 1)
-            return NULL;
+        if (this->getShape().ShapeType() != TopAbs_FACE) {
+            // TODO : Handle comp solid!!
+            TopExp_Explorer exFace;
+            for (exFace.Init(this->getShape(), TopAbs_FACE); exFace.More(); exFace.Next()) {
+                const TopoDS_Face& faceref = TopoDS::Face(exFace.Current());
+                extractFaceMesh(faceref, mesh);
+            }
+        } else {
+            extractFaceMesh(this->getFace(), mesh);
+        }
     } catch(Standard_Failure &err) {
+        //Handle_Standard_Failure e = Standard_Failure::Caught();
+        //printf("ERROR: %s\n", e->GetMessageString());
         return NULL;
     }
     return mesh;

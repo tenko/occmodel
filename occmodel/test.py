@@ -340,8 +340,28 @@ solid = Solid().sweep(w1, e1, cornerMode = SWEEP_RIGHT_CORNER)
 print solid.volume()
 '''
 
-solid = Solid().createBox((0.,0.,0.),(1.,1.,1.))
-#solid.fillet(.1)
-solid.chamfer(.1)
-print solid.isValid()
-print solid.volume()
+w1 = Wire().createPolygon((
+    (0.,0.,0.),
+    (1.,0.,0.),
+    (.5,1.,0.)),
+    close = True
+)
+f1 = Face().createFace(w1)
+print f1.isValid()
+a1 = f1.area()
+print 'a1 = ', a1
+
+e1 = Edge().createCircle(center=(.5,.5,-1.),normal=(0.,0.,1.),radius = .5)
+f2 = Face().createFace(e1)
+a2 = f2.area()
+#print 'a2 = ', a2
+
+solid = Solid().extrude(f2, (.5,.5,-1.), (.5,.5,2.))
+
+#f1.booleanDifference(e1)
+f1.booleanIntersection(f2)
+print f1.isValid()
+print f1.area()
+#print a1 - a2
+
+msh = f1.createMesh()

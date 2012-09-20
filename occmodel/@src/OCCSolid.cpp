@@ -62,8 +62,7 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
         TopExp_Explorer exFace;
         for (exFace.Init(solid, TopAbs_FACE); exFace.More(); exFace.Next()) {
             const TopoDS_Face& face = TopoDS::Face(exFace.Current());
-            if (extractFaceMesh(face, mesh) == 1)
-                return NULL;
+            extractFaceMesh(face, mesh);
         }
     } catch(Standard_Failure &err) {
         return NULL;

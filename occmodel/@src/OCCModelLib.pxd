@@ -68,6 +68,8 @@ cdef extern from "OCCModel.h":
         int createPolygonal(vector[vector[double]] points)
         int extrude(c_OCCEdge *edge, vector[double] p1, vector[double] p2)
         int revolve(c_OCCEdge *edge, vector[double] p1, vector[double] p2, double angle)
+        int booleanDifference(c_OCCSolid *tool)
+        int booleanIntersection(c_OCCSolid *tool)
         c_OCCMesh *createMesh(double factor, double angle)
     
     ctypedef int (*filter_func)(void *user_data, double *near, double *far)
