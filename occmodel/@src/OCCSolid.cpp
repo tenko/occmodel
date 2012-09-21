@@ -356,7 +356,7 @@ int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance
     return 0;
 }
 
-int OCCSolid::booleanUnion(OCCSolid *tool) {
+int OCCSolid::fuse(OCCSolid *tool) {
     BRepAlgoAPI_Fuse BO (tool->getShape(), getShape());
     if (!BO.IsDone()) {
       return 1;
@@ -365,7 +365,7 @@ int OCCSolid::booleanUnion(OCCSolid *tool) {
     return 0;
 }
 
-int OCCSolid::booleanDifference(OCCSolid *tool) {
+int OCCSolid::cut(OCCSolid *tool) {
     BRepAlgoAPI_Cut BO (getShape(), tool->getShape());
     if (!BO.IsDone()) {
       return 1;
@@ -374,7 +374,7 @@ int OCCSolid::booleanDifference(OCCSolid *tool) {
     return 0;
 }
 
-int OCCSolid::booleanIntersection(OCCSolid *tool) {
+int OCCSolid::common(OCCSolid *tool) {
     BRepAlgoAPI_Common BO (tool->getShape(), getShape());
     if (!BO.IsDone()) {
       return 1;

@@ -200,7 +200,7 @@ cdef class Face(Base):
         cdef Solid tool
         cdef int ret
         
-        assert op in (b'difference',b'intersection')
+        assert op in (b'cut',b'common')
         
         if not isinstance(arg, Solid):
             if not isinstance(arg, (tuple,list,set)):
@@ -247,34 +247,34 @@ cdef class Face(Base):
         else:
             tool = arg
         
-        if op == b'difference':
-            ret = occ.booleanDifference(<c_OCCSolid *>tool.thisptr)
+        if op == b'cut':
+            ret = occ.cut(<c_OCCSolid *>tool.thisptr)
         else:
-            ret = occ.booleanIntersection(<c_OCCSolid *>tool.thisptr)
+            ret = occ.common(<c_OCCSolid *>tool.thisptr)
         
         if ret != 0:
             raise OCCError('Failed to create boolean %s' % op)
         
         return self
         
-    cpdef booleanDifference(self, arg):
+    cpdef cut(self, arg):
         '''
         Create boolean difference inplace.
         
         Multiple objects are supported.
         
         Edges, wires and faces are extruded in the normal
-        directions to intersect the solid.
+        directions to intersect the face.
         '''
-        return self.boolean(arg, 'difference')
+        return self.boolean(arg, 'cut')
         
-    cpdef booleanIntersection(self, arg):
+    cpdef common(self, arg):
         '''
         Create boolean intersection inplace.
         
         Multiple objects are supported.
         
         Edges, wires and faces are extruded in the normal
-        directions to intersect the solid.
+        directions to intersect the face.
         '''
-        return self.boolean(arg, 'intersection')
+        return self.boolean(arg, 'common')

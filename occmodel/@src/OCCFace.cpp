@@ -123,7 +123,7 @@ int OCCFace::revolve(OCCEdge *edge, DVec p1, DVec p2, double angle)
     return 0;
 }
 
-int OCCFace::booleanDifference(OCCSolid *tool) {
+int OCCFace::cut(OCCSolid *tool) {
     BRepAlgoAPI_Cut BO (getShape(), tool->getShape());
     if (!BO.IsDone()) {
       return 1;
@@ -156,7 +156,7 @@ int OCCFace::booleanDifference(OCCSolid *tool) {
     return 0;
 }
 
-int OCCFace::booleanIntersection(OCCSolid *tool) {
+int OCCFace::common(OCCSolid *tool) {
     BRepAlgoAPI_Common BO (getShape(), tool->getShape());
     if (!BO.IsDone()) {
       return 1;

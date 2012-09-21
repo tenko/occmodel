@@ -431,7 +431,7 @@ cdef class Solid(Base):
         cdef Solid tool
         cdef int ret
         
-        assert op in (b'union',b'difference',b'intersection')
+        assert op in (b'fuse',b'cut',b'common')
         
         if not isinstance(arg, Solid):
             if not isinstance(arg, (tuple,list,set)):
@@ -445,8 +445,8 @@ cdef class Solid(Base):
             
             for arg in args:
                 if isinstance(arg, (Edge,Wire,Face)):
-                    if op == b'union':
-                        raise OCCError('Solid expected for union')
+                    if op == b'fuse':
+                        raise OCCError('Solid expected for fuse')
                     
                     if not arg.hasPlane(origin, normal):
                         raise OCCError('Plane not defined for object')
@@ -484,27 +484,29 @@ cdef class Solid(Base):
         else:
             tool = arg
         
-        if op == b'union':
-            ret = occ.booleanUnion(<c_OCCSolid *>tool.thisptr)
-        elif op == b'difference':
-            ret = occ.booleanDifference(<c_OCCSolid *>tool.thisptr)
+        if op == b'fuse':
+            ret = occ.fuse(<c_OCCSolid *>tool.thisptr)
+        elif op == b'cut':
+            ret = occ.cut(<c_OCCSolid *>tool.thisptr)
+        elif op == b'common':
+            ret = occ.common(<c_OCCSolid *>tool.thisptr)
         else:
-            ret = occ.booleanIntersection(<c_OCCSolid *>tool.thisptr)
+            raise OCCError('uknown operation')
         
         if ret != 0:
             raise OCCError('Failed to create boolean %s' % op)
         
         return self
         
-    cpdef booleanUnion(self, arg):
+    cpdef fuse(self, arg):
         '''
         Create boolean union inplace.
         
         Multiple solids are supported.
         '''
-        return self.boolean(arg, 'union')
+        return self.boolean(arg, 'fuse')
         
-    cpdef booleanDifference(self, arg):
+    cpdef cut(self, arg):
         '''
         Create boolean difference inplace.
         
@@ -516,9 +518,9 @@ cdef class Solid(Base):
         Edges and wires allways cut through all, but faces
         are limited by the face itself.
         '''
-        return self.boolean(arg, 'difference')
+        return self.boolean(arg, 'cut')
         
-    cpdef booleanIntersection(self, arg):
+    cpdef common(self, arg):
         '''
         Create boolean intersection inplace.
         
@@ -530,7 +532,7 @@ cdef class Solid(Base):
         Edges and wires allways cut through all, but faces
         are limited by the face itself.
         '''
-        return self.boolean(arg, 'intersection')
+        return self.boolean(arg, 'common')
         
     cpdef fillet(self, double radius, edgefilter = None):
         '''

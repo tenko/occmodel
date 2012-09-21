@@ -125,8 +125,8 @@ class OCCFace : public OCCBase {
         int createPolygonal(std::vector<DVec> points);
         int extrude(OCCEdge *edge, DVec p1, DVec p2);
         int revolve(OCCEdge *edge, DVec p1, DVec p2, double angle);
-        int booleanDifference(OCCSolid *tool);
-        int booleanIntersection(OCCSolid *tool);
+        int cut(OCCSolid *tool);
+        int common(OCCSolid *tool);
         OCCMesh *createMesh(double defle, double angle);
         const TopoDS_Shape& getShape() { return face; }
         const TopoDS_Face& getFace() { return TopoDS::Face(face); }
@@ -159,9 +159,9 @@ class OCCSolid : public OCCBase {
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
         int pipe(OCCFace *face, OCCWire *wire);
         int sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode);
-        int booleanUnion(OCCSolid *tool);
-        int booleanDifference(OCCSolid *tool);
-        int booleanIntersection(OCCSolid *tool);
+        int fuse(OCCSolid *tool);
+        int cut(OCCSolid *tool);
+        int common(OCCSolid *tool);
         int fillet(double radius, filter_func userfunc, void *userdata);
         int chamfer(double distance, filter_func userfunc, void *userdata);
         int shell(double offset, filter_func userfunc, void *userdata);
