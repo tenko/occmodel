@@ -22,11 +22,11 @@ class OCCMesh {
 
 class OCCBase {
     public:
-        int transform(DVec mat);
-        int translate(DVec delta);
-        int rotate(DVec p1, DVec p2, double angle);
-        int scale(DVec pnt, double scale);
-        int mirror(DVec pnt, DVec nor);
+        int transform(DVec mat, OCCBase *target);
+        int translate(DVec delta, OCCBase *target);
+        int rotate(DVec p1, DVec p2, double angle, OCCBase *target);
+        int scale(DVec pnt, double scale, OCCBase *target);
+        int mirror(DVec pnt, DVec nor, OCCBase *target);
         DVec boundingBox(double tolerance);
         int findPlane(double *origin, double *normal, double tolerance);
         bool isEqual(OCCBase *other) {

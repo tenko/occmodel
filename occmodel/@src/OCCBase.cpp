@@ -4,7 +4,7 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
-int OCCBase::transform(DVec mat)
+int OCCBase::transform(DVec mat, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -21,12 +21,12 @@ int OCCBase::transform(DVec mat)
             BRepBuilderAPI_GTransform aTrans(shape, trans, Standard_False);
             aTrans.Build();
             aTrans.Check();
-            this->setShape(aTrans.Shape());
+            target->setShape(aTrans.Shape());
         } else {
             BRepBuilderAPI_Transform aTrans(shape, trans, Standard_False);
             aTrans.Build();
             aTrans.Check();
-            this->setShape(aTrans.Shape());
+            target->setShape(aTrans.Shape());
         }
     } catch(Standard_Failure &err) {
         return 1;
@@ -34,7 +34,7 @@ int OCCBase::transform(DVec mat)
     return 0;
 }
 
-int OCCBase::translate(DVec delta)
+int OCCBase::translate(DVec delta, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -46,14 +46,14 @@ int OCCBase::translate(DVec delta)
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_False);
         aTrans.Build();
         aTrans.Check();
-        this->setShape(aTrans.Shape());
+        target->setShape(aTrans.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
     return 0;
 }
 
-int OCCBase::rotate(DVec p1, DVec p2, double angle)
+int OCCBase::rotate(DVec p1, DVec p2, double angle, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -65,14 +65,14 @@ int OCCBase::rotate(DVec p1, DVec p2, double angle)
         gp_Trsf placement = loc.Transformation();
         trans = placement * trans;
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_False);
-        this->setShape(aTrans.Shape());
+        target->setShape(aTrans.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
     return 0;
 }
 
-int OCCBase::scale(DVec pnt, double scale)
+int OCCBase::scale(DVec pnt, double scale, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -82,14 +82,14 @@ int OCCBase::scale(DVec pnt, double scale)
         gp_Trsf placement = loc.Transformation();
         trans = placement * trans;
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_True);
-        this->setShape(aTrans.Shape());
+        target->setShape(aTrans.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
     return 0;
 }
 
-int OCCBase::mirror(DVec pnt, DVec nor)
+int OCCBase::mirror(DVec pnt, DVec nor, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -100,7 +100,7 @@ int OCCBase::mirror(DVec pnt, DVec nor)
         gp_Trsf placement = loc.Transformation();
         trans = placement * trans;
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_False);
-        this->setShape(aTrans.Shape());
+        target->setShape(aTrans.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }
