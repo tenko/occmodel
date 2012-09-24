@@ -410,7 +410,7 @@ int OCCSolid::chamfer(double distance, filter_func userfunc, void *userdata) {
     
     if (!CF.IsDone()) return 1;
     
-    TopoDS_Shape tmp = CF.Shape();
+    const TopoDS_Shape& tmp = CF.Shape();
     
     if (tmp.IsNull()) return 1;
     
