@@ -23,6 +23,9 @@ cdef class Wire(Base):
     def __repr__(self):
         return "()"
     
+    def __len__(self):
+        return self.numEdges()
+        
     cpdef Wire copy(self):
         '''
         Create copy of wire
@@ -32,6 +35,20 @@ cdef class Wire(Base):
         ret.thisptr = occ.copy()
         return ret
     
+    cpdef int numVertices(self):
+        '''
+        Return number of vertices
+        '''
+        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
+        return occ.numVertices()
+    
+    cpdef int numEdges(self):
+        '''
+        Return number of edges
+        '''
+        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
+        return occ.numEdges()
+        
     cpdef createWire(self, edges):
         '''
         Create wire by connecting edges.

@@ -37,6 +37,26 @@ OCCSolid *OCCSolid::copy()
     return ret;
 }
 
+int OCCSolid::numSolids()
+{
+    TopTools_IndexedMapOfShape anIndices;
+    const TopoDS_Shape& shp = this->getShape();
+    if (shp.ShapeType() == TopAbs_SOLID) {
+        return 1;
+    } else {
+        // CompSolid or Compound
+        TopExp::MapShapes(shp, TopAbs_SOLID, anIndices);
+        return anIndices.Extent();
+    }
+}
+
+int OCCSolid::numFaces()
+{
+    TopTools_IndexedMapOfShape anIndices;
+    TopExp::MapShapes(this->getShape(), TopAbs_FACE, anIndices);
+    return anIndices.Extent();
+}
+
 OCCMesh *OCCSolid::createMesh(double factor, double angle)
 {
     OCCMesh *mesh = new OCCMesh();
@@ -613,6 +633,49 @@ int OCCSolid::writeSTL(const char *fn, bool asciiMode)
     return 1;
   }
   return 0;
+}
+
+void OCCSolid::setShape(TopoDS_Shape shape)
+{
+    TopAbs_ShapeEnum type = shape.ShapeType();
+    if (type == TopAbs_SOLID || type == TopAbs_COMPSOLID) {
+        solid = shape;
+    } else {
+        int solids = 0;
+        TopExp_Explorer ex;
+        
+        for (ex.Init(shape, TopAbs_SOLID); ex.More(); ex.Next()) {
+            solids++;
+        }
+        
+        for (ex.Init(shape, TopAbs_COMPSOLID); ex.More(); ex.Next()) {
+            solids++;
+        }
+        
+        if (solids == 1) {
+            // exract single solids or compsolid
+            for (ex.Init(shape, TopAbs_SOLID); ex.More(); ex.Next()) {
+                solid = ex.Current();
+            }
+            for (ex.Init(shape, TopAbs_COMPSOLID); ex.More(); ex.Next()) {
+                solid = ex.Current();
+            }
+        } else {
+            // create compound of several solids
+            BRep_Builder B;
+            TopoDS_Compound C;
+            B.MakeCompound(C);
+            
+            for (ex.Init(shape, TopAbs_SOLID); ex.More(); ex.Next()) {
+                B.Add(C, ex.Current());
+            }
+            
+            for (ex.Init(shape, TopAbs_COMPSOLID); ex.More(); ex.Next()) {
+                B.Add(C, ex.Current());
+            }
+            solid = C;
+        }
+    }
 }
 
 void OCCSolid::heal(double tolerance, bool fixdegenerated,

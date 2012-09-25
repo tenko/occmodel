@@ -17,6 +17,20 @@ OCCWire *OCCWire::copy()
     return ret;
 }
 
+int OCCWire::numVertices()
+{
+    TopTools_IndexedMapOfShape anIndices;
+    TopExp::MapShapes(this->getWire(), TopAbs_VERTEX, anIndices);
+    return anIndices.Extent();
+}
+
+int OCCWire::numEdges()
+{
+    TopTools_IndexedMapOfShape anIndices;
+    TopExp::MapShapes(this->getWire(), TopAbs_EDGE, anIndices);
+    return anIndices.Extent();
+}
+
 int OCCWire::createWire(std::vector<OCCEdge *> edges)
 {
     try {

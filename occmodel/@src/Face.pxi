@@ -2,7 +2,11 @@
 
 cdef class Face(Base):
     '''
-    Face - Reprecent face geometry (surface)
+    Face - Reprecent face geometry
+    
+    The face geometry could be represented by several
+    underlying faces (a OpenCASCADE shell) or a single
+    face.
     '''
     def __init__(self):
         self.thisptr = new c_OCCFace()
@@ -20,6 +24,9 @@ cdef class Face(Base):
     def __repr__(self):
         return "()"
     
+    def __len__(self):
+        return self.numFaces()
+        
     cpdef Face copy(self):
         '''
         Create copy of face
@@ -28,6 +35,20 @@ cdef class Face(Base):
         cdef Face ret = Face.__new__(Face, None)
         ret.thisptr = occ.copy()
         return ret
+    
+    cpdef int numWires(self):
+        '''
+        Return number of wires
+        '''
+        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        return occ.numWires()
+    
+    cpdef int numFaces(self):
+        '''
+        Return number of faces
+        '''
+        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        return occ.numFaces()
         
     cpdef Mesh createMesh(self, double factor = .01, double angle = .25):
         '''

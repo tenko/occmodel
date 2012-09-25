@@ -79,6 +79,7 @@ class OCCEdge : public OCCBase {
         TopoDS_Edge edge;
         OCCEdge() { ; }
         OCCEdge *copy();
+        int numVertices();
         std::vector<DVec> tesselate(double factor, double angle);
         int createLine(OCCVertex *start, OCCVertex *end);
         int createArc(OCCVertex *start, OCCVertex *end, DVec center);
@@ -103,6 +104,8 @@ class OCCWire : public OCCBase {
         TopoDS_Wire wire;
         OCCWire() { ; }
         OCCWire *copy();
+        int numVertices();
+        int numEdges();
         int createWire(std::vector<OCCEdge *> edges);
         std::vector<DVec> tesselate(double factor, double angle);
         double length();
@@ -116,6 +119,8 @@ class OCCFace : public OCCBase {
         TopoDS_Shape face;
         OCCFace() { ; }
         OCCFace *copy();
+        int numWires();
+        int numFaces();
         int createFace(OCCWire *wire);
         int createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> points);
         double area();
@@ -140,12 +145,14 @@ class OCCSolid : public OCCBase {
     public:
         TopoDS_Shape solid;
         OCCSolid() { ; }
+        OCCSolid *copy();
+        int numSolids();
+        int numFaces();
         int createSolid(std::vector<OCCFace *> faces, double tolerance);
         double area() ;
         double volume();
         DVec inertia();
         DVec centreOfMass();
-        OCCSolid *copy();
         OCCMesh *createMesh(double defle, double angle);
         int addSolids(std::vector<OCCSolid *> solids);
         int createSphere(DVec center, double radius);
@@ -176,7 +183,7 @@ class OCCSolid : public OCCBase {
                   bool sewfaces, bool makesolids);
         const TopoDS_Shape& getShape() { return solid; }
         const TopoDS_Shape& getSolid() { return solid; }
-        void setShape(TopoDS_Shape shape) { solid = shape; }
+        void setShape(TopoDS_Shape shape);
 };
 
 void printShapeType(TopoDS_Shape shape);

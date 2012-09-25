@@ -37,6 +37,7 @@ cdef extern from "OCCModel.h":
     cdef cppclass c_OCCEdge "OCCEdge":
         c_OCCEdge()
         c_OCCEdge *copy()
+        int numVertices()
         vector[vector[double]] tesselate(double factor, double angle)
         int createLine(c_OCCVertex *v1, c_OCCVertex *v2)
         int createArc(c_OCCVertex *start, c_OCCVertex *end, vector[double] center)
@@ -53,6 +54,8 @@ cdef extern from "OCCModel.h":
     cdef cppclass c_OCCWire "OCCWire":
         c_OCCWire()
         c_OCCWire *copy()
+        int numVertices()
+        int numEdges()
         vector[vector[double]] tesselate(double factor, double angle)
         int createWire(vector[c_OCCEdge *] edges)
         double length()
@@ -60,6 +63,8 @@ cdef extern from "OCCModel.h":
     cdef cppclass c_OCCFace "OCCFace":
         c_OCCFace()
         c_OCCFace *copy()
+        int numWires()
+        int numFaces()
         int createFace(c_OCCWire *wire)
         int createConstrained(vector[c_OCCEdge *] edges, vector[vector[double]] points)
         double area()
@@ -76,12 +81,14 @@ cdef extern from "OCCModel.h":
     
     cdef cppclass c_OCCSolid "OCCSolid":
         c_OCCSolid()
+        c_OCCSolid *copy()
+        int numSolids()
+        int numFaces()
         int createSolid(vector[c_OCCFace *] faces, double tolerance)
         double area()
         double volume()
         vector[double] inertia()
         vector[double] centreOfMass()
-        c_OCCSolid *copy()
         c_OCCMesh *createMesh(double factor, double angle)
         int addSolids(vector[c_OCCSolid *] solids)
         int createSphere(vector[double] center, double radius)

@@ -22,6 +22,9 @@ cdef class Edge(Base):
     def __repr__(self):
         return "(start = %s, end = %s)" % (repr(self.start), repr(self.end))
     
+    def __len__(self):
+        return self.numVertices()
+        
     cpdef Edge copy(self):
         '''
         Create copy of edge
@@ -31,6 +34,13 @@ cdef class Edge(Base):
         ret.thisptr = occ.copy()
         return ret
     
+    cpdef int numVertices(self):
+        '''
+        Return number of vertices
+        '''
+        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        return occ.numVertices()
+        
     cpdef tesselate(self, double factor = .1, double angle = .1):
         '''
         Tesselate edge to a tuple of points according to given

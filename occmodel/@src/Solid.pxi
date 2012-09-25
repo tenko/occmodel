@@ -30,6 +30,9 @@ cdef class Solid(Base):
     def __repr__(self):
         return "()"
     
+    def __len__(self):
+        return self.numSolids()
+        
     cpdef Solid copy(self):
         '''
         Create copy of solid
@@ -38,6 +41,20 @@ cdef class Solid(Base):
         cdef Solid ret = Solid.__new__(Solid, None)
         ret.thisptr = occ.copy()
         return ret
+    
+    cpdef int numSolids(self):
+        '''
+        Return number of solids
+        '''
+        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        return occ.numSolids()
+    
+    cpdef int numFaces(self):
+        '''
+        Return number of faces
+        '''
+        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        return occ.numFaces()
         
     cpdef Mesh createMesh(self, double factor = .01, double angle = .25):
         '''

@@ -310,6 +310,7 @@ print e1.hasPlane(plane = plane)
 print plane
 '''
 
+'''
 solid = Solid().createBox((0.,0.,0.),(1.,1.,1.))
 e1 = Edge().createCircle(center=(0.5,0.,.5),normal=(0.,0.,1.),radius = 0.25)
 e2 = Edge().createCircle(center=(0.5,0.5,1.),normal=(0.,0.,1.),radius = 0.1)
@@ -317,6 +318,7 @@ w1 = Wire().createWire(e2)
 e3 = Edge().createCircle(center=(1.0,0.5,1.),normal=(0.,0.,1.),radius = 0.25)
 f1 = Face().createFace(e3)
 solid.cut((e1,w1,f1))
+'''
 
 '''
 e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
@@ -352,4 +354,16 @@ f1.booleanIntersection(e1)
 #f1.booleanDifference(e1)
 solid = Solid().extrude(f1, (0.,0.,0.), (0.,0.,1.))
 solid.createMesh()
+'''
+'''
+w1 = Wire().createPolygon((
+    (0.,0.,0.),
+    (0.,0.,5.),
+    (5.,0.,5.)),
+    close = False
+)
+
+e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+solid = Solid().sweep(w1, e1, cornerMode = SWEEP_RIGHT_CORNER)
+print solid.volume()
 '''

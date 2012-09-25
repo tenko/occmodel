@@ -17,6 +17,13 @@ OCCEdge *OCCEdge::copy()
     return ret;
 }
 
+int OCCEdge::numVertices()
+{
+    TopTools_IndexedMapOfShape anIndices;
+    TopExp::MapShapes(this->getEdge(), TopAbs_VERTEX, anIndices);
+    return anIndices.Extent();
+}
+
 std::vector<DVec> OCCEdge::tesselate(double angular, double curvature)
 {
     std::vector<DVec> ret;

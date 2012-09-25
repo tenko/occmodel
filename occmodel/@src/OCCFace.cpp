@@ -17,6 +17,26 @@ OCCFace *OCCFace::copy()
     return ret;
 }
 
+int OCCFace::numFaces()
+{
+    TopTools_IndexedMapOfShape anIndices;
+    const TopoDS_Shape& shp = this->getShape();
+    if (shp.ShapeType() == TopAbs_FACE) {
+        return 1;
+    } else {
+        // Shell
+        TopExp::MapShapes(shp, TopAbs_FACE, anIndices);
+        return anIndices.Extent();
+    }
+}
+
+int OCCFace::numWires()
+{
+    TopTools_IndexedMapOfShape anIndices;
+    TopExp::MapShapes(this->getShape(), TopAbs_WIRE, anIndices);
+    return anIndices.Extent();
+}
+
 int OCCFace::createFace(OCCWire *wire) {
     try {
         this->setShape(BRepBuilderAPI_MakeFace(wire->wire));
