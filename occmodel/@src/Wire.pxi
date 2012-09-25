@@ -25,6 +25,9 @@ cdef class Wire(Base):
     
     def __len__(self):
         return self.numEdges()
+    
+    def __iter__(self):
+        return EdgeIterator(self)
         
     cpdef Wire copy(self):
         '''
@@ -261,3 +264,33 @@ cdef class Wire(Base):
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         return occ.length()
+
+cdef class WireIterator:
+    '''
+    Iterator of wires
+    '''
+    cdef c_OCCWireIterator *thisptr
+    
+    def __init__(self, Base arg):
+        self.thisptr = new c_OCCWireIterator(<c_OCCBase *>arg.thisptr)
+      
+    def __dealloc__(self):
+        del self.thisptr
+            
+    def __str__(self):
+        return 'WireIterator%s' % self.__repr__()
+    
+    def __repr__(self):
+        return '()'
+    
+    def __iter__(self):
+        return self
+        
+    def __next__(self):
+        cdef c_OCCWire *nxt = self.thisptr.next()
+        if nxt == NULL:
+            raise StopIteration()
+        
+        cdef Wire ret = Wire.__new__(Wire)
+        ret.thisptr = nxt
+        return ret

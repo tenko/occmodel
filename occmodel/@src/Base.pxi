@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+    
 cdef class Base:
     '''
     Definition of virtual base object

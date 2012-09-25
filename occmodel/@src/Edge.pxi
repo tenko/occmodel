@@ -24,6 +24,9 @@ cdef class Edge(Base):
     
     def __len__(self):
         return self.numVertices()
+    
+    def __iter__(self):
+        return VertexIterator(self)
         
     cpdef Edge copy(self):
         '''
@@ -320,3 +323,33 @@ cdef class Edge(Base):
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         return occ.length()
+
+cdef class EdgeIterator:
+    '''
+    Iterator of edges
+    '''
+    cdef c_OCCEdgeIterator *thisptr
+    
+    def __init__(self, Base arg):
+        self.thisptr = new c_OCCEdgeIterator(<c_OCCBase *>arg.thisptr)
+      
+    def __dealloc__(self):
+        del self.thisptr
+            
+    def __str__(self):
+        return 'EdgeIterator%s' % self.__repr__()
+    
+    def __repr__(self):
+        return '()'
+    
+    def __iter__(self):
+        return self
+        
+    def __next__(self):
+        cdef c_OCCEdge *nxt = self.thisptr.next()
+        if nxt == NULL:
+            raise StopIteration()
+        
+        cdef Edge ret = Edge.__new__(Edge)
+        ret.thisptr = nxt
+        return ret

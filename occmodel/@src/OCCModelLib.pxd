@@ -33,6 +33,10 @@ cdef extern from "OCCModel.h":
         double x()
         double y()
         double z()
+    
+    cdef cppclass c_OCCVertexIterator "OCCVertexIterator":
+        c_OCCVertexIterator(c_OCCBase *arg)
+        c_OCCVertex *next()
         
     cdef cppclass c_OCCEdge "OCCEdge":
         c_OCCEdge()
@@ -51,6 +55,10 @@ cdef extern from "OCCModel.h":
                         vector[double] knots, vector[double] weights, vector[int] mult)
         double length()
     
+    cdef cppclass c_OCCEdgeIterator "OCCEdgeIterator":
+        c_OCCEdgeIterator(c_OCCBase *arg)
+        c_OCCEdge *next()
+        
     cdef cppclass c_OCCWire "OCCWire":
         c_OCCWire()
         c_OCCWire *copy()
@@ -59,6 +67,10 @@ cdef extern from "OCCModel.h":
         vector[vector[double]] tesselate(double factor, double angle)
         int createWire(vector[c_OCCEdge *] edges)
         double length()
+    
+    cdef cppclass c_OCCWireIterator "OCCWireIterator":
+        c_OCCWireIterator(c_OCCBase *arg)
+        c_OCCWire *next()
         
     cdef cppclass c_OCCFace "OCCFace":
         c_OCCFace()
@@ -77,6 +89,10 @@ cdef extern from "OCCModel.h":
         int common(c_OCCSolid *tool)
         c_OCCMesh *createMesh(double factor, double angle)
     
+    cdef cppclass c_OCCFaceIterator "OCCFaceIterator":
+        c_OCCFaceIterator(c_OCCBase *arg)
+        c_OCCFace *next()
+        
     ctypedef int (*filter_func)(void *user_data, double *near, double *far)
     
     cdef cppclass c_OCCSolid "OCCSolid":
@@ -117,4 +133,7 @@ cdef extern from "OCCModel.h":
         void heal(double tolerance, bint fixdegenerated,
                   bint fixsmalledges, bint fixspotstripfaces, 
                   bint sewfaces, bint makesolids)        
-        
+    
+    cdef cppclass c_OCCSolidIterator "OCCSolidIterator":
+        c_OCCSolidIterator(c_OCCBase *arg)
+        c_OCCSolid *next()

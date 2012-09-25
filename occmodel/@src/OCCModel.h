@@ -74,6 +74,25 @@ class OCCVertex : public OCCBase {
         void setShape(TopoDS_Shape shape) { vertex = TopoDS::Vertex(shape); }
 };
 
+class OCCVertexIterator {
+    public:
+        TopExp_Explorer ex;
+        OCCVertexIterator(OCCBase *arg) {
+            ex.Init(arg->getShape(), TopAbs_VERTEX);
+        }
+        
+        OCCVertex *next() {
+            if (ex.More()) {
+                OCCVertex *ret = new OCCVertex();
+                ret->setShape(ex.Current());
+                ex.Next();
+                return ret;
+            } else {
+                return NULL;
+            }
+        }
+};
+
 class OCCEdge : public OCCBase {
     public:
         TopoDS_Edge edge;
@@ -99,6 +118,25 @@ class OCCEdge : public OCCBase {
         void setShape(TopoDS_Shape shape) { edge = TopoDS::Edge(shape); }
 };
 
+class OCCEdgeIterator {
+    public:
+        TopExp_Explorer ex;
+        OCCEdgeIterator(OCCBase *arg) {
+            ex.Init(arg->getShape(), TopAbs_EDGE);
+        }
+        
+        OCCEdge *next() {
+            if (ex.More()) {
+                OCCEdge *ret = new OCCEdge();
+                ret->setShape(ex.Current());
+                ex.Next();
+                return ret;
+            } else {
+                return NULL;
+            }
+        }
+};
+
 class OCCWire : public OCCBase {
     public:
         TopoDS_Wire wire;
@@ -112,6 +150,25 @@ class OCCWire : public OCCBase {
         const TopoDS_Shape& getShape() { return wire; }
         const TopoDS_Wire& getWire() { return wire; }
         void setShape(TopoDS_Shape shape) { wire = TopoDS::Wire(shape); }
+};
+
+class OCCWireIterator {
+    public:
+        TopExp_Explorer ex;
+        OCCWireIterator(OCCBase *arg) {
+            ex.Init(arg->getShape(), TopAbs_WIRE);
+        }
+        
+        OCCWire *next() {
+            if (ex.More()) {
+                OCCWire *ret = new OCCWire();
+                ret->setShape(ex.Current());
+                ex.Next();
+                return ret;
+            } else {
+                return NULL;
+            }
+        }
 };
 
 class OCCFace : public OCCBase {
@@ -137,6 +194,25 @@ class OCCFace : public OCCBase {
         const TopoDS_Face& getFace() { return TopoDS::Face(face); }
         const TopoDS_Shell& getShell() { return TopoDS::Shell(face); }
         void setShape(TopoDS_Shape shape) { face = shape; }
+};
+
+class OCCFaceIterator {
+    public:
+        TopExp_Explorer ex;
+        OCCFaceIterator(OCCBase *arg) {
+            ex.Init(arg->getShape(), TopAbs_FACE);
+        }
+        
+        OCCFace *next() {
+            if (ex.More()) {
+                OCCFace *ret = new OCCFace();
+                ret->setShape(ex.Current());
+                ex.Next();
+                return ret;
+            } else {
+                return NULL;
+            }
+        }
 };
 
 typedef int (*filter_func)(void *user_data, double *near, double *far);
@@ -184,6 +260,25 @@ class OCCSolid : public OCCBase {
         const TopoDS_Shape& getShape() { return solid; }
         const TopoDS_Shape& getSolid() { return solid; }
         void setShape(TopoDS_Shape shape);
+};
+
+class OCCSolidIterator {
+    public:
+        TopExp_Explorer ex;
+        OCCSolidIterator(OCCBase *arg) {
+            ex.Init(arg->getShape(), TopAbs_SOLID);
+        }
+        
+        OCCSolid *next() {
+            if (ex.More()) {
+                OCCSolid *ret = new OCCSolid();
+                ret->setShape(ex.Current());
+                ex.Next();
+                return ret;
+            } else {
+                return NULL;
+            }
+        }
 };
 
 void printShapeType(TopoDS_Shape shape);

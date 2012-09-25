@@ -32,6 +32,9 @@ cdef class Solid(Base):
     
     def __len__(self):
         return self.numSolids()
+    
+    def __iter__(self):
+        return FaceIterator(self)
         
     cpdef Solid copy(self):
         '''
@@ -692,3 +695,33 @@ cdef class Solid(Base):
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         occ.heal(tolerance, fixdegenerated, fixsmalledges,
                  fixspotstripfaces, sewfaces, makesolids)
+
+cdef class SolidIterator:
+    '''
+    Iterator of solids
+    '''
+    cdef c_OCCSolidIterator *thisptr
+    
+    def __init__(self, Base arg):
+        self.thisptr = new c_OCCSolidIterator(<c_OCCBase *>arg.thisptr)
+      
+    def __dealloc__(self):
+        del self.thisptr
+            
+    def __str__(self):
+        return 'SolidIterator%s' % self.__repr__()
+    
+    def __repr__(self):
+        return '()'
+    
+    def __iter__(self):
+        return self
+        
+    def __next__(self):
+        cdef c_OCCSolid *nxt = self.thisptr.next()
+        if nxt == NULL:
+            raise StopIteration()
+        
+        cdef Solid ret = Solid.__new__(Solid)
+        ret.thisptr = nxt
+        return ret

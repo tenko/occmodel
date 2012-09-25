@@ -31,3 +31,34 @@ cdef class Vertex(Base):
     cpdef double z(self):
         cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
         return occ.z()
+
+cdef class VertexIterator:
+    '''
+    Iterator of vertices
+    '''
+    cdef c_OCCVertexIterator *thisptr
+    
+    def __init__(self, Base arg):
+        self.thisptr = new c_OCCVertexIterator(<c_OCCBase *>arg.thisptr)
+      
+    def __dealloc__(self):
+        del self.thisptr
+            
+    def __str__(self):
+        return 'VertexIterator%s' % self.__repr__()
+    
+    def __repr__(self):
+        return '()'
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        cdef c_OCCVertex *nxt = self.thisptr.next()
+        if nxt == NULL:
+            raise StopIteration()
+        
+        cdef Vertex ret = Vertex.__new__(Vertex, 0.,0.,0.)
+        ret.thisptr = nxt
+        return ret
+            

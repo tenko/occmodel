@@ -367,3 +367,17 @@ e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 solid = Solid().sweep(w1, e1, cornerMode = SWEEP_RIGHT_CORNER)
 print solid.volume()
 '''
+w1 = Wire().createPolygon((
+    (0.,0.,0.),
+    (1.,0.,0.),
+    (1.,1.,0.),
+    (0.,1.,0.)),
+    close = True
+)
+f1 = Face().createFace(w1)
+e1 = Edge().createCircle(center=(.5,.5,-1.),normal=(0.,0.,1.),radius = .15)
+f1.cut(e1)
+print len(f1)
+for wire in f1:
+    for edge in wire:
+        print edge.length()

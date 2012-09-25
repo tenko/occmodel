@@ -26,6 +26,9 @@ cdef class Face(Base):
     
     def __len__(self):
         return self.numFaces()
+
+    def __iter__(self):
+        return WireIterator(self)
         
     cpdef Face copy(self):
         '''
@@ -299,3 +302,33 @@ cdef class Face(Base):
         directions to intersect the face.
         '''
         return self.boolean(arg, 'common')
+
+cdef class FaceIterator:
+    '''
+    Iterator of faces
+    '''
+    cdef c_OCCFaceIterator *thisptr
+    
+    def __init__(self, Base arg):
+        self.thisptr = new c_OCCFaceIterator(<c_OCCBase *>arg.thisptr)
+      
+    def __dealloc__(self):
+        del self.thisptr
+            
+    def __str__(self):
+        return 'FaceIterator%s' % self.__repr__()
+    
+    def __repr__(self):
+        return '()'
+    
+    def __iter__(self):
+        return self
+        
+    def __next__(self):
+        cdef c_OCCFace *nxt = self.thisptr.next()
+        if nxt == NULL:
+            raise StopIteration()
+        
+        cdef Face ret = Face.__new__(Face)
+        ret.thisptr = nxt
+        return ret
