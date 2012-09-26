@@ -84,7 +84,9 @@ class OCCVertexIterator {
         OCCVertexIterator(OCCBase *arg) {
             ex.Init(arg->getShape(), TopAbs_VERTEX);
         }
-        
+        void reset() {
+            ex.ReInit();
+        }
         OCCVertex *next() {
             if (ex.More()) {
                 OCCVertex *ret = new OCCVertex();
@@ -128,7 +130,9 @@ class OCCEdgeIterator {
         OCCEdgeIterator(OCCBase *arg) {
             ex.Init(arg->getShape(), TopAbs_EDGE);
         }
-        
+        void reset() {
+            ex.ReInit();
+        }
         OCCEdge *next() {
             if (ex.More()) {
                 OCCEdge *ret = new OCCEdge();
@@ -162,7 +166,9 @@ class OCCWireIterator {
         OCCWireIterator(OCCBase *arg) {
             ex.Init(arg->getShape(), TopAbs_WIRE);
         }
-        
+        void reset() {
+            ex.ReInit();
+        }
         OCCWire *next() {
             if (ex.More()) {
                 OCCWire *ret = new OCCWire();
@@ -206,7 +212,9 @@ class OCCFaceIterator {
         OCCFaceIterator(OCCBase *arg) {
             ex.Init(arg->getShape(), TopAbs_FACE);
         }
-        
+        void reset() {
+            ex.ReInit();
+        }
         OCCFace *next() {
             if (ex.More()) {
                 OCCFace *ret = new OCCFace();
@@ -270,7 +278,9 @@ class OCCSolidIterator {
         OCCSolidIterator(OCCBase *arg) {
             ex.Init(arg->getShape(), TopAbs_SOLID);
         }
-        
+        void reset() {
+            ex.ReInit();
+        }
         OCCSolid *next() {
             if (ex.More()) {
                 OCCSolid *ret = new OCCSolid();

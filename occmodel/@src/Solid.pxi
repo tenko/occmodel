@@ -763,3 +763,6 @@ cdef class SolidIterator:
         cdef Solid ret = Solid.__new__(Solid)
         ret.thisptr = nxt
         return ret
+    
+    cpdef reset(self):
+        self.thisptr.reset()

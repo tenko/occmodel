@@ -332,3 +332,6 @@ cdef class FaceIterator:
         cdef Face ret = Face.__new__(Face)
         ret.thisptr = nxt
         return ret
+
+    cpdef reset(self):
+        self.thisptr.reset()

@@ -303,3 +303,6 @@ cdef class WireIterator:
         cdef Wire ret = Wire.__new__(Wire)
         ret.thisptr = nxt
         return ret
+
+    cpdef reset(self):
+        self.thisptr.reset()

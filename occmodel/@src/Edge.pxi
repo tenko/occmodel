@@ -344,3 +344,6 @@ cdef class EdgeIterator:
         cdef Edge ret = Edge.__new__(Edge)
         ret.thisptr = nxt
         return ret
+    
+    cpdef reset(self):
+        self.thisptr.reset()

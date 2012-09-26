@@ -37,6 +37,7 @@ cdef extern from "OCCModel.h":
     
     cdef cppclass c_OCCVertexIterator "OCCVertexIterator":
         c_OCCVertexIterator(c_OCCBase *arg)
+        void reset()
         c_OCCVertex *next()
         
     cdef cppclass c_OCCEdge "OCCEdge":
@@ -58,6 +59,7 @@ cdef extern from "OCCModel.h":
     
     cdef cppclass c_OCCEdgeIterator "OCCEdgeIterator":
         c_OCCEdgeIterator(c_OCCBase *arg)
+        void reset()
         c_OCCEdge *next()
         
     cdef cppclass c_OCCWire "OCCWire":
@@ -71,6 +73,7 @@ cdef extern from "OCCModel.h":
     
     cdef cppclass c_OCCWireIterator "OCCWireIterator":
         c_OCCWireIterator(c_OCCBase *arg)
+        void reset()
         c_OCCWire *next()
         
     cdef cppclass c_OCCFace "OCCFace":
@@ -92,6 +95,7 @@ cdef extern from "OCCModel.h":
     
     cdef cppclass c_OCCFaceIterator "OCCFaceIterator":
         c_OCCFaceIterator(c_OCCBase *arg)
+        void reset()
         c_OCCFace *next()
         
     cdef cppclass c_OCCSolid "OCCSolid":
@@ -135,4 +139,5 @@ cdef extern from "OCCModel.h":
     
     cdef cppclass c_OCCSolidIterator "OCCSolidIterator":
         c_OCCSolidIterator(c_OCCBase *arg)
+        void reset()
         c_OCCSolid *next()
