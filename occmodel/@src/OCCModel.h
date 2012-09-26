@@ -5,6 +5,7 @@
 
 #include "OCCIncludes.h"
 #include <vector>
+#include <limits>
 
 typedef std::vector<float> FVec;
 typedef std::vector<double> DVec;
@@ -29,6 +30,9 @@ class OCCBase {
         int mirror(DVec pnt, DVec nor, OCCBase *target);
         DVec boundingBox(double tolerance);
         int findPlane(double *origin, double *normal, double tolerance);
+        int hashCode() {
+            return this->getShape().HashCode(std::numeric_limits<int>::max());
+        }
         bool isEqual(OCCBase *other) {
             if (this->getShape().IsEqual(other->getShape()))
                 return true;
@@ -215,8 +219,6 @@ class OCCFaceIterator {
         }
 };
 
-typedef int (*filter_func)(void *user_data, double *near, double *far);
-
 class OCCSolid : public OCCBase {
     public:
         TopoDS_Shape solid;
@@ -245,9 +247,9 @@ class OCCSolid : public OCCBase {
         int fuse(OCCSolid *tool);
         int cut(OCCSolid *tool);
         int common(OCCSolid *tool);
-        int fillet(double radius, filter_func userfunc, void *userdata);
-        int chamfer(double distance, filter_func userfunc, void *userdata);
-        int shell(double offset, filter_func userfunc, void *userdata);
+        int fillet(std::vector<OCCEdge *> edges, std::vector<double> radius);
+        int chamfer(std::vector<OCCEdge *> edges, std::vector<double> distances);
+        int shell(std::vector<OCCFace *> faces, double offset, double tolerance);
         OCCFace *section(DVec pnt, DVec nor);
         int writeBREP(const char *);  
         int readBREP(const char *);  
@@ -281,6 +283,6 @@ class OCCSolidIterator {
         }
 };
 
-void printShapeType(TopoDS_Shape shape);
-int extractFaceMesh(TopoDS_Face face, OCCMesh *mesh);
+void printShapeType(const TopoDS_Shape& shape);
+int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh);
 void connectEdges (std::vector<TopoDS_Edge>& edges, std::vector<TopoDS_Wire>& wires);

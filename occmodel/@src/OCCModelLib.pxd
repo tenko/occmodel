@@ -17,6 +17,7 @@ cdef extern from "OCCModel.h":
         c_OCCMesh()
     
     cdef cppclass c_OCCBase "OCCBase":
+        int hashCode()
         bint isEqual(c_OCCBase *other)
         bint isNull()
         bint isValid()
@@ -93,8 +94,6 @@ cdef extern from "OCCModel.h":
         c_OCCFaceIterator(c_OCCBase *arg)
         c_OCCFace *next()
         
-    ctypedef int (*filter_func)(void *user_data, double *near, double *far)
-    
     cdef cppclass c_OCCSolid "OCCSolid":
         c_OCCSolid()
         c_OCCSolid *copy()
@@ -121,9 +120,9 @@ cdef extern from "OCCModel.h":
         int fuse(c_OCCSolid *tool)
         int cut(c_OCCSolid *tool)
         int common(c_OCCSolid *tool)
-        int fillet(double radius, filter_func userfunc, void *userdata)
-        int chamfer(double distance, filter_func userfunc, void *userdata)
-        int shell(double offset, filter_func userfunc, void *userdata)
+        int fillet(vector[c_OCCEdge *] edges, vector[double] radius)
+        int chamfer(vector[c_OCCEdge *] edges, vector[double] distances)
+        int shell(vector[c_OCCFace *] faces, double offset, double tolerance)
         c_OCCFace *section(vector[double] pnt, vector[double] nor)
         int writeBREP(char *filename)
         int readBREP(char *filename)

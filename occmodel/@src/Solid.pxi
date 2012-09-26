@@ -553,65 +553,103 @@ cdef class Solid(Base):
         are limited by the face itself.
         '''
         return self.boolean(arg, 'common')
-        
-    cpdef fillet(self, double radius, edgefilter = None):
+    
+    cpdef fillet(self, radius, edges = None):
         '''
         Fillet edges inplace.
         
-        :radius: fillet radius
-        :edgefilter: optional function taking argument of edge
-                     near, far and return edge selection status (boolean)
-        
-        By not supplying a edgefilter all edges are filleted.
+        :radius: sequence of radiuses or single radius.
+        :edges: sequence of edges or single edge. Setting the argument to
+                None will select all edges (default)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef vector[c_OCCEdge *] cedges
+        cdef vector[double] cradius
+        cdef Edge edge
+        cdef double r
         cdef int ret
         
-        if edgefilter is None:
-            ret = occ.fillet(radius, NULL, NULL)
-        else:
-            ret = occ.fillet(radius, py_filter_func, <void *>edgefilter)
+        if edges is None:
+            edges = tuple(EdgeIterator(self))
+            
+        elif isinstance(edges, Edge):
+            edges = (edges,)
+            
+        for edge in edges:
+            cedges.push_back((<c_OCCEdge *>edge.thisptr))
+        
+        if isinstance(radius, (float, int)):
+            radius = (radius,)
+        
+        for r in radius:
+            cradius.push_back(r)
+        
+        ret = occ.fillet(cedges, cradius)
             
         if ret != 0:
             raise OCCError('Failed to create fillet')
         
         return self
         
-    cpdef chamfer(self, double distance, edgefilter = None):
+    cpdef chamfer(self, distances, edges = None):
         '''
         Chamfer edges inplace.
         
-        :distance: chamfer distance
-        :edgefilter: optional function taking argument of edge
-                     near, far and return edge selection status (boolean)
-        
-        By not supplying a edgefilter all edges are chamfered.
+        :distances: sequence of distances for each edge or single distance.
+        :edges: sequence of edges or single edge. Setting the argument to
+                None will select all edges (default)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef vector[c_OCCEdge *] cedges
+        cdef vector[double] cdistances
+        cdef Edge edge
+        cdef double dist
         cdef int ret
         
-        if edgefilter is None:
-            ret = occ.chamfer(distance, NULL, NULL)
-        else:
-            ret = occ.chamfer(distance, py_filter_func, <void *>edgefilter)
+        if edges is None:
+            edges = tuple(EdgeIterator(self))
+            
+        elif isinstance(edges, Edge):
+            edges = (edges,)
+            
+        for edge in edges:
+            cedges.push_back((<c_OCCEdge *>edge.thisptr))
         
+        if isinstance(distances, (float, int)):
+            distances = (distances,)
+        
+        for dist in distances:
+            cdistances.push_back(dist)
+        
+        ret = occ.chamfer(cedges, cdistances)
+            
         if ret != 0:
             raise OCCError('Failed to create chamfer')
         
         return self
         
-    cpdef shell(self, double offset, facefilter):
+    cpdef shell(self, faces, double offset, double tolerance = 1e-4):
         '''
-        Apply shell operation no solid.
+        Apply shell operation on solid.
         
+        :faces: sequence of faces or single face
         :offset: shell offset distance
-        :facefilter: function taking argument of face
-                     near, far and return face selection status (boolean)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef int ret = occ.shell(offset, py_filter_func, <void *>facefilter)
+        cdef vector[c_OCCFace *] cfaces
+        cdef Face face
+        cdef int ret
+        
+        if isinstance(faces, Face):
+            faces = (faces,)
+            
+        for face in faces:
+            cfaces.push_back((<c_OCCFace *>face.thisptr))
+        
+        ret = occ.shell(cfaces, offset, tolerance)
+            
         if ret != 0:
-            raise OCCError('Failed to create chamfer')
+            raise OCCError('Shell operation failed')
         
         return self
     

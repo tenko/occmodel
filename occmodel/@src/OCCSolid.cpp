@@ -85,6 +85,7 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
                 const TopoDS_Solid& solid= TopoDS::Solid(exSolid.Current());
                 for (exFace.Init(solid, TopAbs_FACE); exFace.More(); exFace.Next()) {
                     const TopoDS_Face& face = TopoDS::Face(exFace.Current());
+                    if (face.IsNull()) continue;
                     extractFaceMesh(face, mesh);
                 }
             }
@@ -92,6 +93,7 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
             TopExp_Explorer exFace;
             for (exFace.Init(shape, TopAbs_FACE); exFace.More(); exFace.Next()) {
                 const TopoDS_Face& face = TopoDS::Face(exFace.Current());
+                if (face.IsNull()) continue;
                 extractFaceMesh(face, mesh);
             }
         }
@@ -403,27 +405,29 @@ int OCCSolid::common(OCCSolid *tool) {
     return 0;
 }
 
-    
-int OCCSolid::chamfer(double distance, filter_func userfunc, void *userdata) {
-    TopExp_Explorer exp;
+int OCCSolid::chamfer(std::vector<OCCEdge *> edges, std::vector<double> distances) {
+    int edges_size = edges.size();
+    int distances_size = distances.size();
     BRepFilletAPI_MakeChamfer CF(solid);
-    double near[3], far[3];
     
     TopTools_IndexedDataMapOfShapeListOfShape mapEdgeFace;
     TopExp::MapShapesAndAncestors(solid, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
     
-    for(exp.Init(solid, TopAbs_EDGE); exp.More(); exp.Next()) {
-        const TopoDS_Edge& edge = TopoDS::Edge(exp.Current());
-        
-        Bnd_Box aBox;
-        BRepBndLib::Add(edge, aBox);
-        aBox.Get(near[0], near[1], near[2], far[0], far[1], far[2]);
-        
-        if (userfunc != NULL && userfunc(userdata, near, far) == 0) {
-            continue;
-        }
-        const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge).First());
-        CF.Add(distance, edge, face);
+    for (unsigned i=0; i<edges.size(); i++) {
+            OCCEdge *edge = edges[i];
+            const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge->getEdge()).First());
+            
+            if (distances_size == 1) {
+                // single distance
+                CF.Add(distances[0], edge->getEdge(), face);
+                
+            } else if (distances_size == edges_size) {
+                // distance given for each edge
+                CF.Add(distances[i], edge->getEdge(), face);
+                
+            } else {
+                return 1;
+            }
     }
     
     CF.Build();
@@ -444,27 +448,27 @@ int OCCSolid::chamfer(double distance, filter_func userfunc, void *userdata) {
     return 0;
 }
 
-int OCCSolid::fillet(double radius, filter_func userfunc, void *userdata) {
-    TopExp_Explorer exp;
+int OCCSolid::fillet(std::vector<OCCEdge *> edges, std::vector<double> radius) {
+    int edges_size = edges.size();
+    int radius_size = radius.size();
     BRepFilletAPI_MakeFillet fill(solid);
-    double near[3], far[3];
     
-    for(exp.Init(solid, TopAbs_EDGE); exp.More(); exp.Next()) {
-        const TopoDS_Edge& edge = TopoDS::Edge(exp.Current());
-        
-        Bnd_Box aBox;
-        BRepBndLib::Add(edge, aBox);
-        aBox.Get(near[0], near[1], near[2], far[0], far[1], far[2]);
-        
-        if (userfunc != NULL && userfunc(userdata, near, far) == 0) {
-            continue;
-        }
-        
-        fill.Add(edge);
+    for (unsigned i=0; i<edges.size(); i++) {
+            OCCEdge *edge = edges[i];
+            if (radius_size == 1) {
+                // single radius
+                fill.Add(radius[0], edge->getEdge());
+            } else if (radius_size == edges_size) {
+                // radius given for each edge
+                fill.Add(radius[i], edge->getEdge());
+            } else if (radius_size == 2*edges_size) {
+                // variable radius
+                fill.Add(radius[2*i+0], radius[2*i+1], edge->getEdge());
+            } else {
+                return 1;
+            }
     }
-    for (int i = 1; i <= fill.NbContours(); i++) {
-        fill.SetRadius(radius, i, 1);
-    }
+    
     fill.Build();
     
     if (!fill.IsDone()) return 1;
@@ -481,28 +485,17 @@ int OCCSolid::fillet(double radius, filter_func userfunc, void *userdata) {
   
     this->setShape(tmp);
     return 0;
+    
 }
 
-int OCCSolid::shell(double offset, filter_func userfunc, void *userdata) {
-    double near[3], far[3];
-    TopExp_Explorer exp;
-    TopTools_ListOfShape faces;
-    
-    for(exp.Init(solid, TopAbs_FACE); exp.More(); exp.Next()) {
-        const TopoDS_Face& face = TopoDS::Face(exp.Current());
-        
-        Bnd_Box aBox;
-        BRepBndLib::Add(face, aBox);
-        aBox.Get(near[0], near[1], near[2], far[0], far[1], far[2]);
-        
-        if (userfunc(userdata, near, far) == 0) {
-            continue;
-        }
-        
-        faces.Append(face);
+int OCCSolid::shell(std::vector<OCCFace *> faces, double offset, double tolerance) {
+    TopTools_ListOfShape facelist;
+    for (unsigned i=0; i<faces.size(); i++) {
+        OCCFace *face = faces[i];
+        facelist.Append(face->getShape());
     }
     
-    BRepOffsetAPI_MakeThickSolid TS(solid, faces, offset, 1e-4);
+    BRepOffsetAPI_MakeThickSolid TS(solid, facelist, offset, tolerance);
     TS.Build();
     
     if (!TS.IsDone()) return 1;

@@ -301,10 +301,14 @@ cdef class EdgeIterator:
     Iterator of edges
     '''
     cdef c_OCCEdgeIterator *thisptr
+    cdef set seen
+    cdef bint includeAll
     
-    def __init__(self, Base arg):
+    def __init__(self, Base arg, bint includeAll = False):
         self.thisptr = new c_OCCEdgeIterator(<c_OCCBase *>arg.thisptr)
-      
+        self.includeAll = includeAll
+        self.seen = set()
+        
     def __dealloc__(self):
         del self.thisptr
             
@@ -318,9 +322,24 @@ cdef class EdgeIterator:
         return self
         
     def __next__(self):
-        cdef c_OCCEdge *nxt = self.thisptr.next()
-        if nxt == NULL:
-            raise StopIteration()
+        cdef c_OCCEdge *nxt
+        cdef int hash
+        
+        while True:
+            nxt = self.thisptr.next()
+            if nxt == NULL:
+                raise StopIteration()
+            
+            if self.includeAll:
+                break
+            else:
+                # check for duplicate (same edge different orientation)
+                hash = (<c_OCCBase *>nxt).hashCode()
+                if hash in self.seen:
+                    continue
+                else:
+                    self.seen.add(hash)
+                    break
         
         cdef Edge ret = Edge.__new__(Edge)
         ret.thisptr = nxt

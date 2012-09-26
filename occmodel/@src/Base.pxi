@@ -12,6 +12,9 @@ cdef class Base:
     def __repr__(self):
         return '()'
     
+    def __hash__(self):
+        return self.hashCode()
+        
     def __richcmp__(self, other, int op):
         if op == 2:
             return self.isEqual(other)
@@ -24,6 +27,17 @@ cdef class Base:
         if self.thisptr == NULL:
             raise TypeError('Base object not initialized')
     
+    cpdef hashCode(self):
+        '''
+        Shape hash code.
+        
+        Orientation is not included in the hash calculation.
+        '''
+        self.CheckPtr()
+        
+        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
+        return occ.hashCode()
+        
     cpdef bint isEqual(self, Base other):
         '''
         Check object for equallity
