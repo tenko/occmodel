@@ -4,8 +4,6 @@ cdef class Edge(Base):
     '''
     Edge - represent edge geometry (curve).
     '''
-    cdef public Vertex start, end
-    
     def __init__(self):
         self.thisptr = new c_OCCEdge()
       
@@ -20,7 +18,7 @@ cdef class Edge(Base):
         return "Edge%s" % repr(self)
     
     def __repr__(self):
-        return "(start = %s, end = %s)" % (repr(self.start), repr(self.end))
+        return "()"
     
     def __len__(self):
         return self.numVertices()
@@ -71,9 +69,6 @@ cdef class Edge(Base):
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef int ret
         
-        self.start = start
-        self.end = end
-        
         ret = occ.createLine(<c_OCCVertex *>start.thisptr, <c_OCCVertex *>end.thisptr)
         
         if ret != 0:
@@ -88,9 +83,6 @@ cdef class Edge(Base):
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[double] cpnt
         cdef int ret
-        
-        self.start = start
-        self.end = end
         
         cpnt.push_back(center[0])
         cpnt.push_back(center[1])
@@ -112,9 +104,6 @@ cdef class Edge(Base):
         cdef vector[double] cpnt
         cdef int ret
         
-        self.start = start
-        self.end = end
-        
         cpnt.push_back(pnt[0])
         cpnt.push_back(pnt[1])
         cpnt.push_back(pnt[2])
@@ -134,9 +123,6 @@ cdef class Edge(Base):
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[double] ccen, cnor
         cdef int ret
-        
-        self.start = None
-        self.end = None
         
         ccen.push_back(center[0])
         ccen.push_back(center[1])
@@ -162,9 +148,6 @@ cdef class Edge(Base):
         cdef vector[double] ccen, cnor
         cdef int ret
         
-        self.start = None
-        self.end = None
-        
         ccen.push_back(center[0])
         ccen.push_back(center[1])
         ccen.push_back(center[2])
@@ -187,12 +170,7 @@ cdef class Edge(Base):
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef int ret
         
-        self.start = Vertex(0.,0.,0.)
-        self.end = Vertex(0.,0.,0.)
-        
-        ret = occ.createHelix(<c_OCCVertex *>self.start.thisptr,
-                              <c_OCCVertex *>self.end.thisptr,
-                              pitch, height, radius, angle, leftHanded)
+        ret = occ.createHelix(pitch, height, radius, angle, leftHanded)
         
         if ret != 0:
             raise OCCError('Failed to create ellipse')
@@ -222,8 +200,6 @@ cdef class Edge(Base):
         if start is None and end is None:
             ret = occ.createBezier(NULL, NULL, cpoints)
         else:
-            self.start = start
-            self.end = end
             ret = occ.createBezier(<c_OCCVertex *>start.thisptr,
                                    <c_OCCVertex *>end.thisptr, cpoints)
             
@@ -256,8 +232,6 @@ cdef class Edge(Base):
         if start is None and end is None:
             ret = occ.createSpline(NULL, NULL, cpoints, tolerance)
         else:
-            self.start = start
-            self.end = end
             ret = occ.createSpline(<c_OCCVertex *>start.thisptr,
                                    <c_OCCVertex *>end.thisptr, cpoints, tolerance)
             
@@ -306,8 +280,6 @@ cdef class Edge(Base):
         if start is None and end is None:
             ret = occ.createNURBS(NULL, NULL, cpoints, cknots, cweights, cmults)
         else:
-            self.start = start
-            self.end = end
             ret = occ.createNURBS(<c_OCCVertex *>start.thisptr,
                                    <c_OCCVertex *>end.thisptr, cpoints,
                                    cknots, cweights, cmults)

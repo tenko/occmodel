@@ -133,7 +133,7 @@ int OCCEdge::createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor)
     return 0;
 }
 
-int OCCEdge::createHelix(OCCVertex *start, OCCVertex *end, double pitch, double height, double radius, double angle, bool leftHanded)
+int OCCEdge::createHelix(double pitch, double height, double radius, double angle, bool leftHanded)
 {
     try {
         gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
@@ -159,12 +159,6 @@ int OCCEdge::createHelix(OCCVertex *start, OCCVertex *end, double pitch, double 
 
         this->setShape(BRepBuilderAPI_MakeEdge(segm , surf));
         BRepLib::BuildCurves3d(edge);
-        
-        if (start != NULL && end != NULL) {
-            // find start and end vertices
-            start->setShape(TopExp::FirstVertex(edge));
-            end->setShape(TopExp::LastVertex(edge));
-        }
         
     } catch(Standard_Failure &err) {
         return 1;

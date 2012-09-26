@@ -48,7 +48,7 @@ cdef extern from "OCCModel.h":
         int createArc3P(c_OCCVertex *start, c_OCCVertex *end, vector[double] pnt)
         int createCircle(vector[double] center, vector[double] normal, double radius)
         int createEllipse(vector[double] pnt, vector[double] nor, double rMajor, double rMinor)
-        int createHelix(c_OCCVertex *start, c_OCCVertex *end, double pitch, double height, double radius, double angle, bint leftHanded)
+        int createHelix(double pitch, double height, double radius, double angle, bint leftHanded)
         int createBezier(c_OCCVertex *start, c_OCCVertex *end, vector[vector[double]] points)
         int createSpline(c_OCCVertex *start, c_OCCVertex *end, vector[vector[double]] points, double tolerance)
         int createNURBS(c_OCCVertex *start, c_OCCVertex *end, vector[vector[double]] points,

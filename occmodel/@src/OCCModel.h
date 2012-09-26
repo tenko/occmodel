@@ -105,8 +105,8 @@ class OCCEdge : public OCCBase {
         int createArc3P(OCCVertex *start, OCCVertex *end, DVec pnt);
         int createCircle(DVec center, DVec normal, double radius);
         int createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor);
-        int createHelix(OCCVertex *start, OCCVertex *end, double pitch,
-                        double height, double radius, double angle, bool leftHanded);
+        int createHelix(double pitch, double height, double radius, double angle,
+                        bool leftHanded);
         int createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> points);
         int createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
                          double tolerance);

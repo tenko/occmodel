@@ -210,13 +210,22 @@ cdef class Wire(Base):
         
         Note: The polygon is closed automatic.
         '''
-        edges = [Edge().createLine(Vertex(*points[0]),Vertex(*points[1]))]
+        cdef Edge edge
+        cdef Vertex first, last, nxt
+        
+        first = Vertex(*points[0])
+        last = Vertex(*points[1])
+        edges = [Edge().createLine(first,last)]
+        
         for point in points[2:]:
-            edge = Edge().createLine(edges[-1].end,Vertex(*point))
+            nxt = Vertex(*point)
+            edge = Edge().createLine(last,nxt)
+            last = nxt
             edges.append(edge)
+            
         # close
         if close:
-            edge = Edge().createLine(edges[-1].end,edges[0].start)
+            edge = Edge().createLine(last,first)
             edges.append(edge)
             
         self.createWire(edges)
