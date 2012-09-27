@@ -4,13 +4,17 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
-OCCWire *OCCWire::copy()
+OCCWire *OCCWire::copy(bool deepCopy = false)
 {
     OCCWire *ret = new OCCWire();
     try {
-        BRepBuilderAPI_Copy A;
-        A.Perform(this->getWire());
-        ret->setShape(A.Shape());
+        if (deepCopy) {
+            BRepBuilderAPI_Copy A;
+            A.Perform(this->getWire());
+            ret->setShape(A.Shape());
+        } else {
+            ret->setShape(this->getShape());
+        }
     } catch(Standard_Failure &err) {
         return NULL;
     }

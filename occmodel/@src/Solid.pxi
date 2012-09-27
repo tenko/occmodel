@@ -36,13 +36,18 @@ cdef class Solid(Base):
     def __iter__(self):
         return FaceIterator(self)
         
-    cpdef Solid copy(self):
+    cpdef Solid copy(self, bint deepCopy = False):
         '''
         Create copy of solid
+        
+        :deepCopy: If true a full copy of the underlying geometry
+                   is done. Defaults to False.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Solid ret = Solid.__new__(Solid, None)
-        ret.thisptr = occ.copy()
+        
+        ret.thisptr = occ.copy(deepCopy)
+            
         return ret
     
     cpdef int numSolids(self):

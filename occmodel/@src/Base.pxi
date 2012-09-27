@@ -11,9 +11,6 @@ cdef class Base:
     
     def __repr__(self):
         return '()'
-    
-    def __hash__(self):
-        return self.hashCode()
         
     def __richcmp__(self, other, int op):
         if op == 2:

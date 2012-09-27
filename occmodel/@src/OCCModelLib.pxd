@@ -42,7 +42,7 @@ cdef extern from "OCCModel.h":
         
     cdef cppclass c_OCCEdge "OCCEdge":
         c_OCCEdge()
-        c_OCCEdge *copy()
+        c_OCCEdge *copy(bint deepCopy)
         int numVertices()
         vector[vector[double]] tesselate(double factor, double angle)
         int createLine(c_OCCVertex *v1, c_OCCVertex *v2)
@@ -64,7 +64,7 @@ cdef extern from "OCCModel.h":
         
     cdef cppclass c_OCCWire "OCCWire":
         c_OCCWire()
-        c_OCCWire *copy()
+        c_OCCWire *copy(bint deepCopy)
         int numVertices()
         int numEdges()
         vector[vector[double]] tesselate(double factor, double angle)
@@ -78,7 +78,7 @@ cdef extern from "OCCModel.h":
         
     cdef cppclass c_OCCFace "OCCFace":
         c_OCCFace()
-        c_OCCFace *copy()
+        c_OCCFace *copy(bint deepCopy)
         int numWires()
         int numFaces()
         int createFace(c_OCCWire *wire)
@@ -100,7 +100,7 @@ cdef extern from "OCCModel.h":
         
     cdef cppclass c_OCCSolid "OCCSolid":
         c_OCCSolid()
-        c_OCCSolid *copy()
+        c_OCCSolid *copy(bint deepCopy)
         int numSolids()
         int numFaces()
         int createSolid(vector[c_OCCFace *] faces, double tolerance)

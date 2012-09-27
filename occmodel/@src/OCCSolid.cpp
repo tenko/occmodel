@@ -24,13 +24,17 @@ int OCCSolid::createSolid(std::vector<OCCFace *> faces, double tolerance)
 }
 
 
-OCCSolid *OCCSolid::copy()
+OCCSolid *OCCSolid::copy(bool deepCopy = false)
 {
     OCCSolid *ret = new OCCSolid();
     try {
-        BRepBuilderAPI_Copy A;
-        A.Perform(this->getSolid());
-        ret->setShape(A.Shape());
+        if (deepCopy) {
+            BRepBuilderAPI_Copy A;
+            A.Perform(this->getSolid());
+            ret->setShape(A.Shape());
+        } else {
+            ret->setShape(this->getShape());
+        }
     } catch(Standard_Failure &err) {
         return NULL;
     }

@@ -30,13 +30,18 @@ cdef class Face(Base):
     def __iter__(self):
         return WireIterator(self)
         
-    cpdef Face copy(self):
+    cpdef Face copy(self, bint deepCopy = False):
         '''
         Create copy of face
+        
+        :deepCopy: If true a full copy of the underlying geometry
+                   is done. Defaults to False.
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef Face ret = Face.__new__(Face, None)
-        ret.thisptr = occ.copy()
+        
+        ret.thisptr = occ.copy(deepCopy)
+            
         return ret
     
     cpdef int numWires(self):

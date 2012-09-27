@@ -29,13 +29,18 @@ cdef class Wire(Base):
     def __iter__(self):
         return EdgeIterator(self)
         
-    cpdef Wire copy(self):
+    cpdef Wire copy(self, bint deepCopy = False):
         '''
         Create copy of wire
+        
+        :deepCopy: If true a full copy of the underlying geometry
+                   is done. Defaults to False.
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         cdef Wire ret = Wire.__new__(Wire, None)
-        ret.thisptr = occ.copy()
+        
+        ret.thisptr = occ.copy(deepCopy)
+            
         return ret
     
     cpdef int numVertices(self):

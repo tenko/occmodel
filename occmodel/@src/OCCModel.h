@@ -103,7 +103,7 @@ class OCCEdge : public OCCBase {
     public:
         TopoDS_Edge edge;
         OCCEdge() { ; }
-        OCCEdge *copy();
+        OCCEdge *copy(bool deepCopy);
         int numVertices();
         std::vector<DVec> tesselate(double factor, double angle);
         int createLine(OCCVertex *start, OCCVertex *end);
@@ -149,7 +149,7 @@ class OCCWire : public OCCBase {
     public:
         TopoDS_Wire wire;
         OCCWire() { ; }
-        OCCWire *copy();
+        OCCWire *copy(bool deepCopy);
         int numVertices();
         int numEdges();
         int createWire(std::vector<OCCEdge *> edges);
@@ -185,7 +185,7 @@ class OCCFace : public OCCBase {
     public:
         TopoDS_Shape face;
         OCCFace() { ; }
-        OCCFace *copy();
+        OCCFace *copy(bool deepCopy);
         int numWires();
         int numFaces();
         int createFace(OCCWire *wire);
@@ -231,7 +231,7 @@ class OCCSolid : public OCCBase {
     public:
         TopoDS_Shape solid;
         OCCSolid() { ; }
-        OCCSolid *copy();
+        OCCSolid *copy(bool deepCopy);
         int numSolids();
         int numFaces();
         int createSolid(std::vector<OCCFace *> faces, double tolerance);

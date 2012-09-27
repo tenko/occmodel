@@ -4,13 +4,17 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
-OCCEdge *OCCEdge::copy()
+OCCEdge *OCCEdge::copy(bool deepCopy = false)
 {
     OCCEdge *ret = new OCCEdge();
     try {
-        BRepBuilderAPI_Copy A;
-        A.Perform(this->getEdge());
-        ret->setShape(A.Shape());
+        if (deepCopy) {
+            BRepBuilderAPI_Copy A;
+            A.Perform(this->getEdge());
+            ret->setShape(A.Shape());
+        } else {
+            ret->setShape(this->getShape());
+        }
     } catch(Standard_Failure &err) {
         return NULL;
     }

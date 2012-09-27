@@ -26,13 +26,18 @@ cdef class Edge(Base):
     def __iter__(self):
         return VertexIterator(self)
         
-    cpdef Edge copy(self):
+    cpdef Edge copy(self, bint deepCopy = False):
         '''
         Create copy of edge
+        
+        :deepCopy: If true a full copy of the underlying geometry
+                   is done. Defaults to False.
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef Edge ret = Edge.__new__(Edge, None)
-        ret.thisptr = occ.copy()
+        
+        ret.thisptr = occ.copy(deepCopy)
+            
         return ret
     
     cpdef int numVertices(self):
