@@ -370,14 +370,21 @@ print solid.volume()
 w1 = Wire().createPolygon((
     (0.,0.,0.),
     (1.,0.,0.),
-    (1.,1.,0.),
     (0.,1.,0.)),
-    close = True
+    close = False
 )
-f1 = Face().createFace(w1)
-e1 = Edge().createCircle(center=(.5,.5,-1.),normal=(0.,0.,1.),radius = .15)
-f1.cut(e1)
-print len(f1)
-for wire in f1:
-    for edge in wire:
-        print edge.length()
+
+w1.chamfer(0.25)
+
+'''
+vert = tuple(VertexIterator(w1))[1]
+print vert
+print w1.length()
+w1.chamfer(0.1, vert)
+print tuple(VertexIterator(w1))
+#w1.fillet(0.01)
+print w1.length()
+for e in w1:
+    print e
+'''
+print w1.tesselate()

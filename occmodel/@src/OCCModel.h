@@ -153,6 +153,9 @@ class OCCWire : public OCCBase {
         int numVertices();
         int numEdges();
         int createWire(std::vector<OCCEdge *> edges);
+        int offset(double distance, int joinType);
+        int fillet(std::vector<OCCVertex *> vertices, std::vector<double> radius);
+        int chamfer(std::vector<OCCVertex *> vertices, std::vector<double> distances);
         std::vector<DVec> tesselate(double factor, double angle);
         double length();
         const TopoDS_Shape& getShape() { return wire; }

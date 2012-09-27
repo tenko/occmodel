@@ -37,10 +37,14 @@ cdef class VertexIterator:
     Iterator of vertices
     '''
     cdef c_OCCVertexIterator *thisptr
+    cdef set seen
+    cdef bint includeAll
     
-    def __init__(self, Base arg):
+    def __init__(self, Base arg, bint includeAll = False):
         self.thisptr = new c_OCCVertexIterator(<c_OCCBase *>arg.thisptr)
-      
+        self.includeAll = includeAll
+        self.seen = set()
+        
     def __dealloc__(self):
         del self.thisptr
             
@@ -54,11 +58,28 @@ cdef class VertexIterator:
         return self
     
     def __next__(self):
-        cdef c_OCCVertex *nxt = self.thisptr.next()
-        if nxt == NULL:
-            raise StopIteration()
+        cdef c_OCCVertex *nxt
+        cdef int hash
+        
+        while True:
+            nxt = self.thisptr.next()
+            if nxt == NULL:
+                raise StopIteration()
+            
+            if self.includeAll:
+                break
+            else:
+                # check for duplicate (same vertex different orientation)
+                hash = (<c_OCCBase *>nxt).hashCode()
+                if hash in self.seen:
+                    continue
+                else:
+                    self.seen.add(hash)
+                    break
         
         cdef Vertex ret = Vertex.__new__(Vertex, 0.,0.,0.)
         ret.thisptr = nxt
         return ret
-            
+    
+    cpdef reset(self):
+        self.thisptr.reset()

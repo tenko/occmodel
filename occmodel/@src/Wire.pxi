@@ -2,7 +2,7 @@
 
 INSCRIBE = 'inscribe'
 CIRCUMSCRIBE = 'circumscribe'
-    
+
 cdef class Wire(Base):
     '''
     Wire - represent wire geometry (composite curve forming face border).
@@ -75,8 +75,96 @@ cdef class Wire(Base):
         ret = occ.createWire(cedges)
             
         if ret != 0:
-            raise OCCError('Failed to loft wires')
+            raise OCCError('Failed to create wire from edges')
             
+        return self
+    
+    cpdef offset(self, double distance, int joinType = JOINTYPE_ARC):
+        '''
+        Offset wire inplace the given distance.
+        '''
+        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
+        cdef int ret
+        
+        ret = occ.offset(distance, joinType)
+            
+        if ret != 0:
+            raise OCCError('Failed to offset wires')
+            
+        return self
+    
+    cpdef fillet(self, radius, vertices = None):
+        '''
+        Fillet vertices inplace.
+        
+        :radius: sequence of radiuses or single radius.
+        :vertices: sequence of vertices or single vertex. Setting the
+                  argument to None will select all vertices (default)
+        '''
+        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
+        cdef vector[c_OCCVertex *] cvertices
+        cdef vector[double] cradius
+        cdef Vertex vertex
+        cdef double r
+        cdef int ret
+        
+        if vertices is None:
+            vertices = tuple(VertexIterator(self))
+            
+        elif isinstance(vertices, Vertex):
+            vertices = (vertices,)
+            
+        for vertex in vertices:
+            cvertices.push_back((<c_OCCVertex *>vertex.thisptr))
+        
+        if isinstance(radius, (float, int)):
+            radius = (radius,)
+        
+        for r in radius:
+            cradius.push_back(r)
+        
+        ret = occ.fillet(cvertices, cradius)
+            
+        if ret != 0:
+            raise OCCError('Failed to create fillet')
+        
+        return self
+    
+    cpdef chamfer(self, distance, vertices = None):
+        '''
+        Chamfer vertices inplace.
+        
+        :distance: sequence of distances or single distance.
+        :vertices: sequence of vertices or single vertex. Setting the
+                  argument to None will select all vertices (default)
+        '''
+        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
+        cdef vector[c_OCCVertex *] cvertices
+        cdef vector[double] cdistance
+        cdef Vertex vertex
+        cdef double dist
+        cdef int ret
+        
+        if vertices is None:
+            vertices = tuple(VertexIterator(self))
+            
+        elif isinstance(vertices, Vertex):
+            vertices = (vertices,)
+            
+        for vertex in vertices:
+            cvertices.push_back((<c_OCCVertex *>vertex.thisptr))
+        
+        if isinstance(distance, (float, int)):
+            distance = (distance,)
+        
+        for dist in distance:
+            cdistance.push_back(dist)
+        
+        ret = occ.chamfer(cvertices, cdistance)
+            
+        if ret != 0:
+            raise OCCError('Failed to create chamfer')
+        
         return self
         
     cpdef tesselate(self, double factor = .1, double angle = .1):

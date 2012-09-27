@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-    
+
+JOINTYPE_ARC = 0
+JOINTYPE_TANGENT = 1
+JOINTYPE_INTERSECTION = 2
+
 cdef class Base:
     '''
     Definition of virtual base object
