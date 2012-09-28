@@ -139,7 +139,9 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
             {
                 Handle_Geom_Surface surface = BRep_Tool::Surface(face);
                 
-                gp_Pnt vertex(mesh->vertices[i][0], mesh->vertices[i][1], mesh->vertices[i][2]);
+                gp_Pnt vertex(mesh->vertices[vsize + i][0],
+                              mesh->vertices[vsize + i][1],
+                              mesh->vertices[vsize + i][2]);
                 GeomAPI_ProjectPointOnSurf SrfProp(vertex, surface);
                 Standard_Real fU, fV; SrfProp.Parameters(1, fU, fV);
 

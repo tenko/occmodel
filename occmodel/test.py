@@ -367,16 +367,15 @@ e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 solid = Solid().sweep(w1, e1, cornerMode = SWEEP_RIGHT_CORNER)
 print solid.volume()
 '''
-w1 = Wire().createPolygon((
-    (0.,0.,0.),
-    (1.,0.,0.),
-    (0.,1.,0.)),
-    close = True
-)
+start = Vertex(0.,0.,0.)
+end = Vertex(1.,0.,1.)
+cen = (1.,0.,0.)
+e1 = Edge().createArc(start,end,cen)
 
-f1 = Face().createFace(w1)
-f2 = f1.copy().offset(0.25)
-print f2.area()
-solid = Solid().offset(f1, 0.25, 1e-6)
-print solid.isValid()
-print solid.volume()
+e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+face = Face().createFace(e2)
+e3 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .8)
+face.cut(e3)
+
+s1 = Solid().pipe(face, e1)
+print s1.volume()
