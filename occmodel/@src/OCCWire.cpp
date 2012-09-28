@@ -50,6 +50,35 @@ int OCCWire::createWire(std::vector<OCCEdge *> edges)
     return 0;
 }
 
+int OCCWire::project(OCCBase *face) {
+    std::vector<TopoDS_Wire> wires;
+    std::vector<TopoDS_Edge> edges;
+    TopExp_Explorer ex;
+    try {
+        BRepOffsetAPI_NormalProjection NP(face->getShape());
+        NP.SetLimit(Standard_True);
+        NP.Add(this->getWire());
+        NP.Build();
+        if (!NP.IsDone())
+            return 1;
+        
+        for (ex.Init(NP.Shape(), TopAbs_EDGE); ex.More(); ex.Next()) {
+            if (!ex.Current().IsNull()) {
+                edges.push_back(TopoDS::Edge(ex.Current()));
+            }
+        }
+        connectEdges(edges, wires);
+        if (wires.size() != 1)
+            return 1;
+        
+        this->setShape(wires[0]);
+        
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;
+}
+
 int OCCWire::offset(double distance, int joinType = 0) {
     try {
         GeomAbs_JoinType join = GeomAbs_Arc;
@@ -68,7 +97,6 @@ int OCCWire::offset(double distance, int joinType = 0) {
         return 1;
     }
     return 0;
-
 }
 
 int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radius) {

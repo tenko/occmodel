@@ -79,6 +79,20 @@ cdef class Wire(Base):
             
         return self
     
+    cpdef project(self, Face face):
+        '''
+        Project wire towards face
+        '''
+        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
+        cdef int ret
+        
+        ret = occ.project(<c_OCCBase *>face.thisptr)
+            
+        if ret != 0:
+            raise OCCError('Failed to project wire')
+            
+        return self
+        
     cpdef offset(self, double distance, int joinType = JOINTYPE_ARC):
         '''
         Offset wire inplace the given distance.

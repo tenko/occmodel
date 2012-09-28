@@ -410,6 +410,7 @@ face = Face().sweep(e2, e1)
 print face.isValid()
 '''
 
+'''
 e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 e2 = Edge().createCircle(center=(-1.,0.,0.),normal=(0.,0.,1.),radius = .5)
 e3 = Edge().createCircle(center=(1.,0.,0.),normal=(0.,0.,1.),radius = .5)
@@ -417,3 +418,10 @@ w1 = Wire().createWire(e1)
 print w1.length()
 w1.cut((e2,e3))
 print w1.length()
+'''
+
+face = Face().createPolygonal(((0.,0.,0.),(1.,1.,0.),(1.,1.,1.),(0.,0.,1.)))
+e1 = Edge().createCircle(center=(.5,0.2,.5),normal=(0.,1.,0.),radius = .25)
+w1 = Wire().createWire(e1)
+w1.project(face)
+print w1.isValid()

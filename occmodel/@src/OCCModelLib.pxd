@@ -71,6 +71,7 @@ cdef extern from "OCCModel.h":
         int numEdges()
         vector[vector[double]] tesselate(double factor, double angle)
         int createWire(vector[c_OCCEdge *] edges)
+        int project(c_OCCBase *face)
         int offset(double distance, int joinType)
         int fillet(vector[c_OCCVertex *] vertices, vector[double] radius)
         int chamfer(vector[c_OCCVertex *] vertices, vector[double] distances)

@@ -159,6 +159,7 @@ class OCCWire : public OCCBase {
         int numVertices();
         int numEdges();
         int createWire(std::vector<OCCEdge *> edges);
+        int project(OCCBase *face);
         int offset(double distance, int joinType);
         int fillet(std::vector<OCCVertex *> vertices, std::vector<double> radius);
         int chamfer(std::vector<OCCVertex *> vertices, std::vector<double> distances);
