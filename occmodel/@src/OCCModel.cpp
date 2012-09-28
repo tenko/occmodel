@@ -78,6 +78,13 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
             dtmp.push_back(z);
             mesh->vertices.push_back(dtmp);
             
+            // ensure we have normals for all vertices
+            dtmp.clear();
+            dtmp.push_back(0.);
+            dtmp.push_back(0.);
+            dtmp.push_back(0.);
+            mesh->normals.push_back(dtmp);
+            
             if (!qualityNormals)
                 normals.push_back(gp_Vec(0.0,0.0,0.0));
         }
@@ -127,7 +134,7 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
         }
         
         if (qualityNormals) {
-            gp_Dir normal;
+            gp_Vec normal;
             for (int i = 0; i < tri->NbNodes(); i++)
             {
                 Handle_Geom_Surface surface = BRep_Tool::Surface(face);
@@ -139,6 +146,9 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
                 GeomLProp_SLProps faceprop(surface, fU, fV, 2, gp::Resolution());
                 normal = faceprop.Normal();
                 
+                if (normal.SquareMagnitude() > 1.0e-10)
+                    normal.Normalize();
+                
                 dtmp.clear();
                 if (reversed) {
                     dtmp.push_back(-normal.X());
@@ -149,19 +159,20 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
                     dtmp.push_back(normal.Y());
                     dtmp.push_back(normal.Z());
                 }
-                mesh->normals.push_back(dtmp);
+                mesh->normals[vsize + i] = dtmp;
             }
         } else {
             // Normalize vertex normals
             for (int i = 0; i < tri->NbNodes(); i++)
             {
                 gp_Vec normal = normals[i];
-                normal.Normalize();
+                if (normal.SquareMagnitude() > 1.0e-10)
+                    normal.Normalize();
                 dtmp.clear();
                 dtmp.push_back(normal.X());
                 dtmp.push_back(normal.Y());
                 dtmp.push_back(normal.Z());
-                mesh->normals.push_back(dtmp);
+                mesh->normals[vsize + i] = dtmp;
             }
         }
         
