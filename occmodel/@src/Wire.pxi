@@ -359,6 +359,78 @@ cdef class Wire(Base):
         
         self.createPolygon(points)
         return self
+    
+    cpdef cut(self, arg):
+        '''
+        Create boolean difference inplace.
+        The wire must be planar and the operation
+        must result in a single wire.
+        
+        Multiple objects are supported.
+        
+        Edges, wires and faces are extruded in the normal
+        directions to intersect the wire.
+        '''
+        cdef c_OCCWire *tmp
+        cdef Face face = Face().createFace(self)
+        cdef Wire wire
+        
+        face.cut(arg)
+        
+        it = WireIterator(face)
+        wire = next(it)
+        try:
+            next(it)
+        except StopIteration:
+            pass
+        else:
+            raise OCCError('multiple wires created')
+        
+        # remove object
+        tmp = <c_OCCWire *>self.thisptr
+        del tmp
+        
+        # set to copy
+        tmp = <c_OCCWire *>wire.thisptr
+        self.thisptr = tmp.copy(False)
+        
+        return self
+    
+    cpdef common(self, arg):
+        '''
+        Create boolean intersection inplace.
+        The wire must be planar and the operation
+        must result in a single wire.
+        
+        Multiple objects are supported.
+        
+        Edges, wires and faces are extruded in the normal
+        directions to intersect the wire.
+        '''
+        cdef c_OCCWire *tmp
+        cdef Face face = Face().createFace(self)
+        cdef Wire wire
+        
+        face.common(arg)
+        
+        it = WireIterator(face)
+        wire = next(it)
+        try:
+            next(it)
+        except StopIteration:
+            pass
+        else:
+            raise OCCError('multiple wires created')
+        
+        # remove object
+        tmp = <c_OCCWire *>self.thisptr
+        del tmp
+        
+        # set to copy
+        tmp = <c_OCCWire *>wire.thisptr
+        self.thisptr = tmp.copy(False)
+        
+        return self
         
     cpdef double length(self):
         '''

@@ -95,6 +95,8 @@ cdef extern from "OCCModel.h":
         int createPolygonal(vector[vector[double]] points)
         int extrude(c_OCCEdge *edge, vector[double] p1, vector[double] p2)
         int revolve(c_OCCEdge *edge, vector[double] p1, vector[double] p2, double angle)
+        int sweep(c_OCCWire *spine, vector[c_OCCBase *] profiles, int cornerMode)
+        int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
         int cut(c_OCCSolid *tool)
         int common(c_OCCSolid *tool)
         c_OCCMesh *createMesh(double factor, double angle, bint qualityNormals)

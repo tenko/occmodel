@@ -241,7 +241,76 @@ cdef class Face(Base):
             raise OCCError('Failed to create face')
             
         return self
-    
+
+    cpdef sweep(self, spine, profiles, int cornerMode = 0):
+        '''
+        Create face or shell by sweeping along spine through
+        sequence of wires. Optionally the start and
+        end can be a vertex.
+        '''
+        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        cdef vector[c_OCCBase *] cprofiles
+        cdef Wire cspine
+        cdef Base cobj
+        cdef int ret
+        
+        if isinstance(spine, Edge):
+            cspine = Wire().createWire((spine,))
+        else:
+            cspine = spine
+        
+        if not isinstance(profiles, (tuple, list)):
+            profiles = (profiles,)
+        
+        ref = []        
+        for obj in profiles:
+            if isinstance(obj, Edge):
+                obj = Wire().createWire((obj,))
+                # keep reference to temporary object
+                ref.append(obj)
+            elif not isinstance(obj, (Wire, Vertex)):
+                raise OCCError('Expected wire, edge or vertex')
+            cobj = obj
+            cprofiles.push_back((<c_OCCBase *>cobj.thisptr))
+        
+        ret = occ.sweep(<c_OCCWire *>cspine.thisptr, cprofiles, cornerMode)
+        
+        if ret != 0:
+            raise OCCError('Failed to perform sweep')
+            
+        return self
+        
+    cpdef loft(self, profiles, bint ruled = True, double tolerance = 1e-6):
+        '''
+        Create face by lofting through sequence
+        of edges, wires and optional a vertex
+        at the start and end.
+        
+        ruled - smooth or rules faces
+        '''
+        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        cdef vector[c_OCCBase *] cprofiles
+        cdef Base cobj
+        cdef int ret
+        
+        ref = []
+        for obj in profiles:
+            if isinstance(obj, Edge):
+                obj = Wire().createWire((obj,))
+                # keep reference to temporary object
+                ref.append(obj)
+            elif not isinstance(obj, (Wire, Vertex)):
+                raise OCCError('Expected wire, edge or vertex')
+            cobj = obj
+            cprofiles.push_back((<c_OCCBase *>cobj.thisptr))
+        
+        ret = occ.loft(cprofiles, ruled, tolerance)
+        
+        if ret != 0:
+            raise OCCError('Failed to loft profiles')
+            
+        return self
+        
     cdef boolean(self, arg, char *op):
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef Solid tool
@@ -307,6 +376,8 @@ cdef class Face(Base):
     cpdef cut(self, arg):
         '''
         Create boolean difference inplace.
+        The face must be planar and the operation
+        must result in a single face.
         
         Multiple objects are supported.
         
@@ -318,6 +389,8 @@ cdef class Face(Base):
     cpdef common(self, arg):
         '''
         Create boolean intersection inplace.
+        The face must be planar and the operation
+        must result in a single face.
         
         Multiple objects are supported.
         

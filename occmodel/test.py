@@ -367,6 +367,8 @@ e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
 solid = Solid().sweep(w1, e1, cornerMode = SWEEP_RIGHT_CORNER)
 print solid.volume()
 '''
+
+'''
 start = Vertex(0.,0.,0.)
 end = Vertex(1.,0.,1.)
 cen = (1.,0.,0.)
@@ -379,3 +381,39 @@ face.cut(e3)
 
 s1 = Solid().pipe(face, e1)
 print s1.volume()
+'''
+
+'''
+start = Vertex(0.,0.,0.)
+end = Vertex(1.,0.,1.)
+cen = (1.,0.,0.)
+e1 = Edge().createArc(start,end,cen)
+
+start = Vertex(0.,1.,0.)
+end = Vertex(2.,1.,2.)
+cen = (2.,1.,0.)
+e2 = Edge().createArc(start,end,cen)
+
+face = Face().loft((e1,e2))
+print face.isValid()
+'''
+
+'''
+start = Vertex(0.,0.,0.)
+end = Vertex(1.,0.,1.)
+cen = (1.,0.,0.)
+e1 = Edge().createArc(start,end,cen)
+
+e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+
+face = Face().sweep(e2, e1)
+print face.isValid()
+'''
+
+e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+e2 = Edge().createCircle(center=(-1.,0.,0.),normal=(0.,0.,1.),radius = .5)
+e3 = Edge().createCircle(center=(1.,0.,0.),normal=(0.,0.,1.),radius = .5)
+w1 = Wire().createWire(e1)
+print w1.length()
+w1.cut((e2,e3))
+print w1.length()

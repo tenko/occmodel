@@ -158,6 +158,64 @@ int OCCFace::revolve(OCCEdge *edge, DVec p1, DVec p2, double angle)
     return 0;
 }
 
+int OCCFace::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode = 0)
+{
+    try {
+        BRepOffsetAPI_MakePipeShell PS(spine->getWire());
+        // set corner mode
+        switch (cornerMode) {
+            case 1: PS.SetTransitionMode(BRepBuilderAPI_RightCorner);
+                break;
+            case 2: PS.SetTransitionMode(BRepBuilderAPI_RoundCorner);
+                break;
+            default: PS.SetTransitionMode(BRepBuilderAPI_Transformed);
+                break;
+        }
+        // add profiles
+        for (unsigned i=0; i<profiles.size(); i++) {
+            PS.Add(profiles[i]->getShape());
+        }
+        if (!PS.IsReady()) {
+            return 1;
+        }
+        PS.Build();
+        
+        this->setShape(PS.Shape());
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;
+}
+
+int OCCFace::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
+{
+    try {
+        Standard_Boolean isSolid = Standard_False;
+        Standard_Boolean isRuled = Standard_True;
+        
+        if (!ruled) isRuled = Standard_False;
+        
+        BRepOffsetAPI_ThruSections TS(isSolid, isRuled, tolerance);
+        
+        for (unsigned i=0; i<profiles.size(); i++) {
+            if (profiles[i]->getShape().ShapeType() == TopAbs_WIRE) {
+                TS.AddWire(TopoDS::Wire(profiles[i]->getShape()));
+            } else {
+                TS.AddVertex(TopoDS::Vertex(profiles[i]->getShape()));
+            }
+        }
+        //TS.CheckCompatibility(Standard_False);  
+        TS.Build();
+        if (!TS.IsDone()) {
+            return 1;
+        }
+        this->setShape(TS.Shape());
+    } catch(Standard_Failure &err) {
+        return 1;
+    }
+    return 0;
+}
+
 int OCCFace::cut(OCCSolid *tool) {
     BRepAlgoAPI_Cut BO (getShape(), tool->getShape());
     if (!BO.IsDone()) {

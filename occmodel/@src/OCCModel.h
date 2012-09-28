@@ -207,6 +207,8 @@ class OCCFace : public OCCBase {
         int offset(double offset, double tolerance);
         int extrude(OCCEdge *edge, DVec p1, DVec p2);
         int revolve(OCCEdge *edge, DVec p1, DVec p2, double angle);
+        int sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode);
+        int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
         int cut(OCCSolid *tool);
         int common(OCCSolid *tool);
         OCCMesh *createMesh(double defle, double angle, bool qualityNormals);
