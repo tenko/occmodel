@@ -25,6 +25,21 @@ cdef class Edge(Base):
     
     def __iter__(self):
         return VertexIterator(self)
+    
+    cpdef bint isSeam(self, Face face):
+        '''
+        Check if edge is a seam on face
+        '''
+        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        return occ.isSeam(<c_OCCBase *>face.thisptr)
+    
+    cpdef bint isDegenerated(self):
+        '''
+        Check if edge is degenerated e.g. collapsed etc.
+        '''
+        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        return occ.isDegenerated()
+        
         
     cpdef Edge copy(self, bint deepCopy = False):
         '''
