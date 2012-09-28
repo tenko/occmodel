@@ -177,6 +177,22 @@ cdef class Face(Base):
         cdef vector[double] cg = occ.centreOfMass()
         return cg[0],cg[1],cg[2]
         
+    
+    cpdef offset(self, double offset, double tolerance = 1e-6):
+        '''
+        Offseting face given distance.
+        
+        :offset: offset distance
+        '''
+        cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        cdef int ret
+        
+        ret = occ.offset(offset, tolerance)
+            
+        if ret != 0:
+            raise OCCError('Offset operation failed')
+        
+        return self
         
     cpdef extrude(self, Edge edge, p1, p2):
         '''

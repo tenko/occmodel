@@ -101,6 +101,17 @@ DVec OCCFace::centreOfMass() {
     return ret;
 }
 
+int OCCFace::offset(double offset, double tolerance = 1e-6) {
+    BRepOffset_MakeOffset MO(this->getShape(), offset, tolerance, BRepOffset_Skin,
+                             Standard_False, Standard_False, GeomAbs_Arc, Standard_False);
+    
+    if (!MO.IsDone())
+        return 1;
+    
+    this->setShape(MO.Shape());
+    return 0;
+}
+
 int OCCFace::createPolygonal(std::vector<DVec> points)
 {
     try {

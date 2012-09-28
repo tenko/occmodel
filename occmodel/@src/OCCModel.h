@@ -198,6 +198,7 @@ class OCCFace : public OCCBase {
         DVec centreOfMass();
         std::vector<DVec> tesselate(double factor, double angle);
         int createPolygonal(std::vector<DVec> points);
+        int offset(double offset, double tolerance);
         int extrude(OCCEdge *edge, DVec p1, DVec p2);
         int revolve(OCCEdge *edge, DVec p1, DVec p2, double angle);
         int cut(OCCSolid *tool);
@@ -261,6 +262,7 @@ class OCCSolid : public OCCBase {
         int fillet(std::vector<OCCEdge *> edges, std::vector<double> radius);
         int chamfer(std::vector<OCCEdge *> edges, std::vector<double> distances);
         int shell(std::vector<OCCFace *> faces, double offset, double tolerance);
+        int offset(OCCFace *face, double offset, double tolerance);
         OCCFace *section(DVec pnt, DVec nor);
         int writeBREP(const char *);  
         int readBREP(const char *);  

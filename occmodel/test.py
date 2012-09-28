@@ -371,20 +371,12 @@ w1 = Wire().createPolygon((
     (0.,0.,0.),
     (1.,0.,0.),
     (0.,1.,0.)),
-    close = False
+    close = True
 )
 
-w1.chamfer(0.25)
-
-'''
-vert = tuple(VertexIterator(w1))[1]
-print vert
-print w1.length()
-w1.chamfer(0.1, vert)
-print tuple(VertexIterator(w1))
-#w1.fillet(0.01)
-print w1.length()
-for e in w1:
-    print e
-'''
-print w1.tesselate()
+f1 = Face().createFace(w1)
+f2 = f1.copy().offset(0.25)
+print f2.area()
+solid = Solid().offset(f1, 0.25, 1e-6)
+print solid.isValid()
+print solid.volume()

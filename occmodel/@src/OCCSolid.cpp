@@ -518,6 +518,17 @@ int OCCSolid::shell(std::vector<OCCFace *> faces, double offset, double toleranc
     return 0;
 }
 
+int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
+    BRepOffset_MakeOffset MO(face->getShape(), offset, tolerance, BRepOffset_Skin,
+                             Standard_False, Standard_False, GeomAbs_Arc, Standard_True);
+    
+    if (!MO.IsDone())
+        return 1;
+    
+    this->setShape(MO.Shape());
+    return 0;
+}
+
 // FIXME!: Return vector of faces
 // See FreeCad/CrossSection.cpp
 //

@@ -657,7 +657,24 @@ cdef class Solid(Base):
             raise OCCError('Shell operation failed')
         
         return self
-    
+
+    cpdef offset(self, Face face, double offset, double tolerance = 1e-6):
+        '''
+        Create solid by offseting face given distance.
+        
+        :face: face object
+        :offset: offset distance
+        '''
+        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef int ret
+        
+        ret = occ.offset(<c_OCCFace *>face.thisptr, offset, tolerance)
+            
+        if ret != 0:
+            raise OCCError('Offset operation failed')
+        
+        return self
+        
     cpdef section(self, Plane plane):
         '''
         Apply section operation between solid and plane.
