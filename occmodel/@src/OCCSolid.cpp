@@ -419,7 +419,17 @@ int OCCSolid::chamfer(std::vector<OCCEdge *> edges, std::vector<double> distance
     
     for (unsigned i=0; i<edges.size(); i++) {
             OCCEdge *edge = edges[i];
+            
+            // skip degenerated edge
+            if (BRep_Tool::Degenerated(edge->getEdge()))
+                continue;
+        
             const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge->getEdge()).First());
+            
+            // skip edge if it is a seam
+            if (BRep_Tool::IsClosed(edge->getEdge(), face))
+                continue;
+            
             
             if (distances_size == 1) {
                 // single distance
@@ -457,8 +467,23 @@ int OCCSolid::fillet(std::vector<OCCEdge *> edges, std::vector<double> radius) {
     int radius_size = radius.size();
     BRepFilletAPI_MakeFillet fill(solid);
     
+    TopTools_IndexedDataMapOfShapeListOfShape mapEdgeFace;
+    TopExp::MapShapesAndAncestors(solid, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
+    
     for (unsigned i=0; i<edges.size(); i++) {
             OCCEdge *edge = edges[i];
+        
+            // skip degenerated edge
+            if (BRep_Tool::Degenerated(edge->getEdge()))
+                continue;
+            
+            
+            const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge->getEdge()).First());
+            
+            // skip edge if it is a seam
+            if (BRep_Tool::IsClosed(edge->getEdge(), face))
+                continue;
+            
             if (radius_size == 1) {
                 // single radius
                 fill.Add(radius[0], edge->getEdge());
