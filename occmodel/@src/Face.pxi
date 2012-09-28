@@ -58,15 +58,17 @@ cdef class Face(Base):
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         return occ.numFaces()
         
-    cpdef Mesh createMesh(self, double factor = .01, double angle = .25):
+    cpdef Mesh createMesh(self, double factor = .01, double angle = .25,
+                          bint qualityNormals = False):
         '''
         Create triangle mesh of face.
         
         factor - deflection from true position
         angle - max angle
+        qualityNormals - create normals by evaluating surface parameters
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
-        cdef c_OCCMesh *mesh = occ.createMesh(factor, angle)
+        cdef c_OCCMesh *mesh = occ.createMesh(factor, angle, qualityNormals)
         cdef Mesh ret = Mesh.__new__(Mesh, None)
         
         if mesh == NULL:

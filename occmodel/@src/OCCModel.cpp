@@ -43,7 +43,7 @@ void printShapeType(const TopoDS_Shape& shape)
     }
 }
 
-int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh)
+int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals = false)
 {
     int vsize = mesh->vertices.size();
     std::vector<gp_Vec> normals;
@@ -78,7 +78,8 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh)
             dtmp.push_back(z);
             mesh->vertices.push_back(dtmp);
             
-            normals.push_back(gp_Vec(0.0,0.0,0.0));
+            if (!qualityNormals)
+                normals.push_back(gp_Vec(0.0,0.0,0.0));
         }
         
         if (face.Orientation() == TopAbs_REVERSED)
@@ -118,22 +119,52 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh)
             itmp.push_back(vsize + n3 - 1);
             mesh->triangles.push_back(itmp);
             
-            normals[n1 - 1] = normals[n1 - 1] + normal;
-            normals[n2 - 1] = normals[n2 - 1] + normal;
-            normals[n3 - 1] = normals[n3 - 1] + normal;
+            if (!qualityNormals) {
+                normals[n1 - 1] = normals[n1 - 1] - normal;
+                normals[n2 - 1] = normals[n2 - 1] - normal;
+                normals[n3 - 1] = normals[n3 - 1] - normal;
+            }
         }
         
-        // Normalize vertex normals
-        for (int i = 0; i < tri->NbNodes(); i++)
-        {
-            gp_Vec normal = normals[i];
-            normal.Normalize();
-            dtmp.clear();
-            dtmp.push_back(normal.X());
-            dtmp.push_back(normal.Y());
-            dtmp.push_back(normal.Z());
-            mesh->normals.push_back(dtmp);
+        if (qualityNormals) {
+            gp_Dir normal;
+            for (int i = 0; i < tri->NbNodes(); i++)
+            {
+                Handle_Geom_Surface surface = BRep_Tool::Surface(face);
+                
+                gp_Pnt vertex(mesh->vertices[i][0], mesh->vertices[i][1], mesh->vertices[i][2]);
+                GeomAPI_ProjectPointOnSurf SrfProp(vertex, surface);
+                Standard_Real fU, fV; SrfProp.Parameters(1, fU, fV);
+
+                GeomLProp_SLProps faceprop(surface, fU, fV, 2, gp::Resolution());
+                normal = faceprop.Normal();
+                
+                dtmp.clear();
+                if (reversed) {
+                    dtmp.push_back(-normal.X());
+                    dtmp.push_back(-normal.Y());
+                    dtmp.push_back(-normal.Z());
+                } else {
+                    dtmp.push_back(normal.X());
+                    dtmp.push_back(normal.Y());
+                    dtmp.push_back(normal.Z());
+                }
+                mesh->normals.push_back(dtmp);
+            }
+        } else {
+            // Normalize vertex normals
+            for (int i = 0; i < tri->NbNodes(); i++)
+            {
+                gp_Vec normal = normals[i];
+                normal.Normalize();
+                dtmp.clear();
+                dtmp.push_back(normal.X());
+                dtmp.push_back(normal.Y());
+                dtmp.push_back(normal.Z());
+                mesh->normals.push_back(dtmp);
+            }
         }
+        
     } catch(Standard_Failure &err) {
         //Handle_Standard_Failure e = Standard_Failure::Caught();
         //printf("ERROR: %s\n", e->GetMessageString());

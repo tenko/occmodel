@@ -223,7 +223,7 @@ int OCCFace::common(OCCSolid *tool) {
     return 0;
 }
 
-OCCMesh *OCCFace::createMesh(double factor, double angle)
+OCCMesh *OCCFace::createMesh(double factor, double angle, bool qualityNormals = true)
 {
     OCCMesh *mesh = new OCCMesh();
     
@@ -247,14 +247,13 @@ OCCMesh *OCCFace::createMesh(double factor, double angle)
         BRepMesh::Mesh(this->getShape(),factor*maxd);
         
         if (this->getShape().ShapeType() != TopAbs_FACE) {
-            // TODO : Handle comp solid!!
             TopExp_Explorer exFace;
             for (exFace.Init(this->getShape(), TopAbs_FACE); exFace.More(); exFace.Next()) {
                 const TopoDS_Face& faceref = TopoDS::Face(exFace.Current());
-                extractFaceMesh(faceref, mesh);
+                extractFaceMesh(faceref, mesh, qualityNormals);
             }
         } else {
-            extractFaceMesh(this->getFace(), mesh);
+            extractFaceMesh(this->getFace(), mesh, qualityNormals);
         }
     } catch(Standard_Failure &err) {
         //Handle_Standard_Failure e = Standard_Failure::Caught();

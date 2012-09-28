@@ -61,7 +61,7 @@ int OCCSolid::numFaces()
     return anIndices.Extent();
 }
 
-OCCMesh *OCCSolid::createMesh(double factor, double angle)
+OCCMesh *OCCSolid::createMesh(double factor, double angle, bool qualityNormals = true)
 {
     OCCMesh *mesh = new OCCMesh();
     const TopoDS_Shape& shape = this->getShape();
@@ -90,7 +90,7 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
                 for (exFace.Init(solid, TopAbs_FACE); exFace.More(); exFace.Next()) {
                     const TopoDS_Face& face = TopoDS::Face(exFace.Current());
                     if (face.IsNull()) continue;
-                    extractFaceMesh(face, mesh);
+                    extractFaceMesh(face, mesh, qualityNormals);
                 }
             }
         }  else {
@@ -98,7 +98,7 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle)
             for (exFace.Init(shape, TopAbs_FACE); exFace.More(); exFace.Next()) {
                 const TopoDS_Face& face = TopoDS::Face(exFace.Current());
                 if (face.IsNull()) continue;
-                extractFaceMesh(face, mesh);
+                extractFaceMesh(face, mesh, qualityNormals);
             }
         }
     } catch(Standard_Failure &err) {

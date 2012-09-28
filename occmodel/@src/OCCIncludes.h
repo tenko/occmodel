@@ -20,6 +20,7 @@ using std::iostream;
 #include <gce_MakePln.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 #include <ElCLib.hxx>
+#include <GeomLProp_SLProps.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_BezierCurve.hxx>

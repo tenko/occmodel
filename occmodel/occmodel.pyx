@@ -52,8 +52,8 @@ cdef class Mesh:
         return "Mesh%s" % repr(self)
     
     def __repr__(self):
-        args = self.nvertices(), self.ntriangles()
-        return "(nvertices = %d, ntriangles = %d)" % args
+        args = self.nvertices(), self.ntriangles(), self.nnormals()
+        return "(nvertices = %d, ntriangles = %d, nnormals = %d)" % args
     
     cpdef size_t nvertices(self):
         '''
@@ -69,6 +69,13 @@ cdef class Mesh:
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
         return occ.triangles.size()
     
+    cpdef size_t nnormals(self):
+        '''
+        Return number of normals
+        '''
+        cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
+        return occ.normals.size()
+        
     cpdef vertex(self, size_t index):
         '''
         Return vertex at given index

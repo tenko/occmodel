@@ -103,6 +103,12 @@ class OCCEdge : public OCCBase {
     public:
         TopoDS_Edge edge;
         OCCEdge() { ; }
+        bool isSeam(OCCBase *face) {
+            return BRep_Tool::IsClosed (this->getEdge(), TopoDS::Face(face->getShape()));
+        }
+        bool isDegenerated() {
+            return BRep_Tool::Degenerated(this->getEdge());
+        }
         OCCEdge *copy(bool deepCopy);
         int numVertices();
         std::vector<DVec> tesselate(double factor, double angle);
@@ -203,7 +209,7 @@ class OCCFace : public OCCBase {
         int revolve(OCCEdge *edge, DVec p1, DVec p2, double angle);
         int cut(OCCSolid *tool);
         int common(OCCSolid *tool);
-        OCCMesh *createMesh(double defle, double angle);
+        OCCMesh *createMesh(double defle, double angle, bool qualityNormals);
         const TopoDS_Shape& getShape() { return face; }
         const TopoDS_Face& getFace() { return TopoDS::Face(face); }
         const TopoDS_Shell& getShell() { return TopoDS::Shell(face); }
@@ -243,7 +249,7 @@ class OCCSolid : public OCCBase {
         double volume();
         DVec inertia();
         DVec centreOfMass();
-        OCCMesh *createMesh(double defle, double angle);
+        OCCMesh *createMesh(double defle, double angle, bool qualityNormals);
         int addSolids(std::vector<OCCSolid *> solids);
         int createSphere(DVec center, double radius);
         int createCylinder(DVec p1, DVec p2, double radius);
@@ -299,5 +305,5 @@ class OCCSolidIterator {
 };
 
 void printShapeType(const TopoDS_Shape& shape);
-int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh);
+int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals);
 void connectEdges (std::vector<TopoDS_Edge>& edges, std::vector<TopoDS_Wire>& wires);

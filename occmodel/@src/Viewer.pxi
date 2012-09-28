@@ -520,10 +520,9 @@ cdef class Viewer(Viewport):
         
         glDepthRange(0., 1.)
         glClearDepth(1.)
-        glDepthFunc(GL_LEQUAL)
+        #glDepthFunc(GL_LEQUAL)
         glEnable(GL_DEPTH_TEST)
         glDepthMask(GL_TRUE)
-        glEnable(GL_DEPTH_TEST)
         
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
@@ -537,6 +536,7 @@ cdef class Viewer(Viewport):
     
     def OnDraw(self):
         cdef float material[4]
+        cdef float backMaterial[4]
         
         DEFCOL = COLORS['grey']
         
@@ -548,8 +548,8 @@ cdef class Viewer(Viewport):
         material[:] = [0.,0.,0.,0.]
         glLightModelfv(GL_LIGHT_MODEL_AMBIENT, material)
 
-        glFrontFace(GL_CCW)
         glDisable(GL_CULL_FACE)
+        glLightModeli (GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
         
         if self.dls is None:
             dls = self.dls = set()
@@ -564,14 +564,21 @@ cdef class Viewer(Viewport):
                     
                     material[:] = [1.,1.,1.,1.]
                     glMaterialfv(GL_FRONT, GL_SPECULAR, material)
+                    glMaterialfv(GL_BACK, GL_SPECULAR, material)
                     material[:] = [100.,100.,100.,100.]
                     glMaterialfv(GL_FRONT, GL_SHININESS, material)
+                    glMaterialfv(GL_BACK, GL_SHININESS, material)
                     
                     color = COLORS.get(color, DEFCOL)
                     for i in range(4):
                         material[i] = color[i]
+                        if i < 3:
+                            backMaterial[i] = .8*color[i]
+                        else:
+                            backMaterial[i] = color[i]
                     
                     glMaterialfv(GL_FRONT, GL_DIFFUSE, material)
+                    glMaterialfv(GL_BACK, GL_DIFFUSE, backMaterial)
                     
                     glBegin(GL_TRIANGLES)
                     obj.GLTriangles()
@@ -876,7 +883,7 @@ def demo():
     viewer = DemoViewer(800,800)
     viewer.Show()
     
-def viewer(objs, colors = None):
+def viewer(objs, colors = None, bint qualityNormals = False):
     '''
     View object or sequence of objects.
     Edges, faces and solids are supported.
@@ -894,7 +901,7 @@ def viewer(objs, colors = None):
         
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
         if isinstance(obj, (Face,Solid)):
-            data = obj.createMesh()
+            data = obj.createMesh(qualityNormals = qualityNormals)
         else:
             data = obj.tesselate()
         

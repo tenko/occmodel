@@ -42,6 +42,8 @@ cdef extern from "OCCModel.h":
         
     cdef cppclass c_OCCEdge "OCCEdge":
         c_OCCEdge()
+        bint isSeam(c_OCCBase *face)
+        bint isDegenerated()
         c_OCCEdge *copy(bint deepCopy)
         int numVertices()
         vector[vector[double]] tesselate(double factor, double angle)
@@ -95,7 +97,7 @@ cdef extern from "OCCModel.h":
         int revolve(c_OCCEdge *edge, vector[double] p1, vector[double] p2, double angle)
         int cut(c_OCCSolid *tool)
         int common(c_OCCSolid *tool)
-        c_OCCMesh *createMesh(double factor, double angle)
+        c_OCCMesh *createMesh(double factor, double angle, bint qualityNormals)
     
     cdef cppclass c_OCCFaceIterator "OCCFaceIterator":
         c_OCCFaceIterator(c_OCCBase *arg)
@@ -112,7 +114,7 @@ cdef extern from "OCCModel.h":
         double volume()
         vector[double] inertia()
         vector[double] centreOfMass()
-        c_OCCMesh *createMesh(double factor, double angle)
+        c_OCCMesh *createMesh(double factor, double angle, bint qualityNormals)
         int addSolids(vector[c_OCCSolid *] solids)
         int createSphere(vector[double] center, double radius)
         int createCylinder(vector[double] p1, vector[double] p2, double radius)
