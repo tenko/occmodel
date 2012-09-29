@@ -18,9 +18,6 @@ class test_Edge(unittest.TestCase):
         end = Vertex(-1.,0.,0.)
         e1 = Edge().createLine(end,start)
         
-        self.assertTrue(e1.start == end)
-        self.assertTrue(e1.end == start)
-        
         eq(e1.length(), 2.)
     
     def test_createArc(self):
@@ -31,9 +28,6 @@ class test_Edge(unittest.TestCase):
         cen = (1.,0.,0.)
         e1 = Edge().createArc(start,end,cen)
         
-        self.assertTrue(e1.start == start)
-        self.assertTrue(e1.end == end)
-        
         eq(e1.length(), .5*pi)
     
     def test_createArc3P(self):
@@ -43,9 +37,6 @@ class test_Edge(unittest.TestCase):
         end = Vertex(-1.,0.,0.)
         pnt = (0.,1.,0.)
         e1 = Edge().createArc3P(start,end,pnt)
-        
-        self.assertTrue(e1.start == start)
-        self.assertTrue(e1.end == end)
         
         eq(e1.length(), pi)
     
@@ -59,9 +50,6 @@ class test_Edge(unittest.TestCase):
         
         e1.createCircle(center, normal, radius)
         
-        self.assertTrue(e1.start == None)
-        self.assertTrue(e1.end == None)
-        
         eq(e1.length(), 2*pi)
     
     def test_createBezier(self):
@@ -71,9 +59,6 @@ class test_Edge(unittest.TestCase):
         end = Vertex(1.,0.,0.)
         pnts = ((0.,2.,0.), (1.,1.5,0.))
         e1 = Edge().createBezier(start,end,pnts)
-        
-        self.assertTrue(e1.start == start)
-        self.assertTrue(e1.end == end)
     
     def test_createSpline(self):
         eq = self.assertAlmostEqual
@@ -82,9 +67,6 @@ class test_Edge(unittest.TestCase):
         end = Vertex(1.,0.,0.)
         pnts = ((0.,2.,0.), (5.,1.5,0.))
         e1 = Edge().createSpline(start,end,pnts)
-        
-        self.assertTrue(e1.start == start)
-        self.assertTrue(e1.end == end)
         
 if __name__ == "__main__":
     sys.dont_write_bytecode = True
