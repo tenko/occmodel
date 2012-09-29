@@ -81,55 +81,89 @@ cdef class Edge(Base):
         
         return tuple(ret)
         
-    cpdef createLine(self, Vertex start, Vertex end):
+    cpdef createLine(self, start, end):
         '''
         Create straight line from given start and end
         points
         '''
+        cdef Vertex vstart, vend
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef int ret
         
-        ret = occ.createLine(<c_OCCVertex *>start.thisptr, <c_OCCVertex *>end.thisptr)
+        if isinstance(start, Vertex):
+            vstart = start
+        else:
+            vstart = Vertex(*start)
+        
+        if isinstance(end, Vertex):
+            vend = end
+        else:
+            vend = Vertex(*end)
+            
+        ret = occ.createLine(<c_OCCVertex *>vstart.thisptr, <c_OCCVertex *>vend.thisptr)
         
         if ret != 0:
             raise OCCError('Failed to create line')
             
         return self
     
-    cpdef createArc(self, Vertex start, Vertex end, center):
+    cpdef createArc(self, start, end, center):
         '''
         Create arc from given start, end and center points
         '''
+        cdef Vertex vstart, vend
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[double] cpnt
         cdef int ret
         
+        if isinstance(start, Vertex):
+            vstart = start
+        else:
+            vstart = Vertex(*start)
+        
+        if isinstance(end, Vertex):
+            vend = end
+        else:
+            vend = Vertex(*end)
+            
         cpnt.push_back(center[0])
         cpnt.push_back(center[1])
         cpnt.push_back(center[2])
         
-        ret = occ.createArc(<c_OCCVertex *>start.thisptr,
-                            <c_OCCVertex *>end.thisptr, cpnt)
+        ret = occ.createArc(<c_OCCVertex *>vstart.thisptr,
+                            <c_OCCVertex *>vend.thisptr, cpnt)
         
         if ret != 0:
             raise OCCError('Failed to create arc')
             
         return self
         
-    cpdef createArc3P(self, Vertex start, Vertex end, pnt):
+    cpdef createArc3P(self, start, end, pnt):
         '''
-        Create arc by fitting through given points
+        Create arc from start to end and fitting through
+        given point.
         '''
+        cdef Vertex vstart, vend
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[double] cpnt
         cdef int ret
         
+        if isinstance(start, Vertex):
+            vstart = start
+        else:
+            vstart = Vertex(*start)
+        
+        if isinstance(end, Vertex):
+            vend = end
+        else:
+            vend = Vertex(*end)
+            
         cpnt.push_back(pnt[0])
         cpnt.push_back(pnt[1])
         cpnt.push_back(pnt[2])
         
-        ret = occ.createArc3P(<c_OCCVertex *>start.thisptr,
-                              <c_OCCVertex *>end.thisptr, cpnt)
+        ret = occ.createArc3P(<c_OCCVertex *>vstart.thisptr,
+                              <c_OCCVertex *>vend.thisptr, cpnt)
         
         if ret != 0:
             raise OCCError('Failed to create arc')
@@ -199,8 +233,10 @@ cdef class Edge(Base):
         
     cpdef createBezier(self, Vertex start = None, Vertex end = None, points = None):
         '''
-        Create bezier curve from start,end and given controll
-        points.
+        Create bezier curve.
+        Optional start and end Vertex object can be given
+        otherwise start and end are extracted from the
+        points sequence.
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[vector[double]] cpoints
@@ -231,8 +267,11 @@ cdef class Edge(Base):
     cpdef createSpline(self, Vertex start = None, Vertex end = None,
                        points = None, tolerance = 1e-6):
         '''
-        Create interpolating spline from start, end and
-        given points.
+        Create interpolating spline.
+        
+        Optional start and end Vertex object can be given
+        otherwise start and end are extracted from the
+        points sequence.
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[vector[double]] cpoints
@@ -265,12 +304,16 @@ cdef class Edge(Base):
         '''
         Create NURBS curve.
         
-        start - start point
-        end - end point
+        start - optional start Vertex
+        end - optional end Vertex
         points - sequence of controll points
         knots - sequence of kont values
         weights - sequence of controll point weights
         mults - sequence of knot multiplicity
+        
+        If start and end Vertex objects are not given
+        the start and end point is given by the points
+        sequence.
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[vector[double]] cpoints
