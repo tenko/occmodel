@@ -86,9 +86,9 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle, bool qualityNormals =
         if (shape.ShapeType() == TopAbs_COMPSOLID || shape.ShapeType() == TopAbs_COMPOUND) {
             TopExp_Explorer exSolid, exFace;
             for (exSolid.Init(shape, TopAbs_SOLID); exSolid.More(); exSolid.Next()) {
-                const TopoDS_Solid& solid= TopoDS::Solid(exSolid.Current());
+                const TopoDS_Solid& solid = static_cast<const TopoDS_Solid &>(exSolid.Current());
                 for (exFace.Init(solid, TopAbs_FACE); exFace.More(); exFace.Next()) {
-                    const TopoDS_Face& face = TopoDS::Face(exFace.Current());
+                    const TopoDS_Face& face = static_cast<const TopoDS_Face &>(exFace.Current());
                     if (face.IsNull()) continue;
                     extractFaceMesh(face, mesh, qualityNormals);
                 }
@@ -96,7 +96,7 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle, bool qualityNormals =
         }  else {
             TopExp_Explorer exFace;
             for (exFace.Init(shape, TopAbs_FACE); exFace.More(); exFace.Next()) {
-                const TopoDS_Face& face = TopoDS::Face(exFace.Current());
+                const TopoDS_Face& face = static_cast<const TopoDS_Face &>(exFace.Current());
                 if (face.IsNull()) continue;
                 extractFaceMesh(face, mesh, qualityNormals);
             }
