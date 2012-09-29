@@ -87,7 +87,7 @@ cdef extern from "OCCModel.h":
         c_OCCFace *copy(bint deepCopy)
         int numWires()
         int numFaces()
-        int createFace(c_OCCWire *wire)
+        int createFace(vector[c_OCCWire *] wires)
         int createConstrained(vector[c_OCCEdge *] edges, vector[vector[double]] points)
         double area()
         vector[double] inertia()

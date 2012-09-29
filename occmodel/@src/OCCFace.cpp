@@ -41,9 +41,22 @@ int OCCFace::numWires()
     return anIndices.Extent();
 }
 
-int OCCFace::createFace(OCCWire *wire) {
+int OCCFace::createFace(std::vector<OCCWire *> wires) {
     try {
-        this->setShape(BRepBuilderAPI_MakeFace(wire->wire));
+        const TopoDS_Wire& outerwire = wires[0]->getWire();
+        BRepBuilderAPI_MakeFace MF(outerwire);
+        
+        // add optional holes
+        for (unsigned i = 1; i < wires.size(); i++) {
+            const TopoDS_Wire& wire = wires[i]->getWire();
+            if (wire.Orientation() != outerwire.Orientation()) {
+                MF.Add(TopoDS::Wire(wire.Reversed()));
+            } else {
+                MF.Add(wire);
+            }
+        }
+        this->setShape(MF.Shape());
+        
     } catch(Standard_Failure &err) {
         return 1;
     }

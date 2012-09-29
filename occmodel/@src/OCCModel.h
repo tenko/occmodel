@@ -198,7 +198,7 @@ class OCCFace : public OCCBase {
         OCCFace *copy(bool deepCopy);
         int numWires();
         int numFaces();
-        int createFace(OCCWire *wire);
+        int createFace(std::vector<OCCWire *> wires);
         int createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> points);
         double area();
         DVec inertia();

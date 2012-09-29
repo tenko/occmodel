@@ -85,17 +85,33 @@ cdef class Face(Base):
     
     cpdef createFace(self, arg):
         '''
-        Create from wire or single closed edge.
+        Create from wire or closed edge.
+        
+        Additional wires or closed edges define holes in the face.
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
+        cdef vector[c_OCCWire *] cwires
         cdef Wire wire
         
-        if isinstance(arg, Edge):
-            wire = Wire().createWire((arg,))
-        else:
-            wire = arg
+        if isinstance(arg, (Edge,Wire)):
+            arg = (arg,)
+        
+        ref = []
+        for obj in arg:
+            if isinstance(obj, Edge):
+                wire = Wire().createWire(obj)
+                # keep reference to avoid to be bitten by
+                # the garbage collector.
+                ref.append(wire)
+            else:
+                wire = obj
+                
+            if not wire.hasPlane():
+                raise OCCError('Plane not defined for object')
+                        
+            cwires.push_back(<c_OCCWire *>wire.thisptr)
             
-        occ.createFace(<c_OCCWire *>wire.thisptr)
+        occ.createFace(cwires)
         
         return self
         
