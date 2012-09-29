@@ -206,8 +206,8 @@ class OCCFace : public OCCBase {
         std::vector<DVec> tesselate(double factor, double angle);
         int createPolygonal(std::vector<DVec> points);
         int offset(double offset, double tolerance);
-        int extrude(OCCEdge *edge, DVec p1, DVec p2);
-        int revolve(OCCEdge *edge, DVec p1, DVec p2, double angle);
+        int extrude(OCCBase *shape, DVec p1, DVec p2);
+        int revolve(OCCBase *shape, DVec p1, DVec p2, double angle);
         int sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode);
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
         int cut(OCCSolid *tool);
@@ -309,4 +309,3 @@ class OCCSolidIterator {
 
 void printShapeType(const TopoDS_Shape& shape);
 int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals);
-void connectEdges (std::vector<TopoDS_Edge>& edges, std::vector<TopoDS_Wire>& wires);

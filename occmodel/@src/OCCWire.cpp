@@ -51,8 +51,8 @@ int OCCWire::createWire(std::vector<OCCEdge *> edges)
 }
 
 int OCCWire::project(OCCBase *face) {
-    std::vector<TopoDS_Wire> wires;
-    std::vector<TopoDS_Edge> edges;
+    Handle(TopTools_HSequenceOfShape) wires = new TopTools_HSequenceOfShape;
+    Handle(TopTools_HSequenceOfShape) edges = new TopTools_HSequenceOfShape;
     TopExp_Explorer ex;
     try {
         BRepOffsetAPI_NormalProjection NP(face->getShape());
@@ -64,14 +64,14 @@ int OCCWire::project(OCCBase *face) {
         
         for (ex.Init(NP.Shape(), TopAbs_EDGE); ex.More(); ex.Next()) {
             if (!ex.Current().IsNull()) {
-                edges.push_back(TopoDS::Edge(ex.Current()));
+                edges->Append(TopoDS::Edge(ex.Current()));
             }
         }
-        connectEdges(edges, wires);
-        if (wires.size() != 1)
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges,Precision::Confusion(),Standard_True,wires);
+        if (wires->Length() != 1)
             return 1;
         
-        this->setShape(wires[0]);
+        this->setShape(wires->Value(1));
         
     } catch(Standard_Failure &err) {
         return 1;

@@ -196,7 +196,7 @@ cdef class Face(Base):
         
         return self
         
-    cpdef extrude(self, Edge edge, p1, p2):
+    cpdef extrude(self, Base shape, p1, p2):
         '''
         Create extrusion face from edge and
         given points p1 and p2.
@@ -213,13 +213,13 @@ cdef class Face(Base):
         cp2.push_back(p2[1])
         cp2.push_back(p2[2])
         
-        ret = occ.extrude(<c_OCCEdge *>edge.thisptr, cp1, cp2)
+        ret = occ.extrude(<c_OCCBase *>shape.thisptr, cp1, cp2)
         if ret != 0:
             raise OCCError('Failed to create face')
             
         return self
     
-    cpdef revolve(self, Edge edge, p1, p2, double angle):
+    cpdef revolve(self, Base shape, p1, p2, double angle):
         '''
         Create revolve face from edge and given
         points p1,p2 and angle.
@@ -236,7 +236,7 @@ cdef class Face(Base):
         cp2.push_back(p2[1])
         cp2.push_back(p2[2])
         
-        ret = occ.revolve(<c_OCCEdge *>edge.thisptr, cp1, cp2, angle)
+        ret = occ.revolve(<c_OCCBase *>shape.thisptr, cp1, cp2, angle)
         if ret != 0:
             raise OCCError('Failed to create face')
             

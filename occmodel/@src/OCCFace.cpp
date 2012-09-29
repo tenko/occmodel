@@ -130,28 +130,41 @@ int OCCFace::createPolygonal(std::vector<DVec> points)
     return 0;
 }
 
-int OCCFace::extrude(OCCEdge *edge, DVec p1, DVec p2) {
+int OCCFace::extrude(OCCBase *shape, DVec p1, DVec p2) {
     try {
+        const TopoDS_Shape& shp = shape->getShape();
+        // Only accept Edge or Wire
+        TopAbs_ShapeEnum type = shp.ShapeType();
+        if (type != TopAbs_EDGE && type != TopAbs_WIRE)
+            return 1;
         gp_Vec direction(gp_Pnt(p1[0], p1[1], p1[2]),
                          gp_Pnt(p2[0], p2[1], p2[2]));
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
-
-        BRepPrimAPI_MakePrism MP(edge->getShape(), direction,
-                                 Standard_False);
-        this->setShape(TopoDS::Face(MP.Shape()));
+        BRepPrimAPI_MakePrism MP(shp, direction, Standard_False);
+        this->setShape(MP.Shape());
     } catch(Standard_Failure &err) {
+        //Handle_Standard_Failure e = Standard_Failure::Caught();
+        //printf("ERROR: %s\n", e->GetMessageString());
         return 1;
     }
     return 0;
 }
 
-int OCCFace::revolve(OCCEdge *edge, DVec p1, DVec p2, double angle)
+int OCCFace::revolve(OCCBase *shape, DVec p1, DVec p2, double angle)
 {
     try {
+        const TopoDS_Shape& shp = shape->getShape();
+        // Only accept Edge or Wire
+        TopAbs_ShapeEnum type = shp.ShapeType();
+        if (type != TopAbs_EDGE && type != TopAbs_WIRE)
+            return 1;
         gp_Dir direction(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
-        BRepPrimAPI_MakeRevol MR(edge->getShape(), axisOfRevolution, angle, Standard_False);
-        this->setShape(TopoDS::Face(MR.Shape()));
+        BRepPrimAPI_MakeRevol MR(shp, axisOfRevolution, angle, Standard_False);
+        if (!MR.IsDone()) {
+            return 1;
+        }
+        this->setShape(MR.Shape());
     } catch(Standard_Failure &err) {
         return 1;
     }

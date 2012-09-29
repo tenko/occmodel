@@ -111,6 +111,7 @@ using std::iostream;
 #include <ShapeAnalysis_ShapeContents.hxx>
 #include <ShapeAnalysis_CheckSmallFace.hxx>
 #include <ShapeAnalysis_DataMapOfShapeListOfReal.hxx>
+#include <ShapeAnalysis_FreeBounds.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepLib.hxx>
@@ -131,6 +132,7 @@ using std::iostream;
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 #include <Precision.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>

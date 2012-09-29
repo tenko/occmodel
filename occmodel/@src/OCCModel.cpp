@@ -186,36 +186,3 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
     
     return 0;
 }
-
-// connect induvidual edges to wires
-void connectEdges(std::vector<TopoDS_Edge>& edges, std::vector<TopoDS_Wire>& wires)
-{
-    std::vector<TopoDS_Edge> edge_list = edges;
-    while (edge_list.size() > 0) {
-        BRepBuilderAPI_MakeWire mkWire;
-        
-        // add and erase first edge
-        mkWire.Add(edge_list.front());
-        edge_list.erase(edge_list.begin());
-
-        TopoDS_Wire new_wire = mkWire.Wire();  // current new wire
-
-        // try to connect each edge to the wire, the wire is complete if no more egdes are connectible
-        bool found = false;
-        do {
-            found = false;
-            for (std::vector<TopoDS_Edge>::iterator pE = edge_list.begin(); pE != edge_list.end();++pE) {
-                mkWire.Add(*pE);
-                if (mkWire.Error() != BRepBuilderAPI_DisconnectedWire) {
-                    // edge added ==> remove it from list
-                    found = true;
-                    edge_list.erase(pE);
-                    new_wire = mkWire.Wire();
-                    break;
-                }
-            }
-        }
-        while (found);
-        wires.push_back(new_wire);
-    }
-}

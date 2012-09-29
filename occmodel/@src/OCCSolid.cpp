@@ -383,29 +383,41 @@ int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance
 }
 
 int OCCSolid::fuse(OCCSolid *tool) {
-    BRepAlgoAPI_Fuse BO (tool->getShape(), getShape());
-    if (!BO.IsDone()) {
-      return 1;
+    try {
+        BRepAlgoAPI_Fuse BO (tool->getShape(), getShape());
+        if (!BO.IsDone()) {
+          return 1;
+        }
+        this->setShape(BO.Shape());
+    } catch(Standard_Failure &err) {
+        return 1;
     }
-    this->setShape(BO.Shape());
     return 0;
 }
 
 int OCCSolid::cut(OCCSolid *tool) {
-    BRepAlgoAPI_Cut BO (getShape(), tool->getShape());
-    if (!BO.IsDone()) {
-      return 1;
+    try {
+        BRepAlgoAPI_Cut BO (getShape(), tool->getShape());
+        if (!BO.IsDone()) {
+          return 1;
+        }
+        this->setShape(BO.Shape());
+    } catch(Standard_Failure &err) {
+        return 1;
     }
-    this->setShape(BO.Shape());
     return 0;
 }
 
 int OCCSolid::common(OCCSolid *tool) {
-    BRepAlgoAPI_Common BO (tool->getShape(), getShape());
-    if (!BO.IsDone()) {
-      return 1;
+    try {
+        BRepAlgoAPI_Common BO (tool->getShape(), getShape());
+        if (!BO.IsDone()) {
+          return 1;
+        }
+        this->setShape(BO.Shape());
+    } catch(Standard_Failure &err) {
+        return 1;
     }
-    this->setShape(BO.Shape());
     return 0;
 }
 
@@ -544,13 +556,17 @@ int OCCSolid::shell(std::vector<OCCFace *> faces, double offset, double toleranc
 }
 
 int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
-    BRepOffset_MakeOffset MO(face->getShape(), offset, tolerance, BRepOffset_Skin,
-                             Standard_False, Standard_False, GeomAbs_Arc, Standard_True);
-    
-    if (!MO.IsDone())
+    try {
+        BRepOffset_MakeOffset MO(face->getShape(), offset, tolerance, BRepOffset_Skin,
+                                 Standard_False, Standard_False, GeomAbs_Arc, Standard_True);
+        
+        if (!MO.IsDone())
+            return 1;
+        
+        this->setShape(MO.Shape());
+    } catch(Standard_Failure &err) {
         return 1;
-    
-    this->setShape(MO.Shape());
+    }
     return 0;
 }
 
@@ -559,8 +575,8 @@ int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
 //
 OCCFace *OCCSolid::section(DVec pnt, DVec nor)
 {
-    std::vector<TopoDS_Wire> wires;
-    std::vector<TopoDS_Edge> edges;
+    Handle(TopTools_HSequenceOfShape) wires = new TopTools_HSequenceOfShape;
+    Handle(TopTools_HSequenceOfShape) edges = new TopTools_HSequenceOfShape;
     TopExp_Explorer ex;
     OCCFace *ret = new OCCFace();
     try {
@@ -571,17 +587,21 @@ OCCFace *OCCSolid::section(DVec pnt, DVec nor)
     
         for (ex.Init(mkSection.Shape(), TopAbs_EDGE); ex.More(); ex.Next()) {
             if (!ex.Current().IsNull()) {
-                edges.push_back(TopoDS::Edge(ex.Current()));
+                edges->Append(TopoDS::Edge(ex.Current()));
             }
         }
-        connectEdges(edges, wires);
-        if (wires.empty()) return NULL;
         
-        BRepBuilderAPI_MakeFace MFInit(pln, wires[0], Standard_True);
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges,Precision::Confusion(),Standard_True,wires);
+        if (wires->Length() != 1)
+            return NULL;
+        
+        const TopoDS_Wire& wire = TopoDS::Wire(wires->Value(1));
+        
+        BRepBuilderAPI_MakeFace MFInit(pln, wire, Standard_True);
         MFInit.Build();
         if (!MFInit.IsDone()) return NULL;
         
-        ShapeFix_Wire fixer(wires[0], MFInit.Face(), 1.0e-6);
+        ShapeFix_Wire fixer(wire, MFInit.Face(), 1.0e-6);
         fixer.FixEdgeCurves();
         fixer.Perform();
         
