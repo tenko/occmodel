@@ -5,11 +5,17 @@ CIRCUMSCRIBE = 'circumscribe'
 
 cdef class Wire(Base):
     '''
-    Wire - represent wire geometry (composite curve forming face border).
+    Wire - represent wire geometry (composite of edges).
     '''
-    def __init__(self):
+    def __init__(self, edges = None):
+        '''
+        Create empty Wire or a planar Wire from
+        given edges.
+        '''
         self.thisptr = new c_OCCWire()
-      
+        if not edges is None:
+            self.createWire(edges)
+            
     def __dealloc__(self):
         cdef c_OCCWire *tmp
         

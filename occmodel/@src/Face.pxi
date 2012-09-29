@@ -8,8 +8,14 @@ cdef class Face(Base):
     underlying faces (a OpenCASCADE shell) or a single
     face.
     '''
-    def __init__(self):
+    def __init__(self, arg = None):
+        '''
+        Create empty Face or a planar Face from
+        given closed Edge or Wire.
+        '''
         self.thisptr = new c_OCCFace()
+        if not arg is None:
+            self.createFace(arg)
       
     def __dealloc__(self):
         cdef c_OCCFace *tmp
