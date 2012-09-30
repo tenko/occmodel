@@ -420,8 +420,20 @@ w1.cut((e2,e3))
 print w1.length()
 '''
 
+'''
 face = Face().createPolygonal(((0.,0.,0.),(1.,1.,0.),(1.,1.,1.),(0.,0.,1.)))
 e1 = Edge().createCircle(center=(.5,0.2,.5),normal=(0.,1.,0.),radius = .25)
 w1 = Wire().createWire(e1)
 w1.project(face)
 print w1.isValid()
+'''
+
+p1 = Vertex(0.,0.,0.)
+p2 = Vertex(1.,0.,0.)
+p3 = Vertex(1.,1.,0.)
+e1 = Edge().createLine(p1,p2)
+e2 = Edge().createLine(p2,p3)
+w1 = Wire().createWire((e1,e2))
+#face = Face().extrude(w1, (0.,0.,0.),(0.,0.,1.))
+face = Face().revolve(w1, (0.,0.,0.),(0.,1.,0.), 90.)
+print face.isValid()

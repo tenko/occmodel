@@ -240,6 +240,38 @@ cdef class Base:
             
         return target
     
+    cpdef toString(self):
+        '''
+        Seralize object to string.
+        
+        The format used is the OpenCASCADE internal BREP format.
+        '''
+        self.CheckPtr()
+        
+        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
+        cdef string res = string()
+        
+        occ.toString(&res)
+        ret = str(res.c_str())
+        
+        return ret
+    
+    cpdef fromString(self, char *st):
+        '''
+        Restore shape from string.
+        
+        The format used is the OpenCASCADE internal BREP format.
+        '''
+        self.CheckPtr()
+        
+        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
+        cdef string cst= string(st)
+        
+        if occ.fromString(cst) != 0:
+            raise OCCError('Failed to restore object from string')
+        
+        return self
+        
     cpdef mirror(self, Plane plane, bint copy = False):
         '''
         Mirror object inplace

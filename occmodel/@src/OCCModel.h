@@ -4,12 +4,17 @@
 // bugs and problems to <gmsh@geuz.org>.
 
 #include "OCCIncludes.h"
+#include <sstream>
 #include <vector>
 #include <limits>
 
 typedef std::vector<float> FVec;
 typedef std::vector<double> DVec;
 typedef std::vector<int> IVec;
+
+void printShapeType(const TopoDS_Shape& shape);
+int writeBrep(std::ostream& str, const TopoDS_Shape& shape);
+int readBrep(std::istream& str, TopoDS_Shape& shape);
 
 class OCCSolid;
 
@@ -20,6 +25,8 @@ class OCCMesh {
         std::vector<IVec> triangles;
         OCCMesh() { ; }
 };
+
+int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals);
 
 class OCCBase {
     public:
@@ -47,6 +54,24 @@ class OCCBase {
             BRepCheck_Analyzer aChecker(this->getShape());
             return aChecker.IsValid() ? true : false;
         }
+        int toString(std::string *output) {
+            std::stringstream str;
+            writeBrep(str, this->getShape());
+            output->assign(str.str());
+            return 0;
+        }
+        int fromString(std::string input) {
+            std::stringstream str(input);
+            TopoDS_Shape shape = TopoDS_Shape();
+            
+            int ret = readBrep(str, shape);
+            if (ret == 0) {
+                if (this->canSetShape(shape))
+                    this->setShape(shape);
+            }
+            return ret;
+        }
+        virtual bool canSetShape(const TopoDS_Shape&) { return true; }
         virtual const TopoDS_Shape& getShape() { return TopoDS_Shape(); }
         virtual void setShape(TopoDS_Shape shape) { ; }
 };
@@ -72,6 +97,9 @@ class OCCVertex : public OCCBase {
         double z() const { 
             gp_Pnt pnt = BRep_Tool::Pnt(vertex);
             return pnt.Z();
+        }
+        bool canSetShape(const TopoDS_Shape& shape) {
+            return shape.ShapeType() == TopAbs_VERTEX;
         }
         const TopoDS_Shape& getShape() { return vertex; }
         const TopoDS_Vertex& getVertex() { return vertex; }
@@ -125,6 +153,9 @@ class OCCEdge : public OCCBase {
         int createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
                         DVec knots, DVec weights, IVec mult);
         double length();
+        bool canSetShape(const TopoDS_Shape& shape) {
+            return shape.ShapeType() == TopAbs_EDGE;
+        }
         const TopoDS_Shape& getShape() { return edge; }
         const TopoDS_Edge& getEdge() { return edge; }
         void setShape(TopoDS_Shape shape) { edge = TopoDS::Edge(shape); }
@@ -165,6 +196,9 @@ class OCCWire : public OCCBase {
         int chamfer(std::vector<OCCVertex *> vertices, std::vector<double> distances);
         std::vector<DVec> tesselate(double factor, double angle);
         double length();
+        bool canSetShape(const TopoDS_Shape& shape) {
+            return shape.ShapeType() == TopAbs_WIRE;
+        }
         const TopoDS_Shape& getShape() { return wire; }
         const TopoDS_Wire& getWire() { return wire; }
         void setShape(TopoDS_Shape shape) { wire = TopoDS::Wire(shape); }
@@ -213,6 +247,9 @@ class OCCFace : public OCCBase {
         int cut(OCCSolid *tool);
         int common(OCCSolid *tool);
         OCCMesh *createMesh(double defle, double angle, bool qualityNormals);
+        bool canSetShape(const TopoDS_Shape& shape) {
+            return shape.ShapeType() == TopAbs_FACE || shape.ShapeType() == TopAbs_SHELL;
+        }
         const TopoDS_Shape& getShape() { return face; }
         const TopoDS_Face& getFace() { return TopoDS::Face(face); }
         const TopoDS_Shell& getShell() { return TopoDS::Shell(face); }
@@ -281,6 +318,10 @@ class OCCSolid : public OCCBase {
         void heal(double tolerance, bool fixdegenerated,
                   bool fixsmalledges, bool fixspotstripfaces, 
                   bool sewfaces, bool makesolids);
+        bool canSetShape(const TopoDS_Shape& shape) {
+            TopAbs_ShapeEnum type = shape.ShapeType();
+            return type == TopAbs_SOLID || type == TopAbs_COMPSOLID || type == TopAbs_COMPOUND;
+        }
         const TopoDS_Shape& getShape() { return solid; }
         const TopoDS_Shape& getSolid() { return solid; }
         void setShape(TopoDS_Shape shape);
@@ -307,5 +348,11 @@ class OCCSolidIterator {
         }
 };
 
-void printShapeType(const TopoDS_Shape& shape);
-int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals);
+class ProgressIndicator : public Message_ProgressIndicator
+{
+public:
+    ProgressIndicator (int theMaxVal) { SetScale (0, theMaxVal, 1); }
+    virtual ~ProgressIndicator () {}
+    virtual Standard_Boolean Show (const Standard_Boolean theForce = Standard_True) { return Standard_True; }
+    virtual Standard_Boolean UserBreak() { return Standard_False; }
+};

@@ -43,6 +43,28 @@ void printShapeType(const TopoDS_Shape& shape)
     }
 }
 
+int writeBrep(std::ostream& str, const TopoDS_Shape& shape)
+{
+    BRepTools::Write(shape, str);
+    return 0;
+}
+
+int readBrep(std::istream& str, TopoDS_Shape& shape)
+{
+    try {
+        // read brep-file
+        BRep_Builder aBuilder;
+        Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
+        pi->NewScope(100, "Reading BREP file...");
+        pi->Show();
+        BRepTools::Read(shape, str, aBuilder, pi);
+        pi->EndScope();
+    } catch (Standard_Failure) {
+        return 1;
+    }
+    return 0;
+}
+
 int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals = false)
 {
     int vsize = mesh->vertices.size();

@@ -1,6 +1,12 @@
 cdef extern from *:
     ctypedef char* const_char_ptr "char*"
 
+cdef extern from "<string>" namespace "std":
+    cdef cppclass string:
+        string() nogil except +
+        string(char *) nogil except +
+        char* c_str() nogil
+        
 cdef extern from "<vector>" namespace "std":
     cdef cppclass vector[T]:
        vector()
@@ -28,6 +34,8 @@ cdef extern from "OCCModel.h":
         int mirror(vector[double] pnt, vector[double] nor, c_OCCBase *target)
         vector[double] boundingBox(double tolerance)
         int findPlane(double *origin, double *normal, double tolerance)
+        int toString(string *output)
+        int fromString(string input)
         
     cdef cppclass c_OCCVertex "OCCVertex":
         c_OCCVertex(double x, double y, double z)

@@ -150,3 +150,4 @@ using std::iostream;
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepFilletAPI_MakeChamfer.hxx>
 #include <BRepFilletAPI_MakeFillet2d.hxx>
+#include <Message_ProgressIndicator.hxx>

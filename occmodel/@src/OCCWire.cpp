@@ -41,7 +41,7 @@ int OCCWire::createWire(std::vector<OCCEdge *> edges)
         BRepBuilderAPI_MakeWire wm;
         for (unsigned i=0; i<edges.size(); i++) {
             OCCEdge *edge = edges[i];
-            wm.Add(edge->edge);
+            wm.Add(edge->getEdge());
         }
         this->setShape(wm.Wire());
     } catch(Standard_Failure &err) {
