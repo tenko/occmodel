@@ -28,6 +28,30 @@ cdef class Base:
         if self.thisptr == NULL:
             raise TypeError('Base object not initialized')
     
+    cpdef shapeType(self):
+        '''
+        Return class type or None if not valid
+        '''
+        self.CheckPtr()
+        
+        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
+        cdef c_TopAbs_ShapeEnum shapetype = occ.shapeType()
+        
+        if shapetype == TopAbs_COMPSOLID or \
+           shapetype == TopAbs_SOLID:
+               return Solid
+        elif shapetype == TopAbs_SHELL or \
+           shapetype == TopAbs_FACE:
+               return Face
+        elif shapetype == TopAbs_WIRE:
+               return Wire
+        elif shapetype == TopAbs_EDGE:
+               return Edge
+        elif shapetype == TopAbs_VERTEX:
+               return Vertex
+        else:
+            return None
+            
     cpdef hashCode(self):
         '''
         Shape hash code.
@@ -239,7 +263,7 @@ cdef class Base:
             raise OCCError('Failed to scale object')
             
         return target
-    
+        
     cpdef toString(self):
         '''
         Seralize object to string.

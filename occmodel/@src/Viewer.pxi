@@ -902,7 +902,7 @@ def viewer(objs, colors = None, bint qualityNormals = False):
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
         if isinstance(obj, (Face,Solid)):
             data = obj.createMesh(qualityNormals = qualityNormals)
-        else:
+        elif isinstance(obj, (Wire,Edge)):
             data = obj.tesselate()
         
         viewer.addObject(data, obj.boundingBox(), color)

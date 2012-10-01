@@ -4,70 +4,9 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
-void printShapeType(const TopoDS_Shape& shape)
+int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = false)
 {
-    if (!shape.IsNull()) {
-        TopAbs_ShapeEnum type = shape.ShapeType();
-        switch (type)
-        {
-        case TopAbs_COMPOUND:
-            printf("TopAbs_COMPOUND\n");
-            break;
-        case TopAbs_COMPSOLID:
-            printf("TopAbs_COMPSOLID\n");
-            break;
-        case TopAbs_SOLID:
-            printf("TopAbs_SOLID\n");
-            break;
-        case TopAbs_SHELL:
-            printf("TopAbs_SHELL\n");
-            break;
-        case TopAbs_FACE:
-            printf("TopAbs_FACE\n");
-            break;
-        case TopAbs_WIRE:
-            printf("TopAbs_WIRE\n");
-            break;
-        case TopAbs_EDGE:
-            printf("TopAbs_EDGE\n");
-        case TopAbs_VERTEX:
-            printf("TopAbs_VERTEX\n");
-            break;
-        default:
-            printf("Unknown\n");
-            break;
-        }
-    }
-    else {
-        printf("Empty shape\n");
-    }
-}
-
-int writeBrep(std::ostream& str, const TopoDS_Shape& shape)
-{
-    BRepTools::Write(shape, str);
-    return 0;
-}
-
-int readBrep(std::istream& str, TopoDS_Shape& shape)
-{
-    try {
-        // read brep-file
-        BRep_Builder aBuilder;
-        Handle_Message_ProgressIndicator pi = new ProgressIndicator(100);
-        pi->NewScope(100, "Reading BREP file...");
-        pi->Show();
-        BRepTools::Read(shape, str, aBuilder, pi);
-        pi->EndScope();
-    } catch (Standard_Failure) {
-        return 1;
-    }
-    return 0;
-}
-
-int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals = false)
-{
-    int vsize = mesh->vertices.size();
+    int vsize = this->vertices.size();
     std::vector<gp_Vec> normals;
     bool reversed = false;
     DVec dtmp;
@@ -98,14 +37,14 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
             dtmp.push_back(x);
             dtmp.push_back(y);
             dtmp.push_back(z);
-            mesh->vertices.push_back(dtmp);
+            this->vertices.push_back(dtmp);
             
             // ensure we have normals for all vertices
             dtmp.clear();
             dtmp.push_back(0.);
             dtmp.push_back(0.);
             dtmp.push_back(0.);
-            mesh->normals.push_back(dtmp);
+            this->normals.push_back(dtmp);
             
             if (!qualityNormals)
                 normals.push_back(gp_Vec(0.0,0.0,0.0));
@@ -146,7 +85,7 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
             itmp.push_back(vsize + n1 - 1);
             itmp.push_back(vsize + n2 - 1);
             itmp.push_back(vsize + n3 - 1);
-            mesh->triangles.push_back(itmp);
+            this->triangles.push_back(itmp);
             
             if (!qualityNormals) {
                 normals[n1 - 1] = normals[n1 - 1] - normal;
@@ -161,9 +100,9 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
             {
                 Handle_Geom_Surface surface = BRep_Tool::Surface(face);
                 
-                gp_Pnt vertex(mesh->vertices[vsize + i][0],
-                              mesh->vertices[vsize + i][1],
-                              mesh->vertices[vsize + i][2]);
+                gp_Pnt vertex(this->vertices[vsize + i][0],
+                              this->vertices[vsize + i][1],
+                              this->vertices[vsize + i][2]);
                 GeomAPI_ProjectPointOnSurf SrfProp(vertex, surface);
                 Standard_Real fU, fV; SrfProp.Parameters(1, fU, fV);
 
@@ -183,7 +122,7 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
                     dtmp.push_back(normal.Y());
                     dtmp.push_back(normal.Z());
                 }
-                mesh->normals[vsize + i] = dtmp;
+                this->normals[vsize + i] = dtmp;
             }
         } else {
             // Normalize vertex normals
@@ -196,7 +135,7 @@ int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals 
                 dtmp.push_back(normal.X());
                 dtmp.push_back(normal.Y());
                 dtmp.push_back(normal.Z());
-                mesh->normals[vsize + i] = dtmp;
+                this->normals[vsize + i] = dtmp;
             }
         }
         

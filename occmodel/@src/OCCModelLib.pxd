@@ -22,7 +22,18 @@ cdef extern from "OCCModel.h":
         vector[vector[int]] triangles
         c_OCCMesh()
     
+    cdef enum c_TopAbs_ShapeEnum "TopAbs_ShapeEnum":
+        TopAbs_COMPOUND
+        TopAbs_COMPSOLID
+        TopAbs_SOLID
+        TopAbs_SHELL
+        TopAbs_FACE
+        TopAbs_WIRE
+        TopAbs_EDGE
+        TopAbs_VERTEX
+        
     cdef cppclass c_OCCBase "OCCBase":
+        c_TopAbs_ShapeEnum shapeType()
         int hashCode()
         bint isEqual(c_OCCBase *other)
         bint isNull()
@@ -145,17 +156,17 @@ cdef extern from "OCCModel.h":
         int chamfer(vector[c_OCCEdge *] edges, vector[double] distances)
         int shell(vector[c_OCCFace *] faces, double offset, double tolerance)
         int offset(c_OCCFace *face, double offset, double tolerance)
-        c_OCCFace *section(vector[double] pnt, vector[double] nor)
-        int writeBREP(char *filename)
-        int readBREP(char *filename)
-        int writeSTEP(char *filename)
-        int readSTEP(char *filename)
-        int writeSTL(char *filename, bint asciiMode)
-        void heal(double tolerance, bint fixdegenerated,
-                  bint fixsmalledges, bint fixspotstripfaces, 
-                  bint sewfaces, bint makesolids)        
+        c_OCCFace *section(vector[double] pnt, vector[double] nor)        
     
     cdef cppclass c_OCCSolidIterator "OCCSolidIterator":
         c_OCCSolidIterator(c_OCCBase *arg)
         void reset()
         c_OCCSolid *next()
+
+cdef extern from "OCCModel.h" namespace "OCCTools":
+    int writeBREP(char *filename, vector[c_OCCBase *] shapes)
+    int writeSTEP(char *filename, vector[c_OCCBase *] shapes)
+    int writeSTL(char *filename, vector[c_OCCBase *] shapes)
+    int writeVRML(char *filename, vector[c_OCCBase *] shapes)
+    int readBREP(char *filename, vector[c_OCCBase *] shapes)
+    int readSTEP(char *filename, vector[c_OCCBase *] shapes)

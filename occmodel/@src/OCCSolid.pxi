@@ -702,61 +702,6 @@ cdef class Solid(Base):
             raise OCCError('Failed to create section')
             
         return ret
-        
-    cpdef writeSTEP(self, char *filename):
-        '''
-        Write solid to STEP file.
-        '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef int ret = occ.writeSTEP(filename)
-        if ret != 0:
-            raise OCCError('Failed to write to file')
-    
-    cpdef readSTEP(self, char *filename):
-        '''
-        Read geometry from STEP file.
-        '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef int ret = occ.readSTEP(filename)
-        if ret != 0:
-            raise OCCError('Failed to read from STEP file')
-            
-    cpdef writeBREP(self, char *filename):
-        '''
-        Write solid to BREP file.
-        '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef int ret = occ.writeBREP(filename)
-        if ret != 0:
-            raise OCCError('Failed to write to file')
-    
-    cpdef readBREP(self, char *filename):
-        '''
-        Read geometry from BREP file.
-        '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef int ret = occ.readBREP(filename)
-        if ret != 0:
-            raise OCCError('Failed to read from BREP file')
-            
-    cpdef writeSTL(self, char *filename, bint asciiMode = False):
-        '''
-        Write solid to STL file.
-        '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef int ret = occ.writeSTL(filename, asciiMode)
-        if ret != 0:
-            raise OCCError('Failed to write to file')
-    
-    cpdef heal(self, double tolerance = 0., bint fixdegenerated = True,
-                     bint fixsmalledges = True, bint fixspotstripfaces = True, 
-                     bint sewfaces = False, bint makesolids = False):
-        '''
-        Possible heal geometry
-        '''
-        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        occ.heal(tolerance, fixdegenerated, fixsmalledges,
-                 fixspotstripfaces, sewfaces, makesolids)
 
 cdef class SolidIterator:
     '''

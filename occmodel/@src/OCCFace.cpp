@@ -334,10 +334,10 @@ OCCMesh *OCCFace::createMesh(double factor, double angle, bool qualityNormals = 
             TopExp_Explorer exFace;
             for (exFace.Init(this->getShape(), TopAbs_FACE); exFace.More(); exFace.Next()) {
                 const TopoDS_Face& faceref = static_cast<const TopoDS_Face &>(exFace.Current());
-                extractFaceMesh(faceref, mesh, qualityNormals);
+                mesh->extractFaceMesh(faceref, qualityNormals);
             }
         } else {
-            extractFaceMesh(this->getFace(), mesh, qualityNormals);
+            mesh->extractFaceMesh(this->getFace(), qualityNormals);
         }
     } catch(Standard_Failure &err) {
         //Handle_Standard_Failure e = Standard_Failure::Caught();

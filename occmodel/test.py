@@ -428,6 +428,7 @@ w1.project(face)
 print w1.isValid()
 '''
 
+'''
 p1 = Vertex(0.,0.,0.)
 p2 = Vertex(1.,0.,0.)
 p3 = Vertex(1.,1.,0.)
@@ -437,3 +438,14 @@ w1 = Wire().createWire((e1,e2))
 #face = Face().extrude(w1, (0.,0.,0.),(0.,0.,1.))
 face = Face().revolve(w1, (0.,0.,0.),(0.,1.,0.), 90.)
 print face.isValid()
+#print face.typeName()
+#Tools.writeSTEP('test.stp', face)
+'''
+#solid = Solid()
+#solid.createSphere((1.,2.,3.),.5)
+#print solid.shapeType()
+#Tools.writeSTEP('test.stp', solid)
+#Tools.writeBREP('test.brp', solid)
+#Tools.writeSTL('test.stl', solid)
+#Tools.writeVRML('test.wrl', solid)
+print Tools.readSTEP('test.stp')

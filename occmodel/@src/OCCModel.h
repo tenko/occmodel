@@ -12,10 +12,7 @@ typedef std::vector<float> FVec;
 typedef std::vector<double> DVec;
 typedef std::vector<int> IVec;
 
-void printShapeType(const TopoDS_Shape& shape);
-int writeBrep(std::ostream& str, const TopoDS_Shape& shape);
-int readBrep(std::istream& str, TopoDS_Shape& shape);
-
+class OCCBase;
 class OCCSolid;
 
 class OCCMesh {
@@ -24,9 +21,24 @@ class OCCMesh {
         std::vector<DVec> vertices;
         std::vector<IVec> triangles;
         OCCMesh() { ; }
+        int extractFaceMesh(const TopoDS_Face& face, bool qualityNormals);
 };
 
-int extractFaceMesh(const TopoDS_Face& face, OCCMesh *mesh, bool qualityNormals);
+void printShapeType(const TopoDS_Shape& shape);
+int extractSubShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes);
+int extractShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes);
+
+class OCCTools {
+public:
+    static int writeBREP(const char *filename, std::vector<OCCBase *> shapes);
+    static int writeBREP(std::ostream& str, const TopoDS_Shape& shape);
+    static int writeSTEP(const char *filename, std::vector<OCCBase *> shapes);
+    static int writeSTL(const char *filename, std::vector<OCCBase *> shapes);
+    static int writeVRML(const char *filename, std::vector<OCCBase *> shapes);
+    static int readBREP(const char *filename, std::vector<OCCBase *>& shapes);
+    static int readBREP(std::istream& str, TopoDS_Shape& shape);
+    static int readSTEP(const char *filename, std::vector<OCCBase *>& shapes);
+};
 
 class OCCBase {
     public:
@@ -37,6 +49,9 @@ class OCCBase {
         int mirror(DVec pnt, DVec nor, OCCBase *target);
         DVec boundingBox(double tolerance);
         int findPlane(double *origin, double *normal, double tolerance);
+        TopAbs_ShapeEnum shapeType() {
+                return this->getShape().ShapeType();
+        }
         int hashCode() {
             return this->getShape().HashCode(std::numeric_limits<int>::max());
         }
@@ -56,7 +71,7 @@ class OCCBase {
         }
         int toString(std::string *output) {
             std::stringstream str;
-            writeBrep(str, this->getShape());
+            OCCTools::writeBREP(str, this->getShape());
             output->assign(str.str());
             return 0;
         }
@@ -64,7 +79,7 @@ class OCCBase {
             std::stringstream str(input);
             TopoDS_Shape shape = TopoDS_Shape();
             
-            int ret = readBrep(str, shape);
+            int ret = OCCTools::readBREP(str, shape);
             if (ret == 0) {
                 if (this->canSetShape(shape))
                     this->setShape(shape);
@@ -101,6 +116,7 @@ class OCCVertex : public OCCBase {
         bool canSetShape(const TopoDS_Shape& shape) {
             return shape.ShapeType() == TopAbs_VERTEX;
         }
+        std::string typeName() { return std::string("OCCVertex"); }
         const TopoDS_Shape& getShape() { return vertex; }
         const TopoDS_Vertex& getVertex() { return vertex; }
         void setShape(TopoDS_Shape shape) { vertex = TopoDS::Vertex(shape); }
@@ -310,14 +326,6 @@ class OCCSolid : public OCCBase {
         int shell(std::vector<OCCFace *> faces, double offset, double tolerance);
         int offset(OCCFace *face, double offset, double tolerance);
         OCCFace *section(DVec pnt, DVec nor);
-        int writeBREP(const char *);  
-        int readBREP(const char *);  
-        int writeSTEP(const char *);
-        int readSTEP(const char *fn);
-        int writeSTL(const char *, bool asciiMode);
-        void heal(double tolerance, bool fixdegenerated,
-                  bool fixsmalledges, bool fixspotstripfaces, 
-                  bool sewfaces, bool makesolids);
         bool canSetShape(const TopoDS_Shape& shape) {
             TopAbs_ShapeEnum type = shape.ShapeType();
             return type == TopAbs_SOLID || type == TopAbs_COMPSOLID || type == TopAbs_COMPOUND;
@@ -346,13 +354,4 @@ class OCCSolidIterator {
                 return NULL;
             }
         }
-};
-
-class ProgressIndicator : public Message_ProgressIndicator
-{
-public:
-    ProgressIndicator (int theMaxVal) { SetScale (0, theMaxVal, 1); }
-    virtual ~ProgressIndicator () {}
-    virtual Standard_Boolean Show (const Standard_Boolean theForce = Standard_True) { return Standard_True; }
-    virtual Standard_Boolean UserBreak() { return Standard_False; }
 };

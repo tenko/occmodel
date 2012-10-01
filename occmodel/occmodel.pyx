@@ -144,6 +144,7 @@ cdef class Mesh:
             glNormal3d(nc[0],nc[1],nc[2])
             glVertex3d(c[0],c[1],c[2])        
             
+include "OCCTools.pxi"
 include "OCCBase.pxi"
 include "OCCVertex.pxi"
 include "OCCEdge.pxi"
