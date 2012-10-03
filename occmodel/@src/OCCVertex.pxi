@@ -18,19 +18,43 @@ cdef class Vertex(Base):
         return "Vertex%s" % repr(self)
     
     def __repr__(self):
-        return "(%g,%g,%g)" % (self.x(), self.y(), self.z())
+        return "(%g,%g,%g)" % (self.X(), self.Y(), self.Z())
     
-    cpdef double x(self):
-        cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
-        return occ.x()
+    def __getitem__(self, int key):
+        if key == 0:
+            return self.X()
+        elif key == 1:
+            return self.Y()
+        elif key == 2:
+            return self.Z()
+        raise IndexError('index out of range')
     
-    cpdef double y(self):
-        cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
-        return occ.y()
+    def __len__(self):
+        return 3
     
-    cpdef double z(self):
+    property x:
+        def __get__(self):
+            return self.X()
+    
+    property y:
+        def __get__(self):
+            return self.Y()
+    
+    property z:
+        def __get__(self):
+            return self.Z()
+            
+    cpdef double X(self):
         cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
-        return occ.z()
+        return occ.X()
+    
+    cpdef double Y(self):
+        cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
+        return occ.Y()
+    
+    cpdef double Z(self):
+        cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
+        return occ.Z()
 
 cdef class VertexIterator:
     '''

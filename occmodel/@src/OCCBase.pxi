@@ -24,7 +24,7 @@ cdef class Base:
         else:
             raise TypeError('operation not supported')
             
-    cpdef CheckPtr(self):
+    cdef CheckPtr(self):
         if self.thisptr == NULL:
             raise TypeError('Base object not initialized')
     
@@ -34,9 +34,12 @@ cdef class Base:
         '''
         self.CheckPtr()
         
+        if self.isNull():
+            raise OCCError('No type defined for Null shape')
+            
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef c_TopAbs_ShapeEnum shapetype = occ.shapeType()
-        
+            
         if shapetype == TopAbs_COMPSOLID or \
            shapetype == TopAbs_SOLID:
                return Solid
@@ -113,13 +116,13 @@ cdef class Base:
         Return bounding box
         '''
         self.CheckPtr()
-        
+            
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef vector[double] bbox = occ.boundingBox(tolerance)
         cdef Box ret = Box.__new__(Box, None)
         
-        ret.near = Point(bbox[0], bbox[1], bbox[2])
-        ret.far = Point(bbox[3], bbox[4], bbox[5])
+        ret.near = Point(bbox[0], bbox[4], bbox[2])
+        ret.far = Point(bbox[3], bbox[1], bbox[5])
         return ret
     
     cpdef transform(self, Transform mat, bint copy = False):
@@ -195,7 +198,7 @@ cdef class Base:
             
         return target
     
-    cpdef rotate(self, p1, p2, angle, bint copy = False):
+    cpdef rotate(self, double angle, axis, center = (0.,0.,0.), bint copy = False):
         '''
         Rotate object in place.
         
@@ -217,16 +220,21 @@ cdef class Base:
             target = self.__class__()
         else:
             target = self
-            
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        axis = Vector(axis)
+        p1 = Point(center)
+        p2 = p1 + axis
         
-        ret = occ.rotate(cp1, cp2, angle, <c_OCCBase *>target.thisptr)
+        
+        cp1.push_back(p1.x)
+        cp1.push_back(p1.y)
+        cp1.push_back(p1.z)
+        
+        cp2.push_back(p2.x)
+        cp2.push_back(p2.y)
+        cp2.push_back(p2.z)
+        
+        ret = occ.rotate(angle, cp1, cp2, <c_OCCBase *>target.thisptr)
         if ret != 0:
             raise OCCError('Failed to rotate object')
             
@@ -263,39 +271,7 @@ cdef class Base:
             raise OCCError('Failed to scale object')
             
         return target
-        
-    cpdef toString(self):
-        '''
-        Seralize object to string.
-        
-        The format used is the OpenCASCADE internal BREP format.
-        '''
-        self.CheckPtr()
-        
-        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
-        cdef string res = string()
-        
-        occ.toString(&res)
-        ret = str(res.c_str())
-        
-        return ret
-    
-    cpdef fromString(self, char *st):
-        '''
-        Restore shape from string.
-        
-        The format used is the OpenCASCADE internal BREP format.
-        '''
-        self.CheckPtr()
-        
-        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
-        cdef string cst= string(st)
-        
-        if occ.fromString(cst) != 0:
-            raise OCCError('Failed to restore object from string')
-        
-        return self
-        
+
     cpdef mirror(self, Plane plane, bint copy = False):
         '''
         Mirror object inplace
@@ -330,3 +306,35 @@ cdef class Base:
             raise OCCError('Failed to mirror object')
             
         return target
+        
+    cpdef toString(self):
+        '''
+        Seralize object to string.
+        
+        The format used is the OpenCASCADE internal BREP format.
+        '''
+        self.CheckPtr()
+        
+        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
+        cdef string res = string()
+        
+        occ.toString(&res)
+        ret = str(res.c_str())
+        
+        return ret
+    
+    cpdef fromString(self, char *st):
+        '''
+        Restore shape from string.
+        
+        The format used is the OpenCASCADE internal BREP format.
+        '''
+        self.CheckPtr()
+        
+        cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
+        cdef string cst= string(st)
+        
+        if occ.fromString(cst) != 0:
+            raise OCCError('Failed to restore object from string')
+        
+        return self

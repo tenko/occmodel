@@ -60,8 +60,8 @@ std::vector<DVec> OCCEdge::tesselate(double angular, double curvature)
 
 int OCCEdge::createLine(OCCVertex *start, OCCVertex *end) {
     try {
-        gp_Pnt aP1(start->x(), start->y(), start->z());
-        gp_Pnt aP2(end->x(), end->y(), end->z());
+        gp_Pnt aP1(start->X(), start->Y(), start->Z());
+        gp_Pnt aP2(end->X(), end->Y(), end->Z());
         GC_MakeLine line(aP1, aP2);
         this->setShape(BRepBuilderAPI_MakeEdge(line, start->vertex, end->vertex));
     } catch(Standard_Failure &err) {
@@ -72,9 +72,9 @@ int OCCEdge::createLine(OCCVertex *start, OCCVertex *end) {
 
 int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, DVec center) {
     try {
-        gp_Pnt aP1(start->x(), start->y(), start->z());
+        gp_Pnt aP1(start->X(), start->Y(), start->Z());
         gp_Pnt aP2(center[0], center[1], center[2]);
-        gp_Pnt aP3(end->x(), end->y(), end->z());
+        gp_Pnt aP3(end->X(), end->Y(), end->Z());
         
         Standard_Real Radius = aP1.Distance(aP2);
         gce_MakeCirc MC(aP2,gce_MakePln(aP1, aP2, aP3).Value(), Radius);
@@ -94,9 +94,9 @@ int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, DVec center) {
 
 int OCCEdge::createArc3P(OCCVertex *start, OCCVertex *end, DVec aPoint) {
     try {
-        gp_Pnt aP1(start->x(), start->y(), start->z());
+        gp_Pnt aP1(start->X(), start->Y(), start->Z());
         gp_Pnt aP2(aPoint[0], aPoint[1], aPoint[2]);
-        gp_Pnt aP3(end->x(), end->y(), end->z());
+        gp_Pnt aP3(end->X(), end->Y(), end->Z());
         GC_MakeArcOfCircle arc(aP1, aP2, aP3);
         this->setShape(BRepBuilderAPI_MakeEdge(arc, start->vertex, end->vertex));
     } catch(Standard_Failure &err) {
@@ -183,7 +183,7 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         
         int index = 1;
         if (vertices) {
-            ctrlPoints.SetValue(index++, gp_Pnt(start->x(), start->y(), start->z()));
+            ctrlPoints.SetValue(index++, gp_Pnt(start->X(), start->Y(), start->Z()));
         }
         
         for (int i = 0; i < nbControlPoints; i++) {
@@ -192,7 +192,7 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         }
         
         if (vertices) {
-            ctrlPoints.SetValue(index++, gp_Pnt(end->x(), end->y(), end->z())); 
+            ctrlPoints.SetValue(index++, gp_Pnt(end->X(), end->Y(), end->Z())); 
         } else {
             // repeat first point
             ctrlPoints.SetValue(index++, ctrlPoints(1));
@@ -232,7 +232,7 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         int index = 1;
         
         if (vertices) {
-            ctrlPoints->SetValue(index++, gp_Pnt(start->x(), start->y(), start->z()));  
+            ctrlPoints->SetValue(index++, gp_Pnt(start->X(), start->Y(), start->Z()));  
         }
         
         for (int i = 0; i < nbControlPoints; i++) {
@@ -241,7 +241,7 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         }
         
         if (vertices) {
-            ctrlPoints->SetValue(index++, gp_Pnt(end->x(), end->y(), end->z()));
+            ctrlPoints->SetValue(index++, gp_Pnt(end->X(), end->Y(), end->Z()));
         }
         
         GeomAPI_Interpolate INT(ctrlPoints, periodic, tol);
@@ -301,7 +301,7 @@ int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> poi
         int index = 1;
         
         if (!periodic) {
-            ctrlPoints.SetValue(index++, gp_Pnt(start->x(), start->y(), start->z()));
+            ctrlPoints.SetValue(index++, gp_Pnt(start->X(), start->Y(), start->Z()));
         }
         
         for (unsigned i = 0; i < points.size(); i++) {
@@ -310,7 +310,7 @@ int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> poi
         }
         
         if (!periodic) {
-            ctrlPoints.SetValue(index++, gp_Pnt(end->x(), end->y(), end->z()));
+            ctrlPoints.SetValue(index++, gp_Pnt(end->X(), end->Y(), end->Z()));
         }
         
         Handle(Geom_BSplineCurve) NURBS = new Geom_BSplineCurve

@@ -4,6 +4,7 @@
 // bugs and problems to <gmsh@geuz.org>.
 
 #include "OCCIncludes.h"
+#include <math.h>
 #include <sstream>
 #include <vector>
 #include <limits>
@@ -44,7 +45,7 @@ class OCCBase {
     public:
         int transform(DVec mat, OCCBase *target);
         int translate(DVec delta, OCCBase *target);
-        int rotate(DVec p1, DVec p2, double angle, OCCBase *target);
+        int rotate( double angle, DVec p1, DVec p2, OCCBase *target);
         int scale(DVec pnt, double scale, OCCBase *target);
         int mirror(DVec pnt, DVec nor, OCCBase *target);
         DVec boundingBox(double tolerance);
@@ -101,15 +102,15 @@ class OCCVertex : public OCCBase {
             BRepBuilderAPI_MakeVertex mkVertex(aPnt);
             this->setShape(mkVertex.Vertex());
         }
-        double x() const { 
+        double X() const { 
             gp_Pnt pnt = BRep_Tool::Pnt(vertex);
             return pnt.X();
         }
-        double y() const { 
+        double Y() const { 
             gp_Pnt pnt = BRep_Tool::Pnt(vertex);
             return pnt.Y();
         }
-        double z() const { 
+        double Z() const { 
             gp_Pnt pnt = BRep_Tool::Pnt(vertex);
             return pnt.Z();
         }
@@ -148,9 +149,13 @@ class OCCEdge : public OCCBase {
         TopoDS_Edge edge;
         OCCEdge() { ; }
         bool isSeam(OCCBase *face) {
+            if (this->getShape().IsNull())
+                return false;
             return BRep_Tool::IsClosed (this->getEdge(), TopoDS::Face(face->getShape()));
         }
         bool isDegenerated() {
+            if (this->getShape().IsNull())
+                return true;
             return BRep_Tool::Degenerated(this->getEdge());
         }
         OCCEdge *copy(bool deepCopy);

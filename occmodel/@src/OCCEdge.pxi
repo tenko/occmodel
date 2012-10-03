@@ -26,6 +26,15 @@ cdef class Edge(Base):
     def __iter__(self):
         return VertexIterator(self)
     
+    cpdef Box boundingBox(self, double tolerance = 1e-12):
+        '''
+        Return bounding box
+        '''
+        if self.numVertices() == 0:
+            raise OCCError('bounding box not defined')
+        
+        return Base.boundingBox(self, tolerance)
+        
     cpdef bint isSeam(self, Face face):
         '''
         Check if edge is a seam on face
@@ -71,6 +80,9 @@ cdef class Edge(Base):
         cdef vector[vector[double]] pnts
         cdef size_t i, size
         
+        if occ.numVertices() == 0:
+            raise OCCError('Failed to tesselate edge')
+                
         pnts = occ.tesselate(factor, angle)
         
         size = pnts.size()

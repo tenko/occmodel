@@ -40,7 +40,7 @@ cdef extern from "OCCModel.h":
         bint isValid()
         int transform(vector[double] mat, c_OCCBase *target)
         int translate(vector[double] delta, c_OCCBase *target)
-        int rotate(vector[double] p1, vector[double] p2, double angle, c_OCCBase *target)
+        int rotate(double angle, vector[double] p1, vector[double] p2, c_OCCBase *target)
         int scale(vector[double] pnt, double scale, c_OCCBase *target)
         int mirror(vector[double] pnt, vector[double] nor, c_OCCBase *target)
         vector[double] boundingBox(double tolerance)
@@ -50,9 +50,9 @@ cdef extern from "OCCModel.h":
         
     cdef cppclass c_OCCVertex "OCCVertex":
         c_OCCVertex(double x, double y, double z)
-        double x()
-        double y()
-        double z()
+        double X()
+        double Y()
+        double Z()
     
     cdef cppclass c_OCCVertexIterator "OCCVertexIterator":
         c_OCCVertexIterator(c_OCCBase *arg)
