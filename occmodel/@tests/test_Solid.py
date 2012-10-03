@@ -35,8 +35,8 @@ class test_Solid(unittest.TestCase):
         
         solid = Solid()
         solid.createSphere((0.,0.,0.),1.)
-        solid.rotate((0.,1.,0.),(1.,1.,0.), -pi/2.)
-        eq(solid.centreOfMass(), (0.,1.,1.))
+        solid.rotate(-pi/2., (0.,1.,0.),(1.,1.,0.))
+        eq(solid.centreOfMass(), (1.,0.,-1.))
     
     def test_scale(self):
         eq = self.assertAlmostEqual
