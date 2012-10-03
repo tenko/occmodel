@@ -8,7 +8,6 @@ import unittest
 
 from math import pi, sin, cos, sqrt
 
-sys.path.insert(0, '..')
 from occmodel import Point, distance, Polar
 from occmodel import Transform      
        

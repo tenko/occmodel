@@ -6,7 +6,6 @@ import unittest
 
 from math import pi, sin, cos, sqrt
 
-sys.path.insert(0, '..')
 from occmodel import Vertex, Edge, Wire, OCCError
 
 class test_Wire(unittest.TestCase):

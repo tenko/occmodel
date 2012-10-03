@@ -7,7 +7,6 @@ import unittest
 
 from math import pi
 
-sys.path.insert(0, '..')
 from occmodel import Point, Transform
 
 class test_Transform(unittest.TestCase):

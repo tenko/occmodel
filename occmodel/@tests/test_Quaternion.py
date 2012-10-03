@@ -8,7 +8,6 @@ import unittest
 
 import math
 
-sys.path.insert(0, '..')
 from occmodel import Quaternion, Vector
 
 class test_Quaternion(unittest.TestCase):

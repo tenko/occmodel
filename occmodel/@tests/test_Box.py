@@ -7,7 +7,6 @@ import sys
 import unittest
 from math import pi, sqrt
 
-sys.path.insert(0, '..')
 from occmodel import Point, Vector, Box
         
 class test_Box(unittest.TestCase):

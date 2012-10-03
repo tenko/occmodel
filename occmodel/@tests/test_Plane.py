@@ -7,7 +7,6 @@ import unittest
 
 from math import pi, sqrt
 
-sys.path.insert(0, '..')
 from occmodel import Point, Vector, Plane, Transform
 
 class test_Plane(unittest.TestCase):  
