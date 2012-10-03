@@ -85,6 +85,25 @@ cdef class Wire(Base):
             
         return self
     
+    cpdef tesselate(self, double factor = .1, double angle = .1):
+        '''
+        Tesselate wire to a tuple of points according to given
+        max angle or distance factor
+        '''
+        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
+        cdef vector[vector[double]] pnts
+        cdef size_t i, size
+        
+        pnts = occ.tesselate(factor, angle)
+        
+        size = pnts.size()
+        if size < 2:
+            raise OCCError('Failed to tesselate wire')
+        
+        ret = [(pnts[i][0], pnts[i][1], pnts[i][2]) for i in range(size)]
+        
+        return tuple(ret)
+        
     cpdef project(self, Face face):
         '''
         Project wire towards face
@@ -186,25 +205,6 @@ cdef class Wire(Base):
             raise OCCError('Failed to create chamfer')
         
         return self
-        
-    cpdef tesselate(self, double factor = .1, double angle = .1):
-        '''
-        Tesselate wire to a tuple of points according to given
-        max angle or distance factor
-        '''
-        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
-        cdef vector[vector[double]] pnts
-        cdef size_t i, size
-        
-        pnts = occ.tesselate(factor, angle)
-        
-        size = pnts.size()
-        if size < 2:
-            raise OCCError('Failed to tesselate wire')
-        
-        ret = [(pnts[i][0], pnts[i][1], pnts[i][2]) for i in range(size)]
-        
-        return tuple(ret)
          
     cpdef createRectangle(self, double width = 1., double height = 1., double radius = 0.):
         '''
@@ -235,6 +235,8 @@ cdef class Wire(Base):
                 else:
                     rtyp = HROUNDED
                     radius = hw
+        elif radius < 0.:
+            raise OCCError('negative radius not allowed')
         else:
             radius = 0.
         
@@ -321,7 +323,8 @@ cdef class Wire(Base):
         '''
         Create a polygon from given points.
         
-        Note: The polygon is closed automatic.
+        :point: Point sequence.
+        :close: Close the polygon.
         '''
         cdef Edge edge
         cdef Vertex first, last, nxt

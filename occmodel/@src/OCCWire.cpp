@@ -259,6 +259,16 @@ std::vector<DVec> OCCWire::tesselate(double angular, double curvature)
                 dtmp.push_back(pnt.Z());
                 ret.push_back(dtmp);
             }
+            
+            if (exWire.More()) {
+                // mark new segment as wires
+                // can be disconnected.
+                dtmp.clear();
+                dtmp.push_back(NAN);
+                dtmp.push_back(NAN);
+                dtmp.push_back(NAN);
+                ret.push_back(dtmp);
+            }
         }
     } catch(Standard_Failure &err) {
         return ret;
