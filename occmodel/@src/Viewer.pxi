@@ -334,6 +334,7 @@ cdef class Viewport:
     
     def rotateCamera(self, angle, axis, center):
         rot = Transform()
+        
         rot.rotateAxisCenter(angle, axis, center)
         
         self.camLoc = Point(*rot.map(self.camLoc))
@@ -586,7 +587,10 @@ cdef class Viewer(Viewport):
                 else:
                     glDisable(GL_LIGHTING)
                     glShadeModel(GL_FLAT)
+                    
                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+                    glEnable(GL_LINE_SMOOTH)
+                    glEnable(GL_BLEND)
                     glLineWidth(2)
                     
                     objcolor = COLORS.get(color, DEFCOL)
@@ -594,6 +598,11 @@ cdef class Viewer(Viewport):
                     
                     glBegin(GL_LINE_STRIP)
                     for vertex in obj:
+                        if isnan(vertex[0]):
+                            # mark new segment
+                            glEnd()
+                            glBegin(GL_LINE_STRIP)
+                            continue
                         glVertex3d(vertex[0], vertex[1], vertex[2])
                     glEnd()
                     
@@ -900,11 +909,17 @@ def viewer(objs, colors = None, bint qualityNormals = False):
         colors = COLORS
         
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
-        if isinstance(obj, (Face,Solid)):
-            data = obj.createMesh(qualityNormals = qualityNormals)
-        elif isinstance(obj, (Wire,Edge)):
-            data = obj.tesselate()
-        
+        try:
+            if isinstance(obj, (Face,Solid)):
+                data = obj.createMesh(qualityNormals = qualityNormals)
+
+            elif isinstance(obj, (Wire,Edge)):
+                data = obj.tesselate()
+                
+        except OCCError:
+            print("skipped object: '%s'" % str(obj))
+            continue
+
         viewer.addObject(data, obj.boundingBox(), color)
     
     viewer.OnFit()
