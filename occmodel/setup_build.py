@@ -11,9 +11,6 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
-sys.argv.append('build_ext')
-sys.argv.append('--inplace')
-
 OCCLIBS = [
     'FWOSPlugin',
     'PTKernel',
@@ -89,5 +86,6 @@ try:
     )
 except:
     print('Traceback\n:%s\n' % str(sys.exc_info()[-2]))
+    sys.exit(1)
 else:
     print('\n')

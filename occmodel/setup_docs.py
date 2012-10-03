@@ -9,12 +9,6 @@ from distutils.core import setup
 from sphinx.setup_command import BuildDoc
 cmdclass = {'build_sphinx': BuildDoc}
 
-import Common.Geometry
-sys.path.append(Common.Geometry.__path__[0])
-
-os.chdir('@docs')
-sys.argv.append('build_sphinx')
-
 name = 'occmodel'
 version = '0.1'
 release = '0.1.0'
@@ -34,5 +28,6 @@ try:
     )
 except:
     print('Traceback\n:%s\n' % str(sys.exc_info()[-2]))
+    sys.exit(1)
 else:
     print('\n')
