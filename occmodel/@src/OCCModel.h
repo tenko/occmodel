@@ -13,6 +13,8 @@ typedef std::vector<float> FVec;
 typedef std::vector<double> DVec;
 typedef std::vector<int> IVec;
 
+enum BoolOpType {BOOL_FUSE, BOOL_CUT, BOOL_COMMON};
+
 class OCCBase;
 class OCCSolid;
 
@@ -265,8 +267,7 @@ class OCCFace : public OCCBase {
         int revolve(OCCBase *shape, DVec p1, DVec p2, double angle);
         int sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode);
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
-        int cut(OCCSolid *tool);
-        int common(OCCSolid *tool);
+        int boolean(OCCSolid *tool, BoolOpType op);
         OCCMesh *createMesh(double defle, double angle, bool qualityNormals);
         bool canSetShape(const TopoDS_Shape& shape) {
             return shape.ShapeType() == TopAbs_FACE || shape.ShapeType() == TopAbs_SHELL;
@@ -323,9 +324,7 @@ class OCCSolid : public OCCBase {
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
         int pipe(OCCFace *face, OCCWire *wire);
         int sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode);
-        int fuse(OCCSolid *tool);
-        int cut(OCCSolid *tool);
-        int common(OCCSolid *tool);
+        int boolean(OCCSolid *tool, BoolOpType op);
         int fillet(std::vector<OCCEdge *> edges, std::vector<double> radius);
         int chamfer(std::vector<OCCEdge *> edges, std::vector<double> distances);
         int shell(std::vector<OCCFace *> faces, double offset, double tolerance);

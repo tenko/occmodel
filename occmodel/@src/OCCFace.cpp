@@ -242,68 +242,57 @@ int OCCFace::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
     return 0;
 }
 
-int OCCFace::cut(OCCSolid *tool) {
-    BRepAlgoAPI_Cut BO (getShape(), tool->getShape());
-    if (!BO.IsDone()) {
-      return 1;
-    }
-    
-    const TopoDS_Shape& res = BO.Shape();
-    
-    // extract single face or shell
-    int idx = 0;
-    TopExp_Explorer exBO;
-    for (exBO.Init(res, TopAbs_SHELL); exBO.More(); exBO.Next()) {
-        if (idx > 0) return 1;
-        const TopoDS_Shape& cur = exBO.Current();
-        this->setShape(cur);
-        idx++;
-    }
-    
-    if (idx == 0) {
-        idx = 0;
-        for (exBO.Init(res, TopAbs_FACE); exBO.More(); exBO.Next()) {
-            if (idx > 0) return 1;
+int OCCFace::boolean(OCCSolid *tool, BoolOpType op) {
+    try {
+        TopoDS_Shape shape;
+        switch (op) {
+            case BOOL_CUT:
+            {
+                BRepAlgoAPI_Cut CU (this->getShape(), tool->getShape());
+                if (!CU.IsDone())
+                    Standard_ConstructionError::Raise("operation failed");
+                shape = CU.Shape();
+                break;
+            }
+            case BOOL_COMMON:
+            {
+                BRepAlgoAPI_Common CO (this->getShape(), tool->getShape());
+                if (!CO.IsDone())
+                    Standard_ConstructionError::Raise("operation failed");
+                shape = CO.Shape();
+                break;
+            }
+            default:
+                Standard_ConstructionError::Raise("unknown operation");
+                break;
+        }
+        // extract single face or single shell
+        int idx = 0;
+        TopExp_Explorer exBO;
+        for (exBO.Init(shape, TopAbs_SHELL); exBO.More(); exBO.Next()) {
+            if (idx > 0) {
+                Standard_ConstructionError::Raise("multiple object in result");
+            }
             const TopoDS_Shape& cur = exBO.Current();
             this->setShape(cur);
             idx++;
         }
-    }
-    
-    if (idx == 0) return 1;
-    
-    return 0;
-}
-
-int OCCFace::common(OCCSolid *tool) {
-    BRepAlgoAPI_Common BO (getShape(), tool->getShape());
-    if (!BO.IsDone()) {
-      return 1;
-    }
-    const TopoDS_Shape& res = BO.Shape();
-    
-    // extract single face or shell
-    int idx = 0;
-    TopExp_Explorer exBO;
-    for (exBO.Init(res, TopAbs_SHELL); exBO.More(); exBO.Next()) {
-        if (idx > 0) return 1;
-        const TopoDS_Shape& cur = exBO.Current();
-        this->setShape(cur);
-        idx++;
-    }
-    
-    if (idx == 0) {
-        idx = 0;
-        for (exBO.Init(res, TopAbs_FACE); exBO.More(); exBO.Next()) {
-            if (idx > 0) return 1;
-            const TopoDS_Shape& cur = exBO.Current();
-            this->setShape(cur);
-            idx++;
+        if (idx == 0) {
+            idx = 0;
+            for (exBO.Init(shape, TopAbs_FACE); exBO.More(); exBO.Next()) {
+                if (idx > 0) {
+                    Standard_ConstructionError::Raise("multiple object in result");
+                }
+                const TopoDS_Shape& cur = exBO.Current();
+                this->setShape(cur);
+                idx++;
+            }
         }
+        if (idx == 0) return 1;
+        this->setShape(shape);
+    } catch(Standard_Failure &err) {
+        return 1;
     }
-    
-    if (idx == 0) return 1;
-    
     return 0;
 }
 

@@ -22,6 +22,11 @@ cdef extern from "OCCModel.h":
         vector[vector[int]] triangles
         c_OCCMesh()
     
+    cdef enum c_BoolOpType "BoolOpType":
+        BOOL_FUSE
+        BOOL_CUT
+        BOOL_COMMON
+    
     cdef enum c_TopAbs_ShapeEnum "TopAbs_ShapeEnum":
         TopAbs_COMPOUND
         TopAbs_COMPSOLID
@@ -117,8 +122,7 @@ cdef extern from "OCCModel.h":
         int revolve(c_OCCBase *shape, vector[double] p1, vector[double] p2, double angle)
         int sweep(c_OCCWire *spine, vector[c_OCCBase *] profiles, int cornerMode)
         int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
-        int cut(c_OCCSolid *tool)
-        int common(c_OCCSolid *tool)
+        int boolean(c_OCCSolid *tool, c_BoolOpType op)
         c_OCCMesh *createMesh(double factor, double angle, bint qualityNormals)
     
     cdef cppclass c_OCCFaceIterator "OCCFaceIterator":
@@ -149,9 +153,7 @@ cdef extern from "OCCModel.h":
         int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
         int sweep(c_OCCWire *spine, vector[c_OCCBase *] profiles, int cornerMode)
         int pipe(c_OCCFace *face, c_OCCWire *wire)
-        int fuse(c_OCCSolid *tool)
-        int cut(c_OCCSolid *tool)
-        int common(c_OCCSolid *tool)
+        int boolean(c_OCCSolid *tool, c_BoolOpType op)
         int fillet(vector[c_OCCEdge *] edges, vector[double] radius)
         int chamfer(vector[c_OCCEdge *] edges, vector[double] distances)
         int shell(vector[c_OCCFace *] faces, double offset, double tolerance)

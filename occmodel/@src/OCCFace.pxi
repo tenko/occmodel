@@ -333,12 +333,10 @@ cdef class Face(Base):
             
         return self
         
-    cdef boolean(self, arg, char *op):
+    cdef boolean(self, arg, c_BoolOpType op):
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef Solid tool
         cdef int ret
-        
-        assert op in (b'cut',b'common')
         
         if not isinstance(arg, Solid):
             if not isinstance(arg, (tuple,list,set)):
@@ -385,10 +383,10 @@ cdef class Face(Base):
         else:
             tool = arg
         
-        if op == b'cut':
-            ret = occ.cut(<c_OCCSolid *>tool.thisptr)
+        if op in (BOOL_CUT, BOOL_COMMON):
+            ret = occ.boolean(<c_OCCSolid *>tool.thisptr, op)
         else:
-            ret = occ.common(<c_OCCSolid *>tool.thisptr)
+            raise OCCError('uknown operation')
         
         if ret != 0:
             raise OCCError('Failed to create boolean %s' % op)
@@ -406,7 +404,7 @@ cdef class Face(Base):
         Edges, wires and faces are extruded in the normal
         directions to intersect the face.
         '''
-        return self.boolean(arg, 'cut')
+        return self.boolean(arg, BOOL_CUT)
         
     cpdef common(self, arg):
         '''
@@ -419,7 +417,7 @@ cdef class Face(Base):
         Edges, wires and faces are extruded in the normal
         directions to intersect the face.
         '''
-        return self.boolean(arg, 'common')
+        return self.boolean(arg, BOOL_COMMON)
 
 cdef class FaceIterator:
     '''

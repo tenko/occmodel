@@ -453,12 +453,10 @@ cdef class Solid(Base):
             
         return self
         
-    cdef boolean(self, arg, char *op):
+    cdef boolean(self, arg, c_BoolOpType op):
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Solid tool
         cdef int ret
-        
-        assert op in (b'fuse',b'cut',b'common')
         
         if not isinstance(arg, Solid):
             if not isinstance(arg, (tuple,list,set)):
@@ -472,7 +470,7 @@ cdef class Solid(Base):
             
             for arg in args:
                 if isinstance(arg, (Edge,Wire,Face)):
-                    if op == b'fuse':
+                    if op == BOOL_FUSE:
                         raise OCCError('Solid expected for fuse')
                     
                     if not arg.hasPlane(origin, normal):
@@ -511,12 +509,8 @@ cdef class Solid(Base):
         else:
             tool = arg
         
-        if op == b'fuse':
-            ret = occ.fuse(<c_OCCSolid *>tool.thisptr)
-        elif op == b'cut':
-            ret = occ.cut(<c_OCCSolid *>tool.thisptr)
-        elif op == b'common':
-            ret = occ.common(<c_OCCSolid *>tool.thisptr)
+        if op in (BOOL_FUSE, BOOL_CUT, BOOL_COMMON):
+            ret = occ.boolean(<c_OCCSolid *>tool.thisptr, op)
         else:
             raise OCCError('uknown operation')
         
@@ -531,7 +525,7 @@ cdef class Solid(Base):
         
         Multiple solids are supported.
         '''
-        return self.boolean(arg, 'fuse')
+        return self.boolean(arg, BOOL_FUSE)
         
     cpdef cut(self, arg):
         '''
@@ -545,7 +539,7 @@ cdef class Solid(Base):
         Edges and wires allways cut through all, but faces
         are limited by the face itself.
         '''
-        return self.boolean(arg, 'cut')
+        return self.boolean(arg, BOOL_CUT)
         
     cpdef common(self, arg):
         '''
@@ -559,7 +553,7 @@ cdef class Solid(Base):
         Edges and wires allways cut through all, but faces
         are limited by the face itself.
         '''
-        return self.boolean(arg, 'common')
+        return self.boolean(arg, BOOL_COMMON)
     
     cpdef fillet(self, radius, edges = None):
         '''

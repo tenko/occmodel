@@ -382,39 +382,49 @@ int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance
     return 0;
 }
 
-int OCCSolid::fuse(OCCSolid *tool) {
+int OCCSolid::boolean(OCCSolid *tool, BoolOpType op) {
     try {
-        BRepAlgoAPI_Fuse BO (tool->getShape(), getShape());
-        if (!BO.IsDone()) {
-          return 1;
+        TopoDS_Shape shape;
+        switch (op) {
+            case BOOL_FUSE:
+            {
+                BRepAlgoAPI_Fuse FU (tool->getShape(), this->getShape());
+                if (!FU.IsDone())
+                    Standard_ConstructionError::Raise("operation failed");
+                shape = FU.Shape();
+                break;
+            }
+            case BOOL_CUT:
+            {
+                BRepAlgoAPI_Cut CU (tool->getShape(), this->getShape());
+                if (!CU.IsDone())
+                    Standard_ConstructionError::Raise("operation failed");
+                shape = CU.Shape();
+                break;
+            }
+            case BOOL_COMMON:
+            {
+                BRepAlgoAPI_Common CO (tool->getShape(), this->getShape());
+                if (!CO.IsDone())
+                    Standard_ConstructionError::Raise("operation failed");
+                shape = CO.Shape();
+                break;
+            }
+            default:
+                Standard_ConstructionError::Raise("unknown operation");
+                break;
         }
-        this->setShape(BO.Shape());
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
-int OCCSolid::cut(OCCSolid *tool) {
-    try {
-        BRepAlgoAPI_Cut BO (getShape(), tool->getShape());
-        if (!BO.IsDone()) {
-          return 1;
+        
+        // check for empty compund shape
+        TopoDS_Iterator It (shape, Standard_True, Standard_True);
+        int found = 0;
+        for (; It.More(); It.Next())
+            found++;
+        if (found == 0) {
+            Standard_ConstructionError::Raise("result object is empty compound");
         }
-        this->setShape(BO.Shape());
-    } catch(Standard_Failure &err) {
-        return 1;
-    }
-    return 0;
-}
-
-int OCCSolid::common(OCCSolid *tool) {
-    try {
-        BRepAlgoAPI_Common BO (tool->getShape(), getShape());
-        if (!BO.IsDone()) {
-          return 1;
-        }
-        this->setShape(BO.Shape());
+        
+        this->setShape(shape);
     } catch(Standard_Failure &err) {
         return 1;
     }
