@@ -100,22 +100,60 @@ cdef class Tools:
     def readBREP(filename):
         '''
         Read shapes from a BREP file.
+        
+        A sequence of shapes are returned.
         '''
         cdef vector[c_OCCBase *] cshapes
-        cdef Base cobj
+        cdef Solid solid
+        cdef Face face
+        cdef Wire wire
+        cdef Edge edge
+        cdef Vertex vertex
         cdef int i
         
         ret = readBREP(filename, cshapes)
         if ret != 0 or cshapes.size() == 0:
             raise OCCError('Failed to import objects')
         
+        res = []
         for i in range(cshapes.size()):
-            print cshapes[i].shapeType()
+            shapetype = cshapes[i].shapeType()
+            
+            if shapetype == TopAbs_COMPSOLID or \
+               shapetype == TopAbs_SOLID:
+                solid = Solid.__new__(Solid, None)
+                solid.thisptr = cshapes[i]
+                res.append(solid)
+                
+            elif shapetype == TopAbs_SHELL or \
+                 shapetype == TopAbs_FACE:
+                face = Face.__new__(Face, None)
+                face.thisptr = cshapes[i]
+                res.append(face)
+                
+            elif shapetype == TopAbs_WIRE:
+                wire = Wire.__new__(Wire, None)
+                wire.thisptr = cshapes[i]
+                res.append(wire)
+                
+            elif shapetype == TopAbs_EDGE:
+                edge = Edge.__new__(Edge, None)
+                edge.thisptr = cshapes[i]
+                res.append(edge)
+                
+            elif shapetype == TopAbs_VERTEX:
+                vertex = Vertex.__new__(Vertex, None)
+                vertex.thisptr = cshapes[i]
+                res.append(vertex)
+                
+        return res
     
     @staticmethod
     def readSTEP(filename):
         '''
         Read shapes from a STEP file.
+        
+        A sequence of shapes are returned.
         '''
         cdef vector[c_OCCBase *] cshapes
         cdef Solid solid

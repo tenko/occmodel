@@ -40,8 +40,8 @@ cdef class Face(Base):
         '''
         Create copy of face
         
-        :deepCopy: If true a full copy of the underlying geometry
-                   is done. Defaults to False.
+        :param deepCopy: If true a full copy of the underlying geometry
+                         is done. Defaults to False.
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef Face ret = Face.__new__(Face, None)
@@ -69,9 +69,9 @@ cdef class Face(Base):
         '''
         Create triangle mesh of face.
         
-        factor - deflection from true position
-        angle - max angle
-        qualityNormals - create normals by evaluating surface parameters
+        :param factor: deflection from true position
+        :param angle: max angle
+        :param qualityNormals: create normals by evaluating surface parameters
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef c_OCCMesh *mesh = occ.createMesh(factor, angle, qualityNormals)
@@ -85,9 +85,17 @@ cdef class Face(Base):
     
     cpdef createFace(self, arg):
         '''
-        Create from wire or closed edge.
+        Create planar face from one or more wires or
+        closed edges.
         
-        Additional wires or closed edges define holes in the face.
+        The first argument must be the outer contour.
+        Additional arguments define holes in the face.
+        
+        example::
+            
+            w1 = Wire().createRectangle(width = 1., height = 1., radius = 0.)
+            e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .25)
+            f1 = Face().createFace((w1, e1))
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[c_OCCWire *] cwires
@@ -120,8 +128,13 @@ cdef class Face(Base):
         Create general face constrained by edges
         and optional points.
         
-        edges - sequence of face edges
-        points - optional sequence of point constraints
+        :param edges: sequence of face edges
+        :param points: optional sequence of point constraints
+        
+        example::
+            
+            e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .5)
+            f1 = Face().createConstrained(e1, ((0.,.0,.25),))
         '''
         cdef Edge edge
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
@@ -157,6 +170,11 @@ cdef class Face(Base):
         Create polygonal face from given
         points. The points must lie in a
         common plane.
+        
+        example::
+            
+            pnts = ((-.5,-.5,0.), (0.,.5,0.), (1.,.5,0.), (.5,-.5,0.))
+            f1 = Face().createPolygonal(pnts)
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[vector[double]] cpoints
@@ -208,7 +226,7 @@ cdef class Face(Base):
         '''
         Offseting face given distance.
         
-        :offset: offset distance
+        :param offset: offset distance
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef int ret
@@ -222,8 +240,16 @@ cdef class Face(Base):
         
     cpdef extrude(self, Base shape, p1, p2):
         '''
-        Create extrusion face from edge and
-        given points p1 and p2.
+        Create extrusion face.
+        
+        :param shape: Wire or edge
+        :param p1: start point
+        :param p2: end point.
+        
+        example::
+            
+            e1 = Edge().createArc(start = (-.5,-.25,0.), end = (.5,.75,0.), center = (.5,-.25,0.))
+            f1 = Face().extrude(e1, (0.,0.,0.), (0.,0.,1.))
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[double] cp1, cp2
@@ -245,8 +271,18 @@ cdef class Face(Base):
     
     cpdef revolve(self, Base shape, p1, p2, double angle):
         '''
-        Create revolve face from edge and given
-        points p1,p2 and angle.
+        Create by revolving shape.
+        
+        :param shape: Edge or wire.
+        :param p1: Start point of axis
+        :param p2: End point of axis
+        :param angle: Angle in radians
+        
+        example::
+            
+            pnts = ((0.,0.,0.), (0.,1.,0.), (1.,.5,0.), (1.,0.,0.))
+            e1 = Edge().createBezier(points = pnts)
+            f1 = Face().revolve(e1, (0.,-1.,0.), (1.,-1.,0.), pi/2.)
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[double] cp1, cp2
@@ -268,9 +304,19 @@ cdef class Face(Base):
 
     cpdef sweep(self, spine, profiles, int cornerMode = 0):
         '''
-        Create face or shell by sweeping along spine through
-        sequence of wires. Optionally the start and
+        Create face by sweeping along spine through
+        sequence of shapes. Optionally the start and
         end can be a vertex.
+        
+        :param spine: Edge or wire to define sweep path
+        :param profiles: Sequence of edges, wires or optional
+                         start and end vertex.
+        
+        example::
+            
+            e1 = Edge().createArc((0.,0.,0.), (1.,0.,1.), (1.,0.,0.))
+            e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .25)
+            f1 = Face().sweep(e1, e2)
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[c_OCCBase *] cprofiles
@@ -306,11 +352,18 @@ cdef class Face(Base):
         
     cpdef loft(self, profiles, bint ruled = True, double tolerance = 1e-6):
         '''
-        Create face by lofting through sequence
-        of edges, wires and optional a vertex
-        at the start and end.
+        Create face by lofting through profiles.
         
-        ruled - smooth or rules faces
+        :param profiles: sequence of edges, wires and optional a vertex
+                         at the start and end.
+        :param ruled: Smooth or ruled result shape
+        :param tolerance: Operation tolerance.
+        
+        example::
+            
+            e1 = Edge().createArc((0.,0.,0.),(1.,0.,1.),(1.,0.,0.))
+            e2 = Edge().createArc((0.,1.,0.),(2.,1.,2.),(2.,1.,0.))
+            f1 = Face().loft((e1,e2))
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[c_OCCBase *] cprofiles
@@ -452,4 +505,5 @@ cdef class FaceIterator:
         return ret
 
     cpdef reset(self):
+        '''Restart iteration'''
         self.thisptr.reset()

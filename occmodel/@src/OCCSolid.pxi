@@ -40,8 +40,8 @@ cdef class Solid(Base):
         '''
         Create copy of solid
         
-        :deepCopy: If true a full copy of the underlying geometry
-                   is done. Defaults to False.
+        :param deepCopy: If true a full copy of the underlying geometry
+                         is done. Defaults to False.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Solid ret = Solid.__new__(Solid, None)
@@ -69,9 +69,9 @@ cdef class Solid(Base):
         '''
         Create triangle mesh of solid.
         
-        factor - deflection from true position
-        angle - max angle
-        qualityNormals - create normals by evaluating surface parameters
+        :param factor: deflection from true position
+        :param angle: max angle
+        :param qualityNormals: create normals by evaluating surface parameters
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef c_OCCMesh *mesh = occ.createMesh(factor, angle, qualityNormals)
@@ -85,7 +85,11 @@ cdef class Solid(Base):
         
     cpdef createSolid(self, faces, double tolerance = 1e-6):
         '''
-        Create general solid from sequence of faces
+        Create general solid by sewing together faces
+        with the given tolerance.
+        
+        :param faces: Sequence of faces
+        :param tolerance: Sewing operation tolerance.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Face face
@@ -105,6 +109,9 @@ cdef class Solid(Base):
         '''
         Create compund solid from sequence
         of solid objects.
+        
+        This is usefull for accelerating boolean operation
+        where multiple objects are used as the tool.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Solid solid
@@ -128,6 +135,13 @@ cdef class Solid(Base):
         '''
         Create sphere from center point and
         radius.
+        
+        :param center: Center point
+        :param radius: Sphere radius
+        
+        example::
+            
+            s1 = Solid().createSphere((0.,0.,0.),.5)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[double] cen
@@ -147,9 +161,13 @@ cdef class Solid(Base):
         '''
         Create cylinder
         
-        p1 - axis start
-        p2 - axis end
-        radius - cylinder radius
+        :param p1: Axis start
+        :param p2: Axis end
+        :param radius: Cylinder radius
+        
+        example::
+            
+            s1 = Solid().createCylinder((0.,0.,0.),(0.,0.,1.), .25)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[double] cp1, cp2
@@ -173,10 +191,14 @@ cdef class Solid(Base):
         '''
         Create torus
         
-        p1 - axis start
-        p2 - axis end
-        radius1 - inner radius
-        radius2 - outer radius
+        :param p1: axis start
+        :param p2: axis end
+        :param radius1: ring radius
+        :param radius2: radius
+        
+        example::
+            
+            s1 = Solid().createTorus((0.,0.,0.),(0.,0.,.1), .5, .1)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[double] cp1, cp2
@@ -200,10 +222,14 @@ cdef class Solid(Base):
         '''
         Create cone
         
-        p1 - axis start
-        p2 - axis end
-        radius1 - radius at start
-        radius2 - radius at end
+        :param p1: axis start
+        :param p2: axis end
+        :param radius1: radius at start
+        :param radius2: radius at end
+        
+        example::
+            
+            s1 = Solid().createCone((0.,0.,0.),(0.,0.,1.), .2, .5)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[double] cp1, cp2
@@ -226,6 +252,10 @@ cdef class Solid(Base):
     cpdef createBox(self, p1, p2):
         '''
         Create box from points defining diagonal.
+        
+        example::
+            
+            s1 = Solid().createBox((-.5,-.5,-.5),(.5,.5,.5))
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[double] cp1, cp2
@@ -250,7 +280,7 @@ cdef class Solid(Base):
         Create prism from edge/wire/face in direction of normal.
         
         This solid is infinite/semi-infinite and usefull for cutting and
-        intersection.
+        intersection operations with regular solids.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Face face
@@ -311,6 +341,17 @@ cdef class Solid(Base):
         '''
         Create solid by extruding edge, wire or face from
         p1 to p2.
+        
+        :param p1: start point
+        :param p2: end point
+        
+        example::
+            
+            e1 = Edge().createLine((-.5,0.,0.),(.5,0.,0.))
+            e2 = Edge().createArc3P((.5,0.,0.),(-.5,0.,0.),(0.,.5,0.))
+            w1 = Wire().createWire((e1,e2))
+            f1 = Face().createFace(w1)
+            s1 = Solid().extrude(f1, (0.,0.,0.), (0.,0.,1.))
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Face face
@@ -342,9 +383,15 @@ cdef class Solid(Base):
         '''
         Create solid by revolving face
         
-        p1 - start of axis
-        p2 - end of axis
-        angle - revolve angle
+        :param p1: start of axis
+        :param p2: end of axis
+        :param angle: revolve angle in radians
+        
+        example::
+            
+            e1 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .5, rMinor=.2)
+            f1 = Face().createFace(e1)
+            s1 = Solid().revolve(f1, (1.,0.,0.), (1.,1.,0.), pi/2.)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[double] cp1, cp2
@@ -369,6 +416,22 @@ cdef class Solid(Base):
         Create solid by sweeping along spine through
         sequence of wires. Optionally the start and
         end can be a vertex.
+        
+        :param spine: Edge or wire to define sweep path
+        :param profiles: Sequence of closed edges, closed wires or
+                         optional start and end vertex.
+        
+        example::
+            
+            w1 = Wire().createPolygon((
+                (0.,0.,0.),
+                (0.,0.,1.),
+                (.75,0.,1.),
+                (.75,0.,0.)),
+                close = False
+            )
+            e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .2)
+            s1 = Solid().sweep(w1, e1)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[c_OCCBase *] cprofiles
@@ -407,7 +470,17 @@ cdef class Solid(Base):
         Create solid by lofting through sequence
         of wires or closed edges.
         
-        ruled - smooth or rules faces
+        :param profiles: sequence of closed edges, closed wires and optional
+                         a vertex at the start and end.
+        :param ruled: Smooth or ruled result shape
+        :param tolerance: Operation tolerance.
+        
+        example::
+            
+            e1 = Edge().createCircle(center=(.25,0.,0.),normal=(0.,0.,1.),radius = .25)
+            e2 = Edge().createCircle(center=(.25,0.,.5),normal=(0.,0.,1.),radius = .5)
+            v1 = Vertex(.25,0.,1.)
+            s1 = Solid().loft((e1,e2,v1))
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[c_OCCBase *] cprofiles
@@ -434,8 +507,16 @@ cdef class Solid(Base):
     
     cpdef pipe(self, Face face, path):
         '''
-        Create pipe by extruding face allong
-        wire or edge.
+        Create pipe by extruding face along path.
+        The path can be a Edge or Wire. Note that the path
+        must be C1 continious.
+        
+        example::
+            
+            e1 = Edge().createHelix(.4, 1., .4)
+            e2 = Edge().createCircle(center=(.5,0.,0.),normal=(0.,1.,0.),radius = 0.1)
+            f1 = Face().createFace(e2)
+            s1 = Solid().pipe(f1, e1)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Wire wire
@@ -559,9 +640,9 @@ cdef class Solid(Base):
         '''
         Fillet edges inplace.
         
-        :radius: sequence of radiuses or single radius.
-        :edges: sequence of edges or single edge. Setting the argument to
-                None will select all edges (default)
+        :param radius: sequence of radiuses or single radius.
+        :param edges: sequence of edges or single edge. Setting the argument to
+                      None will select all edges (default)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[c_OCCEdge *] cedges
@@ -596,9 +677,9 @@ cdef class Solid(Base):
         '''
         Chamfer edges inplace.
         
-        :distances: sequence of distances for each edge or single distance.
-        :edges: sequence of edges or single edge. Setting the argument to
-                None will select all edges (default)
+        :param distances: sequence of distances for each edge or single distance.
+        :param edges: sequence of edges or single edge. Setting the argument to
+                      None will select all edges (default)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[c_OCCEdge *] cedges
@@ -633,8 +714,9 @@ cdef class Solid(Base):
         '''
         Apply shell operation on solid.
         
-        :faces: sequence of faces or single face
-        :offset: shell offset distance
+        :param faces: sequence of faces or single face. If no argument is
+                      supplied the first face is selected.
+        :param offset: shell offset distance
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef vector[c_OCCFace *] cfaces
@@ -661,8 +743,8 @@ cdef class Solid(Base):
         '''
         Create solid by offseting face given distance.
         
-        :face: face object
-        :offset: offset distance
+        :param face: face object
+        :param offset: offset distance
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef int ret
@@ -678,7 +760,7 @@ cdef class Solid(Base):
         '''
         Apply section operation between solid and plane.
         
-        plane - section plane
+        :param plane: section plane
         
         Result returned as a face.
         '''
@@ -731,4 +813,5 @@ cdef class SolidIterator:
         return ret
     
     cpdef reset(self):
+        '''Restart iteration'''
         self.thisptr.reset()

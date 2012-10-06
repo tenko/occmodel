@@ -6,6 +6,8 @@ CIRCUMSCRIBE = 'circumscribe'
 cdef class Wire(Base):
     '''
     Wire - represent wire geometry (composite of edges).
+    
+    Wires defines boundaries of faces.
     '''
     def __init__(self, edges = None):
         '''
@@ -39,8 +41,8 @@ cdef class Wire(Base):
         '''
         Create copy of wire
         
-        :deepCopy: If true a full copy of the underlying geometry
-                   is done. Defaults to False.
+        :param deepCopy: If true a full copy of the underlying geometry
+                         is done. Defaults to False.
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         cdef Wire ret = Wire.__new__(Wire, None)
@@ -65,7 +67,7 @@ cdef class Wire(Base):
         
     cpdef createWire(self, edges):
         '''
-        Create wire by connecting edges.
+        Create wire by connecting edges or a single closed edge.
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         cdef vector[c_OCCEdge *] cedges
@@ -88,7 +90,7 @@ cdef class Wire(Base):
     cpdef tesselate(self, double factor = .1, double angle = .1):
         '''
         Tesselate wire to a tuple of points according to given
-        max angle or distance factor
+        max angle or distance factor.
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         cdef vector[vector[double]] pnts
@@ -110,6 +112,10 @@ cdef class Wire(Base):
         
         The rectangle is centered at 0,0 with given
         width, height and optional corner radius.
+        
+        example::
+            
+            w1 = Wire().createRectangle(width = 1., height = 0.75, radius = .25)
         '''
         hw, hh = .5*width, .5*height
         
@@ -221,8 +227,18 @@ cdef class Wire(Base):
         '''
         Create a polygon from given points.
         
-        :point: Point sequence.
-        :close: Close the polygon.
+        :param point: Point sequence.
+        :param close: Close the polygon.
+        
+        example::
+            
+            w1 = Wire().createPolygon((
+                (0.,0.,0.),
+                (0.,0.,1.),
+                (.75,0.,1.),
+                (.75,0.,0.)),
+                close = False
+            )
         '''
         cdef Edge edge
         cdef Vertex first, last, nxt
@@ -252,6 +268,14 @@ cdef class Wire(Base):
         
         The polygon can either be inscribed or circumscribe the circle by setting
         the mode argument.
+        
+        :param radius: circle radius
+        :param sides: number of sides (>3)
+        :param mode: INSCRIBE or CIRCUMSCRIBE the given circle radius.
+        
+        example::
+            
+            w1 = Wire().createRegularPolygon(radius = .5, sides = 6.)
         '''
         if sides < 3 or radius < 1e-16:
             raise OCCError('Arguments not consistent')
@@ -283,7 +307,7 @@ cdef class Wire(Base):
         
     cpdef project(self, Face face):
         '''
-        Project wire towards face
+        Project wire towards face.
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         cdef int ret
@@ -313,9 +337,9 @@ cdef class Wire(Base):
         '''
         Fillet vertices inplace.
         
-        :radius: sequence of radiuses or single radius.
-        :vertices: sequence of vertices or single vertex. Setting the
-                  argument to None will select all vertices (default)
+        :param radius: sequence of radiuses or single radius.
+        :param vertices: sequence of vertices or single vertex. Setting the
+                         argument to None will select all vertices (default)
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         cdef vector[c_OCCVertex *] cvertices
@@ -350,9 +374,9 @@ cdef class Wire(Base):
         '''
         Chamfer vertices inplace.
         
-        :distance: sequence of distances or single distance.
-        :vertices: sequence of vertices or single vertex. Setting the
-                  argument to None will select all vertices (default)
+        :param distance: sequence of distances or single distance.
+        :param vertices: sequence of vertices or single vertex. Setting the
+                         argument to None will select all vertices (default)
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         cdef vector[c_OCCVertex *] cvertices
@@ -493,4 +517,5 @@ cdef class WireIterator:
         return ret
 
     cpdef reset(self):
+        '''Restart iteration'''
         self.thisptr.reset()

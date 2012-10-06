@@ -864,9 +864,10 @@ w4 = Wire().createRegularPolygon(radius = .5, sides = 6.)
         elif value == WIRE_OPERATIONS:
             SRC = \
 """
-w1 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
-add(w1)
 
+w1 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+
+# offset wire
 w2 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
 w2.offset(0.1)
 

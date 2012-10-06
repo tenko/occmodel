@@ -30,7 +30,7 @@ cdef class Base:
     
     cpdef shapeType(self):
         '''
-        Return class type or None if not valid
+        Return class type or None if shape not known.
         '''
         self.CheckPtr()
         
@@ -59,7 +59,8 @@ cdef class Base:
         '''
         Shape hash code.
         
-        Orientation is not included in the hash calculation.
+        Orientation is not included in the hash calculation. Instances of
+        the same object therfore return the same hash code.
         '''
         self.CheckPtr()
         
@@ -68,7 +69,8 @@ cdef class Base:
         
     cpdef bint isEqual(self, Base other):
         '''
-        Check object for equallity
+        Check object for equallity. Returns True only if both the
+        underlying geometry and location is similar.
         '''
         self.CheckPtr()
         
@@ -77,7 +79,7 @@ cdef class Base:
     
     cpdef bint isNull(self):
         '''
-        Check if object is empty.
+        Check if object is Null.
         '''
         self.CheckPtr()
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
@@ -85,7 +87,7 @@ cdef class Base:
         
     cpdef bint isValid(self):
         '''
-        Return if object is valid
+        Return if object is valid.
         '''
         self.CheckPtr()
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
@@ -93,7 +95,12 @@ cdef class Base:
     
     cpdef bint hasPlane(self, Point origin = None, Vector normal = None, double tolerance = 1e-12):
         '''
-        Check if object has plane defined.
+        Check if object has plane defined. Optional pass origin and normal
+        argument to fetch the plane definition.
+        
+        :param origin: Plane origin
+        :param normal: Plane normal
+        :param tolerance: Plane tolerance
         '''
         self.CheckPtr()
         
@@ -114,6 +121,8 @@ cdef class Base:
     cpdef Box boundingBox(self, double tolerance = 1e-12):
         '''
         Return bounding box
+        
+        :param tolerance: Tolerance of calculation.
         '''
         self.CheckPtr()
             
@@ -129,10 +138,9 @@ cdef class Base:
         '''
         Apply transformation matrix to object.
         
-        mat - Transformation matrix
-        
-        If copy is false the object is transformed in place otherwise
-        a transformed shallow copy of the object returned.
+        :param mat: Transformation matrix
+        :param copy: If True the object is translated in place otherwise a
+                     new translated object is returned.
         '''
         self.CheckPtr()
         
@@ -171,10 +179,9 @@ cdef class Base:
         '''
         Translate object.
         
-        delta - (dx,dy,dz)
-        
-        If copy is false the object is transformed in place otherwise
-        a transformed shallow copy of the object returned.
+        :param delta: translation vector (dx,dy,dz)
+        :param copy: If True the object is translated in place otherwise a
+                     new translated object is returned.
         '''
         self.CheckPtr()
         
@@ -200,14 +207,13 @@ cdef class Base:
     
     cpdef rotate(self, double angle, axis, center = (0.,0.,0.), bint copy = False):
         '''
-        Rotate object in place.
+        Rotate object.
         
-        p1 - axis start point
-        p2 - axis end point
-        angle - rotation angle in radians
-        
-        If copy is false the object is transformed in place otherwise
-        a transformed shallow copy of the object returned.
+        :param angle: rotation angle in radians
+        :param axis: axis vector
+        :param center: rotation center
+        :param copy: If True the object is transformed in place otherwise a
+                     new transformed object is returned.
         '''
         self.CheckPtr()
         
@@ -242,13 +248,12 @@ cdef class Base:
 
     cpdef scale(self, pnt, double scale, bint copy = False):
         '''
-        Scale object in place.
+        Scale object.
         
-        pnt - reference point
-        scale - scale factor
-        
-        If copy is false the object is transformed in place otherwise
-        a transformed shallow copy of the object returned.
+        :param pnt: reference point
+        :param scale: scale factor
+        :param copy: If True the object is translated in place otherwise a
+                     new translated object is returned.
         '''
         self.CheckPtr()
         
@@ -274,12 +279,11 @@ cdef class Base:
 
     cpdef mirror(self, Plane plane, bint copy = False):
         '''
-        Mirror object inplace
+        Mirror object
         
-        plane - mirror plane
-        
-        If copy is false the object is transformed in place otherwise
-        a transformed shallow copy of the object returned.
+        :param plane: mirror plane
+        :param copy: If True the object is translated in place otherwise a
+                     new translated object is returned.
         '''
         self.CheckPtr()
         

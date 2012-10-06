@@ -22,21 +22,28 @@ object to the viewer function.
     viewer(solid)
     viewer((solid,face,edge))
 
+It is also possible to read objects from a STEP or BREP file and view
+the imported geometry.
+
+.. code-block:: python
+
+    from occmodel import viewer, Tools
+    objects = Tools.readSTEP('example.stp')
+    viewer(objects)
+
 Geometry
 ========
 
-**Vertex** are 3d point objects which are used to reference start and end
-points of edges in order to properly join edges.
+**Vertex** are 3d points which are used to reference start, end
+or seam points of edges..
 
-**Edge** are 3d curves which form border of faces. Closed edges like
-circles and ellipsis does not need to define start and end points to
-be valid.
+**Edge** are 3d curve which are combined into wires.
 
-**Wire** are composite curves created from edges constraining faces or
-for lofting shaped etc.
+**Wire** are composite curves created from edges defining boundaries of
+faces.
 
-**Face** are 3d surfaces which can be lofted, extruded etc. to form
-solids objects. Faces are created from 
+**Face** are underlying surface geometry which are constrained by
+wires.
 
 **Solid** are the main object which contain rich functionalty to
 combine and edit solid objects.
@@ -54,9 +61,7 @@ Create single line.
 
 .. code-block:: python
 
-    start = Vertex(1.,0.,0.)
-    end = Vertex(-1.,0.,0.)
-    e1 = Edge().createLine(end,start)
+    e1 = Edge().createLine(start = (0.,0.,0.), end = (1.,1.,0.))
     
 Arc 3P
 ------
@@ -65,10 +70,7 @@ Create an arc defined by three points.
 
 .. code-block:: python
 
-    start = Vertex(1.,0.,0.)
-    end = Vertex(-1.,0.,0.)
-    pnt = (0.,1.,0.)
-    edge = Edge().createArc3P(start,end,pnt)
+    e1 = Edge().createArc3P(start = (1.,0.,0.), end = (-1.,0.,0.), pnt = (0.,1.,0.))
 
 Circle
 ------
@@ -143,18 +145,6 @@ Create a planar polygonal face
     pnts = ((0.,0.,0.), (0.,2.,0.), (1.,2.,0.), (1.,0.,0.))
     f1 = Face().createPolygonal(pnts)
 
-Section
--------
-
-Create face from plane cutting through solid.
-
-.. code-block:: python
-
-    solid = Solid()
-    solid.createSphere((1.,2.,3.),.5)
-    
-    plane = Plane.fromNormal((1.,2.,3.), (0.,1.,1.))
-    sec = solid.section(plane)
     
 Solids
 ======
@@ -331,28 +321,3 @@ Construc bowl like solid.
     
     # fillet all edges
     solid.fillet(.25, lambda near, far: True)
-
-Misc
-====
-
-Read
-----
-
-Read solid from external STEP file.
-
-.. code-block:: python
-
-    solid = Solid()
-    solid.readSTEP('test.stp')
-    solid.heal()
-
-Write
------
-
-Write to external STEP file.
-
-.. code-block:: python
-
-    model = Model()
-    model.createSphere(1.,2.,3.,.5)
-    model.writeSTEP('test.stp')

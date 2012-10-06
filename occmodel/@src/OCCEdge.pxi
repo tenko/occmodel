@@ -2,7 +2,7 @@
 
 cdef class Edge(Base):
     '''
-    Edge - represent edge geometry (curve).
+    Edge - represent a single curve.
     '''
     def __init__(self):
         self.thisptr = new c_OCCEdge()
@@ -54,8 +54,8 @@ cdef class Edge(Base):
         '''
         Create copy of edge
         
-        :deepCopy: If true a full copy of the underlying geometry
-                   is done. Defaults to False.
+        :param deepCopy: If true a full copy of the underlying geometry
+                         is done. Defaults to False.
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef Edge ret = Edge.__new__(Edge, None)
@@ -97,6 +97,10 @@ cdef class Edge(Base):
         '''
         Create straight line from given start and end
         points
+        
+        example::
+            
+            e1 = Edge().createLine(start = (0.,0.,0.), end = (1.,1.,0.))
         '''
         cdef Vertex vstart, vend
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
@@ -121,7 +125,11 @@ cdef class Edge(Base):
     
     cpdef createArc(self, start, end, center):
         '''
-        Create arc from given start, end and center points
+        Create arc from given start, end and center points.
+        
+        example::
+            
+            e1 = Edge().createArc(start = (-.5,0.,0.), end = (.5,1.,0.), center = (.5,0.,0.))
         '''
         cdef Vertex vstart, vend
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
@@ -154,6 +162,10 @@ cdef class Edge(Base):
         '''
         Create arc from start to end and fitting through
         given point.
+        
+        example::
+            
+            e1 = Edge().createArc3P(start = (1.,0.,0.), end = (-1.,0.,0.), pnt = (0.,1.,0.))
         '''
         cdef Vertex vstart, vend
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
@@ -185,6 +197,10 @@ cdef class Edge(Base):
     cpdef createCircle(self, center, normal, double radius):
         '''
         Create circle from center, normal direction and radius.
+        
+        example::
+            
+            e1 = Edge().createCircle(center = (0.,.0,0.), normal = (0.,0.,1.), radius = 1.)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[double] ccen, cnor
@@ -209,6 +225,10 @@ cdef class Edge(Base):
         '''
         Create ellipse from center, normal direction and given
         major and minor axis.
+        
+        example::
+            
+            e1 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .5, rMinor=.2)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[double] ccen, cnor
@@ -231,7 +251,11 @@ cdef class Edge(Base):
     
     cpdef createHelix(self, double pitch, double height, double radius, double angle = 0., bint leftHanded = False):
         '''
-        Create helix curve
+        Create helix curve.
+        
+        example::
+            
+            e1 = Edge().createHelix(pitch = .5, height = 1., radius = .25, angle = pi/5.)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef int ret
@@ -249,6 +273,11 @@ cdef class Edge(Base):
         Optional start and end Vertex object can be given
         otherwise start and end are extracted from the
         points sequence.
+        
+        example::
+            
+            pnts = ((0.,0.,0.), (0.,1.,0.), (1.,.5,0.), (1.,0.,0.))
+            e1 = Edge().createBezier(points = pnts)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[vector[double]] cpoints
@@ -284,6 +313,11 @@ cdef class Edge(Base):
         Optional start and end Vertex object can be given
         otherwise start and end are extracted from the
         points sequence.
+        
+        example::
+            
+            pnts = ((0.,0.,0.), (0.,.5,0.), (1.,.25,0.),(1.,0.,0.))
+            e1 = Edge().createSpline(points = pnts)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         cdef vector[vector[double]] cpoints
@@ -316,12 +350,12 @@ cdef class Edge(Base):
         '''
         Create NURBS curve.
         
-        start - optional start Vertex
-        end - optional end Vertex
-        points - sequence of controll points
-        knots - sequence of kont values
-        weights - sequence of controll point weights
-        mults - sequence of knot multiplicity
+        :param start: optional start Vertex
+        :param end: optional end Vertex
+        :param points: sequence of controll points
+        :param knots: sequence of kont values
+        :param weights: sequence of controll point weights
+        :param mults: sequence of knot multiplicity
         
         If start and end Vertex objects are not given
         the start and end point is given by the points
@@ -421,4 +455,5 @@ cdef class EdgeIterator:
         return ret
     
     cpdef reset(self):
+        '''Restart the iteration'''
         self.thisptr.reset()

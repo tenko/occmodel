@@ -106,4 +106,5 @@ cdef class VertexIterator:
         return ret
     
     cpdef reset(self):
+        '''Restart iteration'''
         self.thisptr.reset()
