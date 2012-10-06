@@ -80,14 +80,14 @@ the imported geometry.</p>
 </div>
 <div class="section" id="geometry">
 <h1>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h1>
-<p><strong>Vertex</strong> are 3d points which are used to reference start, end
+<p><a class="reference internal" href="content.html#occmodel.Vertex" title="occmodel.Vertex"><tt class="xref py py-class docutils literal"><span class="pre">occmodel.Vertex</span></tt></a> are 3d points which are used to reference start, end
 or seam points of edges..</p>
-<p><strong>Edge</strong> are 3d curve which are combined into wires.</p>
-<p><strong>Wire</strong> are composite curves created from edges defining boundaries of
+<p><a class="reference internal" href="content.html#occmodel.Edge" title="occmodel.Edge"><tt class="xref py py-class docutils literal"><span class="pre">occmodel.Edge</span></tt></a> are 3d curve which are combined into wires.</p>
+<p><a class="reference internal" href="content.html#occmodel.Wire" title="occmodel.Wire"><tt class="xref py py-class docutils literal"><span class="pre">occmodel.Wire</span></tt></a> are composite curves created from edges defining boundaries of
 faces.</p>
-<p><strong>Face</strong> are underlying surface geometry which are constrained by
+<p><a class="reference internal" href="content.html#occmodel.Face" title="occmodel.Face"><tt class="xref py py-class docutils literal"><span class="pre">occmodel.Face</span></tt></a> are underlying surface geometry which are constrained by
 wires.</p>
-<p><strong>Solid</strong> are the main object which contain rich functionalty to
+<p><a class="reference internal" href="content.html#occmodel.Solid" title="occmodel.Solid"><tt class="xref py py-class docutils literal"><span class="pre">occmodel.Solid</span></tt></a> are the main object which contain rich functionalty to
 combine and edit solid objects.</p>
 <p>Point and vectors passed to the geometry functions can be any valid
 python sequence of three numbers (Ref: Vector and Point classes)</p>
@@ -96,42 +96,42 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <h1>Edges<a class="headerlink" href="#edges" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="line">
 <h2>Line<a class="headerlink" href="#line" title="Permalink to this headline">¶</a></h2>
-<p>Create single line.</p>
+<p>Create single line Edge.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createLine</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="arc-3p">
 <h2>Arc 3P<a class="headerlink" href="#arc-3p" title="Permalink to this headline">¶</a></h2>
-<p>Create an arc defined by three points.</p>
+<p>Create an arc Edge defined by three points.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc3P</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">pnt</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="circle">
 <h2>Circle<a class="headerlink" href="#circle" title="Permalink to this headline">¶</a></h2>
-<p>Create circle curve.</p>
+<p>Create circle Edge</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="bezier">
 <h2>Bezier<a class="headerlink" href="#bezier" title="Permalink to this headline">¶</a></h2>
-<p>Create bezier curve</p>
+<p>Create bezier Edge</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">start</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
 <span class="n">end</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
 <span class="n">pnts</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
-<span class="n">b1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createBezier</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">pnts</span><span class="p">)</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createBezier</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">pnts</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="spline">
 <h2>Spline<a class="headerlink" href="#spline" title="Permalink to this headline">¶</a></h2>
-<p>Create a spline curve</p>
+<p>Create a spline Edge</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">start</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
 <span class="n">end</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
 <span class="n">pnts</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">5.</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
-<span class="n">s1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createSpline</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">pnts</span><span class="p">)</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createSpline</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">pnts</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -142,7 +142,7 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <h2>Face interior point<a class="headerlink" href="#face-interior-point" title="Permalink to this headline">¶</a></h2>
 <p>Create face from circle edge and interior point.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
-<span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createConstrained</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">25</span><span class="p">),))</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createConstrained</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">25</span><span class="p">),))</span>
 </pre></div>
 </div>
 </div>
@@ -157,7 +157,7 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc3P</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">pnt</span><span class="p">)</span>
 
 <span class="n">w1</span> <span class="o">=</span> <span class="n">Wire</span><span class="p">()</span><span class="o">.</span><span class="n">createWire</span><span class="p">((</span><span class="n">e1</span><span class="p">,</span><span class="n">e2</span><span class="p">))</span>
-<span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">w1</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">w1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -201,30 +201,32 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <p>Boolean union between two solid spheres.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">s2</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">solid</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">booleanUnion</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+<span class="n">s1</span><span class="o">.</span><span class="n">fuse</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Boolean difference between two solid spheres.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">s2</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">solid</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">booleanDifference</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+<span class="n">s1</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Boolean intersection between two solid spheres.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">s2</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">solid</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">booleanIntersection</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+<span class="n">s1</span><span class="o">.</span><span class="n">common</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="extrude">
 <h2>Extrude<a class="headerlink" href="#extrude" title="Permalink to this headline">¶</a></h2>
 <p>Extrude face along vector.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">start</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">end</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">pnts</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">5.</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
-<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createSpline</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">pnts</span><span class="p">)</span>
-
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pnts</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">5.</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createSpline</span><span class="p">(</span><span class="n">points</span> <span class="o">=</span> <span class="n">pnts</span><span class="p">)</span>
 <span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
 
 <span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">5.</span><span class="p">))</span>
@@ -237,7 +239,7 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
 <span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
 
-<span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">revolve</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="mf">90.</span><span class="p">)</span>
+<span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">revolve</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">pi</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -254,14 +256,9 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <div class="section" id="pipe">
 <h2>Pipe<a class="headerlink" href="#pipe" title="Permalink to this headline">¶</a></h2>
 <p>Extrude circle along arc edge</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">start</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
-<span class="n">end</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">)</span>
-<span class="n">cen</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
-<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">cen</span><span class="p">)</span>
-
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">),(</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
 <span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
 <span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
-
 <span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -274,8 +271,14 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <p class="caption">Box example plot.</p>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createBox</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">100.</span><span class="p">,</span><span class="mf">100.</span><span class="p">,</span><span class="mf">100.</span><span class="p">))</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">shell</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">near</span><span class="p">,</span><span class="n">far</span><span class="p">:</span> <span class="n">near</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">50</span> <span class="ow">and</span> <span class="n">far</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">)</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">fillet</span><span class="p">(</span><span class="mf">2.</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">near</span><span class="p">,</span><span class="n">far</span><span class="p">:</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">pnt</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
+<span class="n">face</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">FaceIterator</span><span class="p">(</span><span class="n">solid</span><span class="p">):</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="n">face</span><span class="o">.</span><span class="n">boundingBox</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">bbox</span><span class="o">.</span><span class="n">near</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="mf">50.</span> <span class="ow">and</span> <span class="n">bbox</span><span class="o">.</span><span class="n">far</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="mf">50.</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="n">solid</span><span class="o">.</span><span class="n">shell</span><span class="p">(</span><span class="o">-</span><span class="mf">5.</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
+<span class="n">solid</span><span class="o">.</span><span class="n">fillet</span><span class="p">(</span><span class="mf">2.</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Union of cyllinders with fillet intersection edge.</p>
@@ -285,12 +288,17 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createCylinder</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="o">-</span><span class="mf">2.</span><span class="p">),(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">),</span> <span class="mf">1.</span><span class="p">)</span>
 <span class="n">s2</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createCylinder</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="o">.</span><span class="mi">9</span><span class="p">)</span>
-<span class="n">solid</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">booleanUnion</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+<span class="n">s1</span><span class="o">.</span><span class="n">fuse</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">fillet</span><span class="p">(</span><span class="n">near</span><span class="p">,</span> <span class="n">far</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.5</span> <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="p">(</span><span class="n">near</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">far</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">near</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">far</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">origo</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">EdgeIterator</span><span class="p">(</span><span class="n">s1</span><span class="p">):</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">boundingBox</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">bbox</span><span class="o">.</span><span class="n">near</span><span class="o">.</span><span class="n">distanceTo</span><span class="p">(</span><span class="n">origo</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.75</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bbox</span><span class="o">.</span><span class="n">far</span><span class="o">.</span><span class="n">distanceTo</span><span class="p">(</span><span class="n">origo</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.75</span><span class="p">:</span>
+            <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
 
-<span class="n">solid</span><span class="o">.</span><span class="n">fillet</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">fillet</span><span class="p">)</span>
+<span class="n">s1</span><span class="o">.</span><span class="n">fillet</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">edges</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Construc bowl like solid.</p>
@@ -301,17 +309,23 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># cut sphere in half</span>
 <span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="mf">10.</span><span class="p">)</span>
 <span class="n">box</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createBox</span><span class="p">((</span><span class="o">-</span><span class="mf">11.</span><span class="p">,</span><span class="o">-</span><span class="mf">11.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">11.</span><span class="p">,</span><span class="mf">11.</span><span class="p">,</span><span class="mf">11.</span><span class="p">))</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">booleanDifference</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+<span class="n">solid</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 
 <span class="c"># shell operation</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">shell</span><span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">near</span><span class="p">,</span><span class="n">far</span><span class="p">:</span> <span class="n">near</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">far</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">face</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">FaceIterator</span><span class="p">(</span><span class="n">solid</span><span class="p">):</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="n">face</span><span class="o">.</span><span class="n">boundingBox</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">bbox</span><span class="o">.</span><span class="n">near</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">1.</span> <span class="ow">and</span> <span class="n">bbox</span><span class="o">.</span><span class="n">far</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">1.</span><span class="p">:</span>
+        <span class="k">break</span>
+
+<span class="n">solid</span><span class="o">.</span><span class="n">shell</span><span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
 
 <span class="c"># foot</span>
 <span class="n">cone</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createCone</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="o">-</span><span class="mf">11.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="o">-</span><span class="mf">7.</span><span class="p">),</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">)</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">booleanUnion</span><span class="p">(</span><span class="n">cone</span><span class="p">)</span>
+<span class="n">solid</span><span class="o">.</span><span class="n">fuse</span><span class="p">(</span><span class="n">cone</span><span class="p">)</span>
 
 <span class="c"># fillet all edges</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">fillet</span><span class="p">(</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">near</span><span class="p">,</span> <span class="n">far</span><span class="p">:</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">solid</span><span class="o">.</span><span class="n">fillet</span><span class="p">(</span><span class="o">.</span><span class="mi">25</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
