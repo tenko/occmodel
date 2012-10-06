@@ -86,6 +86,15 @@ class test_Edge(unittest.TestCase):
         v1, v2 = e1
         eq(v1, start)
         eq(v2, end)
+        
+        pnts = ((0.,0.,0.),(0.,2.,0.), (1.,1.5,0.),(1.,0.,0.))
+        e2 = Edge().createBezier(points = pnts)
+        
+        v1, v2 = e2
+        eq(v1, start)
+        eq(v2, end)
+        
+        self.assertAlmostEqual(e1.length(), e2.length())
     
     def test_createSpline(self):
         eq = self.almostEqual
