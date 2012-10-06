@@ -396,7 +396,7 @@ int OCCSolid::boolean(OCCSolid *tool, BoolOpType op) {
             }
             case BOOL_CUT:
             {
-                BRepAlgoAPI_Cut CU (tool->getShape(), this->getShape());
+                BRepAlgoAPI_Cut CU (this->getShape(), tool->getShape());
                 if (!CU.IsDone())
                     Standard_ConstructionError::Raise("operation failed");
                 shape = CU.Shape();

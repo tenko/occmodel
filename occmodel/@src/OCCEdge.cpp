@@ -191,12 +191,8 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
             ctrlPoints.SetValue(index++, aP);
         }
         
-        if (vertices) {
+        if (vertices)
             ctrlPoints.SetValue(index++, gp_Pnt(end->X(), end->Y(), end->Z())); 
-        } else {
-            // repeat first point
-            ctrlPoints.SetValue(index++, ctrlPoints(1));
-        }
         
         Handle(Geom_BezierCurve) bezier = new Geom_BezierCurve(ctrlPoints);
         

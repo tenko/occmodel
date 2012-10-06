@@ -10,7 +10,7 @@ OCCFace *OCCFace::copy(bool deepCopy = false)
     try {
         if (deepCopy) {
             BRepBuilderAPI_Copy A;
-            A.Perform(this->getFace());
+            A.Perform(this->getShape());
             ret->setShape(A.Shape());
         } else {
             ret->setShape(this->getShape());

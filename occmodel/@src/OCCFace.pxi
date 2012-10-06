@@ -146,7 +146,8 @@ cdef class Face(Base):
                 cpoints.push_back(tmp)
             
         ret = occ.createConstrained(cedges, cpoints)
-        if ret != 0:
+        
+        if ret != 0 or not self.isValid() or self.isNull():
             raise OCCError('Failed to create face')
             
         return self
@@ -154,7 +155,8 @@ cdef class Face(Base):
     cpdef createPolygonal(self, points):
         '''
         Create polygonal face from given
-        points.
+        points. The points must lie in a
+        common plane.
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[vector[double]] cpoints
@@ -170,7 +172,7 @@ cdef class Face(Base):
         
         ret = occ.createPolygonal(cpoints)
         
-        if ret != 0:
+        if ret != 0 or not self.isValid() or self.isNull():
             raise OCCError('Failed to create face')
             
         return self

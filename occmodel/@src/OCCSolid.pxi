@@ -629,7 +629,7 @@ cdef class Solid(Base):
         
         return self
         
-    cpdef shell(self, faces, double offset, double tolerance = 1e-4):
+    cpdef shell(self, double offset, faces = None, double tolerance = 1e-4):
         '''
         Apply shell operation on solid.
         
@@ -641,6 +641,9 @@ cdef class Solid(Base):
         cdef Face face
         cdef int ret
         
+        if faces is None:
+            faces = next(FaceIterator(self))
+            
         if isinstance(faces, Face):
             faces = (faces,)
             
