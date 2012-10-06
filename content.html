@@ -49,26 +49,214 @@
             
   <div class="section" id="geometry">
 <h1>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="base">
+<h2>Base<a class="headerlink" href="#base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="occmodel.Base">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Base</tt><a class="headerlink" href="#occmodel.Base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Definition of virtual base object</p>
+<dl class="method">
+<dt id="occmodel.Base.boundingBox">
+<tt class="descname">boundingBox</tt><big>(</big><em>self</em>, <em>double tolerance=1e-12</em><big>)</big> &rarr; Box<a class="headerlink" href="#occmodel.Base.boundingBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bounding box</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tolerance</strong> &#8211; Tolerance of calculation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.fromString">
+<tt class="descname">fromString</tt><big>(</big><em>self</em>, <em>char *st</em><big>)</big><a class="headerlink" href="#occmodel.Base.fromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore shape from string.</p>
+<p>The format used is the OpenCASCADE internal BREP format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.hasPlane">
+<tt class="descname">hasPlane</tt><big>(</big><em>self</em>, <em>Point origin=None</em>, <em>Vector normal=None</em>, <em>double tolerance=1e-12</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Base.hasPlane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if object has plane defined. Optional pass origin and normal
+argument to fetch the plane definition.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>origin</strong> &#8211; Plane origin</li>
+<li><strong>normal</strong> &#8211; Plane normal</li>
+<li><strong>tolerance</strong> &#8211; Plane tolerance</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.hashCode">
+<tt class="descname">hashCode</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Base.hashCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape hash code.</p>
+<p>Orientation is not included in the hash calculation. Instances of
+the same object therfore return the same hash code.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.isEqual">
+<tt class="descname">isEqual</tt><big>(</big><em>self</em>, <em>Base other</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Base.isEqual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check object for equallity. Returns True only if both the
+underlying geometry and location is similar.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.isNull">
+<tt class="descname">isNull</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Base.isNull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if object is Null.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.isValid">
+<tt class="descname">isValid</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Base.isValid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return if object is valid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.mirror">
+<tt class="descname">mirror</tt><big>(</big><em>self</em>, <em>Plane plane</em>, <em>int copy=False</em><big>)</big><a class="headerlink" href="#occmodel.Base.mirror" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mirror object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>plane</strong> &#8211; mirror plane</li>
+<li><strong>copy</strong> &#8211; If True the object is translated in place otherwise a
+new translated object is returned.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.rotate">
+<tt class="descname">rotate</tt><big>(</big><em>self</em>, <em>double angle</em>, <em>axis</em>, <em>center=(0.0</em>, <em>0.0</em>, <em>0.0)</em>, <em>int copy=False</em><big>)</big><a class="headerlink" href="#occmodel.Base.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>angle</strong> &#8211; rotation angle in radians</li>
+<li><strong>axis</strong> &#8211; axis vector</li>
+<li><strong>center</strong> &#8211; rotation center</li>
+<li><strong>copy</strong> &#8211; If True the object is transformed in place otherwise a
+new transformed object is returned.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.scale">
+<tt class="descname">scale</tt><big>(</big><em>self</em>, <em>pnt</em>, <em>double scale</em>, <em>int copy=False</em><big>)</big><a class="headerlink" href="#occmodel.Base.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pnt</strong> &#8211; reference point</li>
+<li><strong>scale</strong> &#8211; scale factor</li>
+<li><strong>copy</strong> &#8211; If True the object is translated in place otherwise a
+new translated object is returned.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.shapeType">
+<tt class="descname">shapeType</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Base.shapeType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return class type or None if shape not known.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.toString">
+<tt class="descname">toString</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Base.toString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seralize object to string.</p>
+<p>The format used is the OpenCASCADE internal BREP format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.transform">
+<tt class="descname">transform</tt><big>(</big><em>self</em>, <em>Transform mat</em>, <em>int copy=False</em><big>)</big><a class="headerlink" href="#occmodel.Base.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply transformation matrix to object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mat</strong> &#8211; Transformation matrix</li>
+<li><strong>copy</strong> &#8211; If True the object is translated in place otherwise a
+new translated object is returned.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Base.translate">
+<tt class="descname">translate</tt><big>(</big><em>self</em>, <em>delta</em>, <em>int copy=False</em><big>)</big><a class="headerlink" href="#occmodel.Base.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>delta</strong> &#8211; translation vector (dx,dy,dz)</li>
+<li><strong>copy</strong> &#8211; If True the object is translated in place otherwise a
+new translated object is returned.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="vertex">
 <h2>Vertex<a class="headerlink" href="#vertex" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="occmodel.Vertex">
 <em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Vertex</tt><a class="headerlink" href="#occmodel.Vertex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Vertex(double x, double y, double z)</p>
+<dd><p>Vertex(double x=0.0, double y=0.0, double z=0.0)</p>
 <p>Vertex</p>
 <dl class="method">
-<dt id="occmodel.Vertex.x">
-<tt class="descname">x</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.x" title="Permalink to this definition">¶</a></dt>
+<dt id="occmodel.Vertex.X">
+<tt class="descname">X</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.X" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Vertex.y">
-<tt class="descname">y</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.y" title="Permalink to this definition">¶</a></dt>
+<dt id="occmodel.Vertex.Y">
+<tt class="descname">Y</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.Y" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Vertex.z">
-<tt class="descname">z</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.z" title="Permalink to this definition">¶</a></dt>
+<dt id="occmodel.Vertex.Z">
+<tt class="descname">Z</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Vertex.Z" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -80,42 +268,71 @@
 <dt id="occmodel.Edge">
 <em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Edge</tt><a class="headerlink" href="#occmodel.Edge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Edge()</p>
-<p>Edge - represent edge geometry (curve).</p>
+<p>Edge - represent a single curve.</p>
 <dl class="method">
 <dt id="occmodel.Edge.boundingBox">
-<tt class="descname">boundingBox</tt><big>(</big><em>self</em><big>)</big> &rarr; Box<a class="headerlink" href="#occmodel.Edge.boundingBox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return edge bounding box</p>
+<tt class="descname">boundingBox</tt><big>(</big><em>self</em>, <em>double tolerance=1e-12</em><big>)</big> &rarr; Box<a class="headerlink" href="#occmodel.Edge.boundingBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bounding box</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Edge.copy">
-<tt class="descname">copy</tt><big>(</big><em>self</em><big>)</big> &rarr; Edge<a class="headerlink" href="#occmodel.Edge.copy" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">copy</tt><big>(</big><em>self</em>, <em>int deepCopy=False</em><big>)</big> &rarr; Edge<a class="headerlink" href="#occmodel.Edge.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create copy of edge</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deepCopy</strong> &#8211; If true a full copy of the underlying geometry
+is done. Defaults to False.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Edge.createArc">
-<tt class="descname">createArc</tt><big>(</big><em>self</em>, <em>Vertex start</em>, <em>Vertex end</em>, <em>center</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createArc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create arc from given start, end and center points</p>
+<tt class="descname">createArc</tt><big>(</big><em>self</em>, <em>start</em>, <em>end</em>, <em>center</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createArc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create arc from given start, end and center points.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Edge.createArc3P">
-<tt class="descname">createArc3P</tt><big>(</big><em>self</em>, <em>Vertex start</em>, <em>Vertex end</em>, <em>pnt</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createArc3P" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create arc by fitting through given points</p>
+<tt class="descname">createArc3P</tt><big>(</big><em>self</em>, <em>start</em>, <em>end</em>, <em>pnt</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createArc3P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create arc from start to end and fitting through
+given point.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc3P</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">pnt</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Edge.createBezier">
 <tt class="descname">createBezier</tt><big>(</big><em>self</em>, <em>Vertex start=None</em>, <em>Vertex end=None</em>, <em>points=None</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createBezier" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create bezier curve from start,end and given controll
-points.</p>
+<dd><p>Create bezier curve.
+Optional start and end Vertex object can be given
+otherwise start and end are extracted from the
+points sequence.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pnts</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createBezier</span><span class="p">(</span><span class="n">points</span> <span class="o">=</span> <span class="n">pnts</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Edge.createCircle">
 <tt class="descname">createCircle</tt><big>(</big><em>self</em>, <em>center</em>, <em>normal</em>, <em>double radius</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createCircle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create circle from center, normal direction and radius.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">normal</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -123,32 +340,82 @@ points.</p>
 <tt class="descname">createEllipse</tt><big>(</big><em>self</em>, <em>center</em>, <em>normal</em>, <em>double rMajor</em>, <em>double rMinor</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createEllipse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create ellipse from center, normal direction and given
 major and minor axis.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createEllipse</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="n">rMajor</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">rMinor</span><span class="o">=.</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.createHelix">
+<tt class="descname">createHelix</tt><big>(</big><em>self</em>, <em>double pitch</em>, <em>double height</em>, <em>double radius</em>, <em>double angle=0.0</em>, <em>int leftHanded=False</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createHelix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create helix curve.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createHelix</span><span class="p">(</span><span class="n">pitch</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">25</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mf">5.</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Edge.createLine">
-<tt class="descname">createLine</tt><big>(</big><em>self</em>, <em>Vertex start</em>, <em>Vertex end</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createLine" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">createLine</tt><big>(</big><em>self</em>, <em>start</em>, <em>end</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createLine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create straight line from given start and end
 points</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createLine</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Edge.createNURBS">
 <tt class="descname">createNURBS</tt><big>(</big><em>self</em>, <em>Vertex start=None</em>, <em>Vertex end=None</em>, <em>points=None</em>, <em>knots=None</em>, <em>weights=None</em>, <em>mults=None</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createNURBS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create NURBS curve.</p>
-<p>start - start point
-end - end point
-points - sequence of controll points
-knots - sequence of kont values
-weights - sequence of controll point weights
-mults - sequence of knot multiplicity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start</strong> &#8211; optional start Vertex</li>
+<li><strong>end</strong> &#8211; optional end Vertex</li>
+<li><strong>points</strong> &#8211; sequence of controll points</li>
+<li><strong>knots</strong> &#8211; sequence of kont values</li>
+<li><strong>weights</strong> &#8211; sequence of controll point weights</li>
+<li><strong>mults</strong> &#8211; sequence of knot multiplicity</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If start and end Vertex objects are not given
+the start and end point is given by the points
+sequence.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Edge.createSpline">
 <tt class="descname">createSpline</tt><big>(</big><em>self</em>, <em>Vertex start=None</em>, <em>Vertex end=None</em>, <em>points=None</em>, <em>tolerance=1e-06</em><big>)</big><a class="headerlink" href="#occmodel.Edge.createSpline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create interpolating spline from start, end and
-given points.</p>
+<dd><p>Create interpolating spline.</p>
+<p>Optional start and end Vertex object can be given
+otherwise start and end are extracted from the
+points sequence.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pnts</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createSpline</span><span class="p">(</span><span class="n">points</span> <span class="o">=</span> <span class="n">pnts</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.isDegenerated">
+<tt class="descname">isDegenerated</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Edge.isDegenerated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if edge is degenerated e.g. collapsed etc.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Edge.isSeam">
+<tt class="descname">isSeam</tt><big>(</big><em>self</em>, <em>Face face</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Edge.isSeam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if edge is a seam on face</p>
 </dd></dl>
 
 <dl class="method">
@@ -158,27 +425,9 @@ given points.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Edge.mirror">
-<tt class="descname">mirror</tt><big>(</big><em>self</em>, <em>Plane plane</em><big>)</big><a class="headerlink" href="#occmodel.Edge.mirror" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mirror edge inplace</p>
-<p>plane - mirror plane</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Edge.rotate">
-<tt class="descname">rotate</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>angle</em><big>)</big><a class="headerlink" href="#occmodel.Edge.rotate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rotate edge in place.</p>
-<p>p1 - axis start point
-p2 - axis end point
-angle - rotation angle in radians</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Edge.scale">
-<tt class="descname">scale</tt><big>(</big><em>self</em>, <em>pnt</em>, <em>double scale</em><big>)</big><a class="headerlink" href="#occmodel.Edge.scale" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scale edge in place.</p>
-<p>pnt - reference point
-scale - scale factor</p>
+<dt id="occmodel.Edge.numVertices">
+<tt class="descname">numVertices</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Edge.numVertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of vertices</p>
 </dd></dl>
 
 <dl class="method">
@@ -188,23 +437,198 @@ scale - scale factor</p>
 max angle or distance factor</p>
 </dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="wire">
+<h2>Wire<a class="headerlink" href="#wire" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="occmodel.Wire">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Wire</tt><a class="headerlink" href="#occmodel.Wire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wire(edges=None)</p>
+<p>Wire - represent wire geometry (composite of edges).</p>
+<p>Wires defines boundaries of faces.</p>
 <dl class="method">
-<dt id="occmodel.Edge.translate">
-<tt class="descname">translate</tt><big>(</big><em>self</em>, <em>delta</em><big>)</big><a class="headerlink" href="#occmodel.Edge.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Translate edge in place.</p>
-<p>delta - (dx,dy,dz)</p>
+<dt id="occmodel.Wire.chamfer">
+<tt class="descname">chamfer</tt><big>(</big><em>self</em>, <em>distance</em>, <em>vertices=None</em><big>)</big><a class="headerlink" href="#occmodel.Wire.chamfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chamfer vertices inplace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>distance</strong> &#8211; sequence of distances or single distance.</li>
+<li><strong>vertices</strong> &#8211; sequence of vertices or single vertex. Setting the
+argument to None will select all vertices (default)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="occmodel.Edge.end">
-<tt class="descname">end</tt><a class="headerlink" href="#occmodel.Edge.end" title="Permalink to this definition">¶</a></dt>
-<dd><p>end: occmodel.Vertex</p>
+<dl class="method">
+<dt id="occmodel.Wire.common">
+<tt class="descname">common</tt><big>(</big><em>self</em>, <em>arg</em><big>)</big><a class="headerlink" href="#occmodel.Wire.common" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean intersection inplace.
+The wire must be planar and the operation
+must result in a single wire.</p>
+<p>Multiple objects are supported.</p>
+<p>Edges, wires and faces are extruded in the normal
+directions to intersect the wire.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="occmodel.Edge.start">
-<tt class="descname">start</tt><a class="headerlink" href="#occmodel.Edge.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>start: occmodel.Vertex</p>
+<dl class="method">
+<dt id="occmodel.Wire.copy">
+<tt class="descname">copy</tt><big>(</big><em>self</em>, <em>int deepCopy=False</em><big>)</big> &rarr; Wire<a class="headerlink" href="#occmodel.Wire.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create copy of wire</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deepCopy</strong> &#8211; If true a full copy of the underlying geometry
+is done. Defaults to False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.createPolygon">
+<tt class="descname">createPolygon</tt><big>(</big><em>self</em>, <em>points</em>, <em>int close=True</em><big>)</big><a class="headerlink" href="#occmodel.Wire.createPolygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a polygon from given points.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>point</strong> &#8211; Point sequence.</li>
+<li><strong>close</strong> &#8211; Close the polygon.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">w1</span> <span class="o">=</span> <span class="n">Wire</span><span class="p">()</span><span class="o">.</span><span class="n">createPolygon</span><span class="p">((</span>
+    <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span>
+    <span class="p">(</span><span class="o">.</span><span class="mi">75</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span>
+    <span class="p">(</span><span class="o">.</span><span class="mi">75</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)),</span>
+    <span class="n">close</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.createRectangle">
+<tt class="descname">createRectangle</tt><big>(</big><em>self</em>, <em>double width=1.0</em>, <em>double height=1.0</em>, <em>double radius=0.0</em><big>)</big><a class="headerlink" href="#occmodel.Wire.createRectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create planar rectangle in the xy plan.</p>
+<p>The rectangle is centered at 0,0 with given
+width, height and optional corner radius.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">w1</span> <span class="o">=</span> <span class="n">Wire</span><span class="p">()</span><span class="o">.</span><span class="n">createRectangle</span><span class="p">(</span><span class="n">width</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">,</span> <span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">25</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.createRegularPolygon">
+<tt class="descname">createRegularPolygon</tt><big>(</big><em>self</em>, <em>double radius=1.0</em>, <em>int sides=6</em>, <em>mode=INSCRIBE</em><big>)</big><a class="headerlink" href="#occmodel.Wire.createRegularPolygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a planar regular polygon in the xy plane centered at (0,0).</p>
+<p>The polygon can either be inscribed or circumscribe the circle by setting
+the mode argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radius</strong> &#8211; circle radius</li>
+<li><strong>sides</strong> &#8211; number of sides (&gt;3)</li>
+<li><strong>mode</strong> &#8211; INSCRIBE or CIRCUMSCRIBE the given circle radius.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">w1</span> <span class="o">=</span> <span class="n">Wire</span><span class="p">()</span><span class="o">.</span><span class="n">createRegularPolygon</span><span class="p">(</span><span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">sides</span> <span class="o">=</span> <span class="mf">6.</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.createWire">
+<tt class="descname">createWire</tt><big>(</big><em>self</em>, <em>edges</em><big>)</big><a class="headerlink" href="#occmodel.Wire.createWire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create wire by connecting edges or a single closed edge.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.cut">
+<tt class="descname">cut</tt><big>(</big><em>self</em>, <em>arg</em><big>)</big><a class="headerlink" href="#occmodel.Wire.cut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean difference inplace.
+The wire must be planar and the operation
+must result in a single wire.</p>
+<p>Multiple objects are supported.</p>
+<p>Edges, wires and faces are extruded in the normal
+directions to intersect the wire.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.fillet">
+<tt class="descname">fillet</tt><big>(</big><em>self</em>, <em>radius</em>, <em>vertices=None</em><big>)</big><a class="headerlink" href="#occmodel.Wire.fillet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fillet vertices inplace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radius</strong> &#8211; sequence of radiuses or single radius.</li>
+<li><strong>vertices</strong> &#8211; sequence of vertices or single vertex. Setting the
+argument to None will select all vertices (default)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.length">
+<tt class="descname">length</tt><big>(</big><em>self</em><big>)</big> &rarr; double<a class="headerlink" href="#occmodel.Wire.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return wire length</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.numEdges">
+<tt class="descname">numEdges</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Wire.numEdges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of edges</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.numVertices">
+<tt class="descname">numVertices</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Wire.numVertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of vertices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.offset">
+<tt class="descname">offset</tt><big>(</big><em>self</em>, <em>double distance</em>, <em>int joinType=JOINTYPE_ARC</em><big>)</big><a class="headerlink" href="#occmodel.Wire.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offset wire inplace the given distance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.project">
+<tt class="descname">project</tt><big>(</big><em>self</em>, <em>Face face</em><big>)</big><a class="headerlink" href="#occmodel.Wire.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project wire towards face.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Wire.tesselate">
+<tt class="descname">tesselate</tt><big>(</big><em>self</em>, <em>double factor=0.1</em>, <em>double angle=0.1</em><big>)</big><a class="headerlink" href="#occmodel.Wire.tesselate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tesselate wire to a tuple of points according to given
+max angle or distance factor.</p>
 </dd></dl>
 
 </dd></dl>
@@ -215,18 +639,15 @@ max angle or distance factor</p>
 <dl class="class">
 <dt id="occmodel.Face">
 <em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Face</tt><a class="headerlink" href="#occmodel.Face" title="Permalink to this definition">¶</a></dt>
-<dd><p>Face()</p>
-<p>Face - Reprecent face geometry (surface)</p>
+<dd><p>Face(arg=None)</p>
+<p>Face - Reprecent face geometry</p>
+<p>The face geometry could be represented by several
+underlying faces (a OpenCASCADE shell) or a single
+face.</p>
 <dl class="method">
 <dt id="occmodel.Face.area">
 <tt class="descname">area</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Face.area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return face area</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Face.boundingBox">
-<tt class="descname">boundingBox</tt><big>(</big><em>self</em><big>)</big> &rarr; Box<a class="headerlink" href="#occmodel.Face.boundingBox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return face bounding box</p>
 </dd></dl>
 
 <dl class="method">
@@ -236,39 +657,135 @@ max angle or distance factor</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="occmodel.Face.common">
+<tt class="descname">common</tt><big>(</big><em>self</em>, <em>arg</em><big>)</big><a class="headerlink" href="#occmodel.Face.common" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean intersection inplace.
+The face must be planar and the operation
+must result in a single face.</p>
+<p>Multiple objects are supported.</p>
+<p>Edges, wires and faces are extruded in the normal
+directions to intersect the face.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="occmodel.Face.copy">
-<tt class="descname">copy</tt><big>(</big><em>self</em><big>)</big> &rarr; Face<a class="headerlink" href="#occmodel.Face.copy" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">copy</tt><big>(</big><em>self</em>, <em>int deepCopy=False</em><big>)</big> &rarr; Face<a class="headerlink" href="#occmodel.Face.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create copy of face</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deepCopy</strong> &#8211; If true a full copy of the underlying geometry
+is done. Defaults to False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Face.createConstrained">
+<tt class="descname">createConstrained</tt><big>(</big><em>self</em>, <em>edges</em>, <em>points=None</em><big>)</big><a class="headerlink" href="#occmodel.Face.createConstrained" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create general face constrained by edges
+and optional points.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>edges</strong> &#8211; sequence of face edges</li>
+<li><strong>points</strong> &#8211; optional sequence of point constraints</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createConstrained</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span><span class="o">.</span><span class="mi">25</span><span class="p">),))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Face.createFace">
-<tt class="descname">createFace</tt><big>(</big><em>self</em>, <em>edges</em>, <em>points=None</em><big>)</big><a class="headerlink" href="#occmodel.Face.createFace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create general face</p>
-<p>edges - sequence of face edges
-points - optional sequence of point constraints</p>
+<tt class="descname">createFace</tt><big>(</big><em>self</em>, <em>arg</em><big>)</big><a class="headerlink" href="#occmodel.Face.createFace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create planar face from one or more wires or
+closed edges.</p>
+<p>The first argument must be the outer contour.
+Additional arguments define holes in the face.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">w1</span> <span class="o">=</span> <span class="n">Wire</span><span class="p">()</span><span class="o">.</span><span class="n">createRectangle</span><span class="p">(</span><span class="n">width</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">radius</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">)</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">((</span><span class="n">w1</span><span class="p">,</span> <span class="n">e1</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Face.createMesh">
-<tt class="descname">createMesh</tt><big>(</big><em>self</em>, <em>double factor=0.01</em>, <em>double angle=0.25</em><big>)</big> &rarr; Mesh<a class="headerlink" href="#occmodel.Face.createMesh" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">createMesh</tt><big>(</big><em>self</em>, <em>double factor=0.01</em>, <em>double angle=0.25</em>, <em>int qualityNormals=False</em><big>)</big> &rarr; Mesh<a class="headerlink" href="#occmodel.Face.createMesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create triangle mesh of face.</p>
-<p>factor - deflection from true position
-angle - max angle</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>factor</strong> &#8211; deflection from true position</li>
+<li><strong>angle</strong> &#8211; max angle</li>
+<li><strong>qualityNormals</strong> &#8211; create normals by evaluating surface parameters</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Face.createPolygonal">
 <tt class="descname">createPolygonal</tt><big>(</big><em>self</em>, <em>points</em><big>)</big><a class="headerlink" href="#occmodel.Face.createPolygonal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create polygonal face from given
-points.</p>
+points. The points must lie in a
+common plane.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pnts</span> <span class="o">=</span> <span class="p">((</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createPolygonal</span><span class="p">(</span><span class="n">pnts</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Face.cut">
+<tt class="descname">cut</tt><big>(</big><em>self</em>, <em>arg</em><big>)</big><a class="headerlink" href="#occmodel.Face.cut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean difference inplace.
+The face must be planar and the operation
+must result in a single face.</p>
+<p>Multiple objects are supported.</p>
+<p>Edges, wires and faces are extruded in the normal
+directions to intersect the face.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Face.extrude">
-<tt class="descname">extrude</tt><big>(</big><em>self</em>, <em>Edge edge</em>, <em>p1</em>, <em>p2</em><big>)</big><a class="headerlink" href="#occmodel.Face.extrude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create extrusion face from edge and
-given points p1 and p2.</p>
+<tt class="descname">extrude</tt><big>(</big><em>self</em>, <em>Base shape</em>, <em>p1</em>, <em>p2</em><big>)</big><a class="headerlink" href="#occmodel.Face.extrude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create extrusion face.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>shape</strong> &#8211; Wire or edge</li>
+<li><strong>p1</strong> &#8211; start point</li>
+<li><strong>p2</strong> &#8211; end point.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="o">-.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">75</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">-.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -280,41 +797,108 @@ to center of gravity.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Face.mirror">
-<tt class="descname">mirror</tt><big>(</big><em>self</em>, <em>Plane plane</em><big>)</big><a class="headerlink" href="#occmodel.Face.mirror" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mirror face inplace</p>
-<p>plane - mirror plane</p>
+<dt id="occmodel.Face.loft">
+<tt class="descname">loft</tt><big>(</big><em>self</em>, <em>profiles</em>, <em>int ruled=True</em>, <em>double tolerance=1e-06</em><big>)</big><a class="headerlink" href="#occmodel.Face.loft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create face by lofting through profiles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>profiles</strong> &#8211; sequence of edges, wires and optional a vertex
+at the start and end.</li>
+<li><strong>ruled</strong> &#8211; Smooth or ruled result shape</li>
+<li><strong>tolerance</strong> &#8211; Operation tolerance.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">2.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">),(</span><span class="mf">2.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">loft</span><span class="p">((</span><span class="n">e1</span><span class="p">,</span><span class="n">e2</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Face.numFaces">
+<tt class="descname">numFaces</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Face.numFaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of faces</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Face.numWires">
+<tt class="descname">numWires</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Face.numWires" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of wires</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Face.offset">
+<tt class="descname">offset</tt><big>(</big><em>self</em>, <em>double offset</em>, <em>double tolerance=1e-06</em><big>)</big><a class="headerlink" href="#occmodel.Face.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offseting face given distance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>offset</strong> &#8211; offset distance</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Face.revolve">
-<tt class="descname">revolve</tt><big>(</big><em>self</em>, <em>Edge edge</em>, <em>p1</em>, <em>p2</em>, <em>double angle</em><big>)</big><a class="headerlink" href="#occmodel.Face.revolve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create revolve face from edge and given
-points p1,p2 and angle.</p>
+<tt class="descname">revolve</tt><big>(</big><em>self</em>, <em>Base shape</em>, <em>p1</em>, <em>p2</em>, <em>double angle</em><big>)</big><a class="headerlink" href="#occmodel.Face.revolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create by revolving shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>shape</strong> &#8211; Edge or wire.</li>
+<li><strong>p1</strong> &#8211; Start point of axis</li>
+<li><strong>p2</strong> &#8211; End point of axis</li>
+<li><strong>angle</strong> &#8211; Angle in radians</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pnts</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createBezier</span><span class="p">(</span><span class="n">points</span> <span class="o">=</span> <span class="n">pnts</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">revolve</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">pi</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Face.rotate">
-<tt class="descname">rotate</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>angle</em><big>)</big><a class="headerlink" href="#occmodel.Face.rotate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rotate face in place.</p>
-<p>p1 - axis start point
-p2 - axis end point
-angle - rotation angle in radians</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Face.scale">
-<tt class="descname">scale</tt><big>(</big><em>self</em>, <em>pnt</em>, <em>double scale</em><big>)</big><a class="headerlink" href="#occmodel.Face.scale" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scale face in place.</p>
-<p>pnt - reference point
-scale - scale factor</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Face.translate">
-<tt class="descname">translate</tt><big>(</big><em>self</em>, <em>delta</em><big>)</big><a class="headerlink" href="#occmodel.Face.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Translate face in place.</p>
-<p>delta - (dx,dy,dz)</p>
+<dt id="occmodel.Face.sweep">
+<tt class="descname">sweep</tt><big>(</big><em>self</em>, <em>spine</em>, <em>profiles</em>, <em>int cornerMode=0</em><big>)</big><a class="headerlink" href="#occmodel.Face.sweep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create face by sweeping along spine through
+sequence of shapes. Optionally the start and
+end can be a vertex.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>spine</strong> &#8211; Edge or wire to define sweep path</li>
+<li><strong>profiles</strong> &#8211; Sequence of edges, wires or optional
+start and end vertex.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -333,36 +917,14 @@ compund solid.</p>
 <tt class="descname">addSolids</tt><big>(</big><em>self</em>, <em>solids</em><big>)</big><a class="headerlink" href="#occmodel.Solid.addSolids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create compund solid from sequence
 of solid objects.</p>
+<p>This is usefull for accelerating boolean operation
+where multiple objects are used as the tool.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.area">
 <tt class="descname">area</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Solid.area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return solid area</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.booleanDifference">
-<tt class="descname">booleanDifference</tt><big>(</big><em>self</em>, <em>Solid tool</em><big>)</big><a class="headerlink" href="#occmodel.Solid.booleanDifference" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create boolean difference inplace.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.booleanIntersection">
-<tt class="descname">booleanIntersection</tt><big>(</big><em>self</em>, <em>Solid tool</em><big>)</big><a class="headerlink" href="#occmodel.Solid.booleanIntersection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create boolean intersection inplace.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.booleanUnion">
-<tt class="descname">booleanUnion</tt><big>(</big><em>self</em>, <em>Solid tool</em><big>)</big><a class="headerlink" href="#occmodel.Solid.booleanUnion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create boolean union inplace.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.boundingBox">
-<tt class="descname">boundingBox</tt><big>(</big><em>self</em><big>)</big> &rarr; Box<a class="headerlink" href="#occmodel.Solid.boundingBox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return solid bounding box</p>
 </dd></dl>
 
 <dl class="method">
@@ -373,64 +935,150 @@ of solid objects.</p>
 
 <dl class="method">
 <dt id="occmodel.Solid.chamfer">
-<tt class="descname">chamfer</tt><big>(</big><em>self</em>, <em>double distance</em>, <em>edgefilter=None</em><big>)</big><a class="headerlink" href="#occmodel.Solid.chamfer" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">chamfer</tt><big>(</big><em>self</em>, <em>distances</em>, <em>edges=None</em><big>)</big><a class="headerlink" href="#occmodel.Solid.chamfer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Chamfer edges inplace.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Distance :</th><td class="field-body">chamfer distance</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Edgefilter :</th><td class="field-body">optional function taking argument of edge
-near, far and return edge selection status (boolean)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>distances</strong> &#8211; sequence of distances for each edge or single distance.</li>
+<li><strong>edges</strong> &#8211; sequence of edges or single edge. Setting the argument to
+None will select all edges (default)</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
+<dt id="occmodel.Solid.common">
+<tt class="descname">common</tt><big>(</big><em>self</em>, <em>arg</em><big>)</big><a class="headerlink" href="#occmodel.Solid.common" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean intersection inplace.</p>
+<p>Multiple objects are supported.</p>
+<p>Edges, wires and faces are extruded in the normal
+directions to intersect the solid.</p>
+<p>Edges and wires allways cut through all, but faces
+are limited by the face itself.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="occmodel.Solid.copy">
-<tt class="descname">copy</tt><big>(</big><em>self</em><big>)</big> &rarr; Solid<a class="headerlink" href="#occmodel.Solid.copy" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">copy</tt><big>(</big><em>self</em>, <em>int deepCopy=False</em><big>)</big> &rarr; Solid<a class="headerlink" href="#occmodel.Solid.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create copy of solid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deepCopy</strong> &#8211; If true a full copy of the underlying geometry
+is done. Defaults to False.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.createBox">
 <tt class="descname">createBox</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createBox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Crate box from points defining diagonal.</p>
+<dd><p>Create box from points defining diagonal.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createBox</span><span class="p">((</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="o">-.</span><span class="mi">5</span><span class="p">),(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.createCone">
 <tt class="descname">createCone</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>double radius1</em>, <em>double radius2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createCone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Crate cone</p>
-<p>p1 - axis start
-p2 - axis end
-radius1 - radius at start
-radius2 - radius at end</p>
+<dd><p>Create cone</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p1</strong> &#8211; axis start</li>
+<li><strong>p2</strong> &#8211; axis end</li>
+<li><strong>radius1</strong> &#8211; radius at start</li>
+<li><strong>radius2</strong> &#8211; radius at end</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createCone</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.createCylinder">
 <tt class="descname">createCylinder</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>double radius</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createCylinder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create cylinder</p>
-<p>p1 - axis start
-p2 - axis end
-radius - cylinder radius</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p1</strong> &#8211; Axis start</li>
+<li><strong>p2</strong> &#8211; Axis end</li>
+<li><strong>radius</strong> &#8211; Cylinder radius</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createCylinder</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="o">.</span><span class="mi">25</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.createMesh">
-<tt class="descname">createMesh</tt><big>(</big><em>self</em>, <em>double factor=0.01</em>, <em>double angle=0.25</em><big>)</big> &rarr; Mesh<a class="headerlink" href="#occmodel.Solid.createMesh" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">createMesh</tt><big>(</big><em>self</em>, <em>double factor=0.01</em>, <em>double angle=0.25</em>, <em>int qualityNormals=False</em><big>)</big> &rarr; Mesh<a class="headerlink" href="#occmodel.Solid.createMesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create triangle mesh of solid.</p>
-<p>factor - deflection from true position
-angle - max angle</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>factor</strong> &#8211; deflection from true position</li>
+<li><strong>angle</strong> &#8211; max angle</li>
+<li><strong>qualityNormals</strong> &#8211; create normals by evaluating surface parameters</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.createPrism">
+<tt class="descname">createPrism</tt><big>(</big><em>self</em>, <em>obj</em>, <em>normal</em>, <em>int isInfinite</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createPrism" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create prism from edge/wire/face in direction of normal.</p>
+<p>This solid is infinite/semi-infinite and usefull for cutting and
+intersection operations with regular solids.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.createSolid">
 <tt class="descname">createSolid</tt><big>(</big><em>self</em>, <em>faces</em>, <em>double tolerance=1e-06</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createSolid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create general solid from sequence of faces</p>
+<dd><p>Create general solid by sewing together faces
+with the given tolerance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>faces</strong> &#8211; Sequence of faces</li>
+<li><strong>tolerance</strong> &#8211; Sewing operation tolerance.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -438,46 +1086,110 @@ angle - max angle</p>
 <tt class="descname">createSphere</tt><big>(</big><em>self</em>, <em>center</em>, <em>double radius</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createSphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create sphere from center point and
 radius.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>center</strong> &#8211; Center point</li>
+<li><strong>radius</strong> &#8211; Sphere radius</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.createTorus">
 <tt class="descname">createTorus</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>double radius1</em>, <em>double radius2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.createTorus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create torus</p>
-<p>p1 - axis start
-p2 - axis end
-radius1 - inner radius
-radius2 - outer radius</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p1</strong> &#8211; axis start</li>
+<li><strong>p2</strong> &#8211; axis end</li>
+<li><strong>radius1</strong> &#8211; ring radius</li>
+<li><strong>radius2</strong> &#8211; radius</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">createTorus</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">1</span><span class="p">),</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.cut">
+<tt class="descname">cut</tt><big>(</big><em>self</em>, <em>arg</em><big>)</big><a class="headerlink" href="#occmodel.Solid.cut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean difference inplace.</p>
+<p>Multiple objects are supported.</p>
+<p>Edges, wires and faces are extruded in the normal
+directions to intersect the solid.</p>
+<p>Edges and wires allways cut through all, but faces
+are limited by the face itself.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.extrude">
-<tt class="descname">extrude</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>p1</em>, <em>p2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.extrude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create solid by extruding face from
+<tt class="descname">extrude</tt><big>(</big><em>self</em>, <em>obj</em>, <em>p1</em>, <em>p2</em><big>)</big><a class="headerlink" href="#occmodel.Solid.extrude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create solid by extruding edge, wire or face from
 p1 to p2.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p1</strong> &#8211; start point</li>
+<li><strong>p2</strong> &#8211; end point</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createLine</span><span class="p">((</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc3P</span><span class="p">((</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),(</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
+<span class="n">w1</span> <span class="o">=</span> <span class="n">Wire</span><span class="p">()</span><span class="o">.</span><span class="n">createWire</span><span class="p">((</span><span class="n">e1</span><span class="p">,</span><span class="n">e2</span><span class="p">))</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">w1</span><span class="p">)</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">extrude</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodel.Solid.fillet">
-<tt class="descname">fillet</tt><big>(</big><em>self</em>, <em>double radius</em>, <em>edgefilter=None</em><big>)</big><a class="headerlink" href="#occmodel.Solid.fillet" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">fillet</tt><big>(</big><em>self</em>, <em>radius</em>, <em>edges=None</em><big>)</big><a class="headerlink" href="#occmodel.Solid.fillet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fillet edges inplace.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Radius :</th><td class="field-body">fillet radius</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Edgefilter :</th><td class="field-body">optional function taking argument of edge
-near, far and return edge selection status (boolean)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radius</strong> &#8211; sequence of radiuses or single radius.</li>
+<li><strong>edges</strong> &#8211; sequence of edges or single edge. Setting the argument to
+None will select all edges (default)</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Solid.heal">
-<tt class="descname">heal</tt><big>(</big><em>self</em>, <em>double tolerance=0.0</em>, <em>int fixdegenerated=True</em>, <em>int fixsmalledges=True</em>, <em>int fixspotstripfaces=True</em>, <em>int sewfaces=False</em>, <em>int makesolids=False</em><big>)</big><a class="headerlink" href="#occmodel.Solid.heal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Possible heal geometry</p>
+<dt id="occmodel.Solid.fuse">
+<tt class="descname">fuse</tt><big>(</big><em>self</em>, <em>arg</em><big>)</big><a class="headerlink" href="#occmodel.Solid.fuse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create boolean union inplace.</p>
+<p>Multiple solids are supported.</p>
 </dd></dl>
 
 <dl class="method">
@@ -490,94 +1202,167 @@ to center of gravity.</p>
 
 <dl class="method">
 <dt id="occmodel.Solid.loft">
-<tt class="descname">loft</tt><big>(</big><em>self</em>, <em>wires</em>, <em>int ruled=True</em><big>)</big><a class="headerlink" href="#occmodel.Solid.loft" title="Permalink to this definition">¶</a></dt>
-<dd><p>Crate solid by lofting through sequence
-of wires.</p>
-<p>ruled - smooth or rules faces</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.mirror">
-<tt class="descname">mirror</tt><big>(</big><em>self</em>, <em>Plane plane</em><big>)</big><a class="headerlink" href="#occmodel.Solid.mirror" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mirror solid inplace</p>
-<p>plane - mirror plane</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.pipe">
-<tt class="descname">pipe</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>edges</em><big>)</big><a class="headerlink" href="#occmodel.Solid.pipe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create pipe by extruding face allong
-sequence of edges.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.readBREP">
-<tt class="descname">readBREP</tt><big>(</big><em>self</em>, <em>char *filename</em><big>)</big><a class="headerlink" href="#occmodel.Solid.readBREP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read geometry from BREP file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.readSTEP">
-<tt class="descname">readSTEP</tt><big>(</big><em>self</em>, <em>char *filename</em><big>)</big><a class="headerlink" href="#occmodel.Solid.readSTEP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read geometry from STEP file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.revolve">
-<tt class="descname">revolve</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>p1</em>, <em>p2</em>, <em>double angle</em><big>)</big><a class="headerlink" href="#occmodel.Solid.revolve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create solid by revolving face</p>
-<p>p1 - start of axis
-p2 - end of axis
-angle - revolve angle</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.rotate">
-<tt class="descname">rotate</tt><big>(</big><em>self</em>, <em>p1</em>, <em>p2</em>, <em>angle</em><big>)</big><a class="headerlink" href="#occmodel.Solid.rotate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rotate solid in place.</p>
-<p>p1 - axis start point
-p2 - axis end point
-angle - rotation angle in radians</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.scale">
-<tt class="descname">scale</tt><big>(</big><em>self</em>, <em>pnt</em>, <em>double scale</em><big>)</big><a class="headerlink" href="#occmodel.Solid.scale" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scale solid in place.</p>
-<p>pnt - reference point
-scale - scale factor</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.section">
-<tt class="descname">section</tt><big>(</big><em>self</em>, <em>Plane plane</em><big>)</big><a class="headerlink" href="#occmodel.Solid.section" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply section operation between solid and plane.</p>
-<p>plane - section plane</p>
-<p>Result returned as a face.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="occmodel.Solid.shell">
-<tt class="descname">shell</tt><big>(</big><em>self</em>, <em>double offset</em>, <em>facefilter=None</em><big>)</big><a class="headerlink" href="#occmodel.Solid.shell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply shell operation no solid.</p>
+<tt class="descname">loft</tt><big>(</big><em>self</em>, <em>profiles</em>, <em>int ruled=True</em>, <em>double tolerance=1e-06</em><big>)</big><a class="headerlink" href="#occmodel.Solid.loft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create solid by lofting through sequence
+of wires or closed edges.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Offset :</th><td class="field-body">shell offset distance</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>profiles</strong> &#8211; sequence of closed edges, closed wires and optional
+a vertex at the start and end.</li>
+<li><strong>ruled</strong> &#8211; Smooth or ruled result shape</li>
+<li><strong>tolerance</strong> &#8211; Operation tolerance.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Facefilter :</th><td class="field-body">function taking argument of face
-near, far and return face selection status (boolean)</td>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">)</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">loft</span><span class="p">((</span><span class="n">e1</span><span class="p">,</span><span class="n">e2</span><span class="p">,</span><span class="n">v1</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.numFaces">
+<tt class="descname">numFaces</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Solid.numFaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of faces</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.numSolids">
+<tt class="descname">numSolids</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Solid.numSolids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of solids</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.offset">
+<tt class="descname">offset</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>double offset</em>, <em>double tolerance=1e-06</em><big>)</big><a class="headerlink" href="#occmodel.Solid.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create solid by offseting face given distance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>face</strong> &#8211; face object</li>
+<li><strong>offset</strong> &#8211; offset distance</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Solid.translate">
-<tt class="descname">translate</tt><big>(</big><em>self</em>, <em>delta</em><big>)</big><a class="headerlink" href="#occmodel.Solid.translate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Translate solid in place.</p>
-<p>delta - (dx,dy,dz)</p>
+<dt id="occmodel.Solid.pipe">
+<tt class="descname">pipe</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>path</em><big>)</big><a class="headerlink" href="#occmodel.Solid.pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create pipe by extruding face along path.
+The path can be a Edge or Wire. Note that the path
+must be C1 continious.</p>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createHelix</span><span class="p">(</span><span class="o">.</span><span class="mi">4</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="o">.</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.revolve">
+<tt class="descname">revolve</tt><big>(</big><em>self</em>, <em>Face face</em>, <em>p1</em>, <em>p2</em>, <em>double angle</em><big>)</big><a class="headerlink" href="#occmodel.Solid.revolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create solid by revolving face</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p1</strong> &#8211; start of axis</li>
+<li><strong>p2</strong> &#8211; end of axis</li>
+<li><strong>angle</strong> &#8211; revolve angle in radians</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createEllipse</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="n">rMajor</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">rMinor</span><span class="o">=.</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">revolve</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">pi</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.section">
+<tt class="descname">section</tt><big>(</big><em>self</em>, <em>Plane plane</em><big>)</big><a class="headerlink" href="#occmodel.Solid.section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply section operation between solid and plane.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plane</strong> &#8211; section plane</td>
+</tr>
+</tbody>
+</table>
+<p>Result returned as a face.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.shell">
+<tt class="descname">shell</tt><big>(</big><em>self</em>, <em>double offset</em>, <em>faces=None</em>, <em>double tolerance=0.0001</em><big>)</big><a class="headerlink" href="#occmodel.Solid.shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply shell operation on solid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>faces</strong> &#8211; sequence of faces or single face. If no argument is
+supplied the first face is selected.</li>
+<li><strong>offset</strong> &#8211; shell offset distance</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Solid.sweep">
+<tt class="descname">sweep</tt><big>(</big><em>self</em>, <em>spine</em>, <em>profiles</em>, <em>int cornerMode=0</em><big>)</big><a class="headerlink" href="#occmodel.Solid.sweep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create solid by sweeping along spine through
+sequence of wires. Optionally the start and
+end can be a vertex.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>spine</strong> &#8211; Edge or wire to define sweep path</li>
+<li><strong>profiles</strong> &#8211; Sequence of closed edges, closed wires or
+optional start and end vertex.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">w1</span> <span class="o">=</span> <span class="n">Wire</span><span class="p">()</span><span class="o">.</span><span class="n">createPolygon</span><span class="p">((</span>
+    <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span>
+    <span class="p">(</span><span class="o">.</span><span class="mi">75</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span>
+    <span class="p">(</span><span class="o">.</span><span class="mi">75</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)),</span>
+    <span class="n">close</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="p">)</span>
+<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="o">.</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -586,22 +1371,55 @@ near, far and return face selection status (boolean)</td>
 <dd><p>Return solid volume</p>
 </dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="tools">
+<h2>Tools<a class="headerlink" href="#tools" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="occmodel.Tools">
+<em class="property">class </em><tt class="descclassname">occmodel.</tt><tt class="descname">Tools</tt><a class="headerlink" href="#occmodel.Tools" title="Permalink to this definition">¶</a></dt>
+<dd><p>Misc tools.</p>
 <dl class="method">
-<dt id="occmodel.Solid.writeBREP">
-<tt class="descname">writeBREP</tt><big>(</big><em>self</em>, <em>char *filename</em><big>)</big><a class="headerlink" href="#occmodel.Solid.writeBREP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write solid to BREP file.</p>
+<dt id="occmodel.Tools.readBREP">
+<tt class="descname">readBREP</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#occmodel.Tools.readBREP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read shapes from a BREP file.</p>
+<p>A sequence of shapes are returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Solid.writeSTEP">
-<tt class="descname">writeSTEP</tt><big>(</big><em>self</em>, <em>char *filename</em><big>)</big><a class="headerlink" href="#occmodel.Solid.writeSTEP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write solid to STEP file.</p>
+<dt id="occmodel.Tools.readSTEP">
+<tt class="descname">readSTEP</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#occmodel.Tools.readSTEP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read shapes from a STEP file.</p>
+<p>A sequence of shapes are returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="occmodel.Solid.writeSTL">
-<tt class="descname">writeSTL</tt><big>(</big><em>self</em>, <em>char *filename</em>, <em>int asciiMode=False</em><big>)</big><a class="headerlink" href="#occmodel.Solid.writeSTL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write solid to STL file.</p>
+<dt id="occmodel.Tools.writeBREP">
+<tt class="descname">writeBREP</tt><big>(</big><em>filename</em>, <em>shapes</em><big>)</big><a class="headerlink" href="#occmodel.Tools.writeBREP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a sequence of shapes or a single shape to
+a BREP file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Tools.writeSTEP">
+<tt class="descname">writeSTEP</tt><big>(</big><em>filename</em>, <em>shapes</em><big>)</big><a class="headerlink" href="#occmodel.Tools.writeSTEP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a sequence of shapes or a single shape to
+a STEP file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Tools.writeSTL">
+<tt class="descname">writeSTL</tt><big>(</big><em>filename</em>, <em>shapes</em><big>)</big><a class="headerlink" href="#occmodel.Tools.writeSTL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a sequence of shapes or a single shape to
+a STL file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Tools.writeVRML">
+<tt class="descname">writeVRML</tt><big>(</big><em>filename</em>, <em>shapes</em><big>)</big><a class="headerlink" href="#occmodel.Tools.writeVRML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a sequence of shapes or a single shape to
+a VRML file.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1137,6 +1955,12 @@ all vertices in mesh.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="occmodel.Mesh.nnormals">
+<tt class="descname">nnormals</tt><big>(</big><em>self</em><big>)</big> &rarr; size_t<a class="headerlink" href="#occmodel.Mesh.nnormals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of normals</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="occmodel.Mesh.normal">
 <tt class="descname">normal</tt><big>(</big><em>self</em>, <em>size_t index</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.normal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return normal at given vertex index</p>
@@ -1649,7 +2473,7 @@ sequence like arguments.</p>
 
 <dl class="function">
 <dt id="occmodel.viewer">
-<tt class="descclassname">occmodel.</tt><tt class="descname">viewer</tt><big>(</big><em>objs</em>, <em>colors=None</em><big>)</big><a class="headerlink" href="#occmodel.viewer" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">occmodel.</tt><tt class="descname">viewer</tt><big>(</big><em>objs</em>, <em>colors=None</em>, <em>int qualityNormals=False</em><big>)</big><a class="headerlink" href="#occmodel.viewer" title="Permalink to this definition">¶</a></dt>
 <dd><p>View object or sequence of objects.
 Edges, faces and solids are supported.</p>
 </dd></dl>
@@ -1971,10 +2795,13 @@ Edges, faces and solids are supported.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Geometry</a><ul>
+<li><a class="reference internal" href="#base">Base</a></li>
 <li><a class="reference internal" href="#vertex">Vertex</a></li>
 <li><a class="reference internal" href="#edge">Edge</a></li>
+<li><a class="reference internal" href="#wire">Wire</a></li>
 <li><a class="reference internal" href="#face">Face</a></li>
 <li><a class="reference internal" href="#solid">Solid</a></li>
+<li><a class="reference internal" href="#tools">Tools</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#geometry-base">Geometry Base</a><ul>

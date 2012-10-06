@@ -452,34 +452,22 @@
   </dt>
 
       
+  <dt><a href="content.html#occmodel.Base">Base (class in occmodel)</a>
+  </dt>
+
+      
   <dt><a href="content.html#occmodel.Viewport.bbox">bbox (occmodel.Viewport attribute)</a>
-  </dt>
-
-      
-  <dt><a href="content.html#occmodel.Solid.booleanDifference">booleanDifference() (occmodel.Solid method)</a>
-  </dt>
-
-      
-  <dt><a href="content.html#occmodel.Solid.booleanIntersection">booleanIntersection() (occmodel.Solid method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="content.html#occmodel.Solid.booleanUnion">booleanUnion() (occmodel.Solid method)</a>
-  </dt>
-
-      
-  <dt><a href="content.html#occmodel.Edge.boundingBox">boundingBox() (occmodel.Edge method)</a>
+  <dt><a href="content.html#occmodel.Base.boundingBox">boundingBox() (occmodel.Base method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="content.html#occmodel.Face.boundingBox">(occmodel.Face method)</a>
-  </dt>
-
-        
-  <dt><a href="content.html#occmodel.Solid.boundingBox">(occmodel.Solid method)</a>
+  <dt><a href="content.html#occmodel.Edge.boundingBox">(occmodel.Edge method)</a>
   </dt>
 
       </dl></dd>
@@ -547,6 +535,12 @@
   <dt><a href="content.html#occmodel.Solid.chamfer">chamfer() (occmodel.Solid method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Wire.chamfer">(occmodel.Wire method)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="content.html#occmodel.Viewer.Clear">Clear() (occmodel.Viewer method)</a>
   </dt>
@@ -559,6 +553,20 @@
   <dt><a href="content.html#occmodel.Plane.closestPoint">closestPoint() (occmodel.Plane method)</a>
   </dt>
 
+      
+  <dt><a href="content.html#occmodel.Face.common">common() (occmodel.Face method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Solid.common">(occmodel.Solid method)</a>
+  </dt>
+
+        
+  <dt><a href="content.html#occmodel.Wire.common">(occmodel.Wire method)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="content.html#occmodel.Quaternion.conj">conj() (occmodel.Quaternion method)</a>
   </dt>
@@ -576,13 +584,15 @@
   <dt><a href="content.html#occmodel.Solid.copy">(occmodel.Solid method)</a>
   </dt>
 
+        
+  <dt><a href="content.html#occmodel.Wire.copy">(occmodel.Wire method)</a>
+  </dt>
+
       </dl></dd>
       
   <dt><a href="content.html#occmodel.Edge.createArc">createArc() (occmodel.Edge method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="content.html#occmodel.Edge.createArc3P">createArc3P() (occmodel.Edge method)</a>
   </dt>
@@ -595,12 +605,18 @@
   <dt><a href="content.html#occmodel.Solid.createBox">createBox() (occmodel.Solid method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="content.html#occmodel.Edge.createCircle">createCircle() (occmodel.Edge method)</a>
   </dt>
 
       
   <dt><a href="content.html#occmodel.Solid.createCone">createCone() (occmodel.Solid method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Face.createConstrained">createConstrained() (occmodel.Face method)</a>
   </dt>
 
       
@@ -613,6 +629,10 @@
 
       
   <dt><a href="content.html#occmodel.Face.createFace">createFace() (occmodel.Face method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Edge.createHelix">createHelix() (occmodel.Edge method)</a>
   </dt>
 
       
@@ -634,7 +654,23 @@
   </dt>
 
       
+  <dt><a href="content.html#occmodel.Wire.createPolygon">createPolygon() (occmodel.Wire method)</a>
+  </dt>
+
+      
   <dt><a href="content.html#occmodel.Face.createPolygonal">createPolygonal() (occmodel.Face method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Solid.createPrism">createPrism() (occmodel.Solid method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Wire.createRectangle">createRectangle() (occmodel.Wire method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Wire.createRegularPolygon">createRegularPolygon() (occmodel.Wire method)</a>
   </dt>
 
       
@@ -654,9 +690,27 @@
   </dt>
 
       
+  <dt><a href="content.html#occmodel.Wire.createWire">createWire() (occmodel.Wire method)</a>
+  </dt>
+
+      
   <dt><a href="content.html#occmodel.cross">cross() (in module occmodel)</a>
   </dt>
 
+      
+  <dt><a href="content.html#occmodel.Face.cut">cut() (occmodel.Face method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Solid.cut">(occmodel.Solid method)</a>
+  </dt>
+
+        
+  <dt><a href="content.html#occmodel.Wire.cut">(occmodel.Wire method)</a>
+  </dt>
+
+      </dl></dd>
   </dl></td>
 </tr></table>
 
@@ -718,15 +772,11 @@
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Edge.end">end (occmodel.Edge attribute)</a>
+  <dt><a href="content.html#occmodel.Viewport.extents">extents() (occmodel.Viewport method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="content.html#occmodel.Viewport.extents">extents() (occmodel.Viewport method)</a>
-  </dt>
-
       
   <dt><a href="content.html#occmodel.Face.extrude">extrude() (occmodel.Face method)</a>
   </dt>
@@ -755,6 +805,12 @@
   <dt><a href="content.html#occmodel.Solid.fillet">fillet() (occmodel.Solid method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Wire.fillet">(occmodel.Wire method)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="content.html#occmodel.Plane.flip">flip() (occmodel.Plane method)</a>
   </dt>
@@ -771,8 +827,16 @@
   <dt><a href="content.html#occmodel.Plane.fromNormal">fromNormal() (occmodel.Plane static method)</a>
   </dt>
 
+      
+  <dt><a href="content.html#occmodel.Base.fromString">fromString() (occmodel.Base method)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="content.html#occmodel.Solid.fuse">fuse() (occmodel.Solid method)</a>
+  </dt>
+
       
   <dt><a href="content.html#occmodel.Viewport.fvBottom">fvBottom (occmodel.Viewport attribute)</a>
   </dt>
@@ -828,7 +892,13 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="content.html#occmodel.Solid.heal">heal() (occmodel.Solid method)</a>
+  <dt><a href="content.html#occmodel.Base.hashCode">hashCode() (occmodel.Base method)</a>
+  </dt>
+
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="content.html#occmodel.Base.hasPlane">hasPlane() (occmodel.Base method)</a>
   </dt>
 
   </dl></td>
@@ -863,8 +933,20 @@
   <dt><a href="content.html#occmodel.Transform.invert">invert() (occmodel.Transform method)</a>
   </dt>
 
+      
+  <dt><a href="content.html#occmodel.Edge.isDegenerated">isDegenerated() (occmodel.Edge method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Base.isEqual">isEqual() (occmodel.Base method)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="content.html#occmodel.Base.isNull">isNull() (occmodel.Base method)</a>
+  </dt>
+
       
   <dt><a href="content.html#occmodel.isParallell">isParallell() (in module occmodel)</a>
   </dt>
@@ -878,9 +960,19 @@
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Box.isValid">isValid() (occmodel.Box method)</a>
+  <dt><a href="content.html#occmodel.Edge.isSeam">isSeam() (occmodel.Edge method)</a>
   </dt>
 
+      
+  <dt><a href="content.html#occmodel.Base.isValid">isValid() (occmodel.Base method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Box.isValid">(occmodel.Box method)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="content.html#occmodel.Point.isZero">isZero() (occmodel.Point method)</a>
   </dt>
@@ -911,6 +1003,12 @@
   <dt><a href="content.html#occmodel.Edge.length">length() (occmodel.Edge method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Wire.length">(occmodel.Wire method)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="content.html#occmodel.Quaternion.lengthSquared">lengthSquared (occmodel.Quaternion attribute)</a>
   </dt>
@@ -932,9 +1030,15 @@
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Solid.loft">loft() (occmodel.Solid method)</a>
+  <dt><a href="content.html#occmodel.Face.loft">loft() (occmodel.Face method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Solid.loft">(occmodel.Solid method)</a>
+  </dt>
+
+      </dl></dd>
   </dl></td>
 </tr></table>
 
@@ -978,19 +1082,9 @@
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Edge.mirror">mirror() (occmodel.Edge method)</a>
+  <dt><a href="content.html#occmodel.Base.mirror">mirror() (occmodel.Base method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="content.html#occmodel.Face.mirror">(occmodel.Face method)</a>
-  </dt>
-
-        
-  <dt><a href="content.html#occmodel.Solid.mirror">(occmodel.Solid method)</a>
-  </dt>
-
-      </dl></dd>
   </dl></td>
 </tr></table>
 
@@ -1002,13 +1096,49 @@
   </dt>
 
       
+  <dt><a href="content.html#occmodel.Mesh.nnormals">nnormals() (occmodel.Mesh method)</a>
+  </dt>
+
+      
   <dt><a href="content.html#occmodel.Mesh.normal">normal() (occmodel.Mesh method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Mesh.ntriangles">ntriangles() (occmodel.Mesh method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Wire.numEdges">numEdges() (occmodel.Wire method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="content.html#occmodel.Mesh.ntriangles">ntriangles() (occmodel.Mesh method)</a>
+  <dt><a href="content.html#occmodel.Face.numFaces">numFaces() (occmodel.Face method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Solid.numFaces">(occmodel.Solid method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="content.html#occmodel.Solid.numSolids">numSolids() (occmodel.Solid method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Edge.numVertices">numVertices() (occmodel.Edge method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Wire.numVertices">(occmodel.Wire method)</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt><a href="content.html#occmodel.Face.numWires">numWires() (occmodel.Face method)</a>
   </dt>
 
       
@@ -1025,6 +1155,20 @@
   <dt><a href="content.html#occmodel.Viewer.objects">objects (occmodel.Viewer attribute)</a>
   </dt>
 
+      
+  <dt><a href="content.html#occmodel.Face.offset">offset() (occmodel.Face method)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Solid.offset">(occmodel.Solid method)</a>
+  </dt>
+
+        
+  <dt><a href="content.html#occmodel.Wire.offset">(occmodel.Wire method)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="content.html#occmodel.GLUTViewer.OnDisplay">OnDisplay() (occmodel.GLUTViewer method)</a>
   </dt>
@@ -1088,6 +1232,10 @@
   </dt>
 
       
+  <dt><a href="content.html#occmodel.Wire.project">project() (occmodel.Wire method)</a>
+  </dt>
+
+      
   <dt><a href="content.html#occmodel.Viewport.projection">projection (occmodel.Viewport attribute)</a>
   </dt>
 
@@ -1112,11 +1260,11 @@
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Solid.readBREP">readBREP() (occmodel.Solid method)</a>
+  <dt><a href="content.html#occmodel.Tools.readBREP">readBREP() (occmodel.Tools method)</a>
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Solid.readSTEP">readSTEP() (occmodel.Solid method)</a>
+  <dt><a href="content.html#occmodel.Tools.readSTEP">readSTEP() (occmodel.Tools method)</a>
   </dt>
 
       
@@ -1134,19 +1282,9 @@
 
       </dl></dd>
       
-  <dt><a href="content.html#occmodel.Edge.rotate">rotate() (occmodel.Edge method)</a>
+  <dt><a href="content.html#occmodel.Base.rotate">rotate() (occmodel.Base method)</a>
   </dt>
 
-      <dd><dl>
-        
-  <dt><a href="content.html#occmodel.Face.rotate">(occmodel.Face method)</a>
-  </dt>
-
-        
-  <dt><a href="content.html#occmodel.Solid.rotate">(occmodel.Solid method)</a>
-  </dt>
-
-      </dl></dd>
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
@@ -1176,18 +1314,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="content.html#occmodel.Edge.scale">scale() (occmodel.Edge method)</a>
+  <dt><a href="content.html#occmodel.Base.scale">scale() (occmodel.Base method)</a>
   </dt>
 
       <dd><dl>
-        
-  <dt><a href="content.html#occmodel.Face.scale">(occmodel.Face method)</a>
-  </dt>
-
-        
-  <dt><a href="content.html#occmodel.Solid.scale">(occmodel.Solid method)</a>
-  </dt>
-
         
   <dt><a href="content.html#occmodel.Transform.scale">(occmodel.Transform method)</a>
   </dt>
@@ -1258,6 +1388,10 @@
   </dt>
 
       
+  <dt><a href="content.html#occmodel.Base.shapeType">shapeType() (occmodel.Base method)</a>
+  </dt>
+
+      
   <dt><a href="content.html#occmodel.Solid.shell">shell() (occmodel.Solid method)</a>
   </dt>
 
@@ -1270,9 +1404,15 @@
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Edge.start">start (occmodel.Edge attribute)</a>
+  <dt><a href="content.html#occmodel.Face.sweep">sweep() (occmodel.Face method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Solid.sweep">(occmodel.Solid method)</a>
+  </dt>
+
+      </dl></dd>
   </dl></td>
 </tr></table>
 
@@ -1287,33 +1427,45 @@
   <dt><a href="content.html#occmodel.Edge.tesselate">tesselate() (occmodel.Edge method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="content.html#occmodel.Wire.tesselate">(occmodel.Wire method)</a>
+  </dt>
+
+      </dl></dd>
       
-  <dt><a href="content.html#occmodel.Transform">Transform (class in occmodel)</a>
+  <dt><a href="content.html#occmodel.Tools">Tools (class in occmodel)</a>
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Quaternion.transform">transform (occmodel.Quaternion attribute)</a>
+  <dt><a href="content.html#occmodel.Base.toString">toString() (occmodel.Base method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Transform">Transform (class in occmodel)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="content.html#occmodel.Plane.transform">transform() (occmodel.Plane method)</a>
+  <dt><a href="content.html#occmodel.Quaternion.transform">transform (occmodel.Quaternion attribute)</a>
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Edge.translate">translate() (occmodel.Edge method)</a>
+  <dt><a href="content.html#occmodel.Base.transform">transform() (occmodel.Base method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="content.html#occmodel.Face.translate">(occmodel.Face method)</a>
+  <dt><a href="content.html#occmodel.Plane.transform">(occmodel.Plane method)</a>
   </dt>
 
-        
-  <dt><a href="content.html#occmodel.Solid.translate">(occmodel.Solid method)</a>
+      </dl></dd>
+      
+  <dt><a href="content.html#occmodel.Base.translate">translate() (occmodel.Base method)</a>
   </dt>
 
+      <dd><dl>
         
   <dt><a href="content.html#occmodel.Transform.translate">(occmodel.Transform method)</a>
   </dt>
@@ -1408,21 +1560,29 @@
   </dt>
 
       
+  <dt><a href="content.html#occmodel.Wire">Wire (class in occmodel)</a>
+  </dt>
+
+      
   <dt><a href="content.html#occmodel.Viewport.worldToCamera">worldToCamera() (occmodel.Viewport method)</a>
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Solid.writeBREP">writeBREP() (occmodel.Solid method)</a>
+  <dt><a href="content.html#occmodel.Tools.writeBREP">writeBREP() (occmodel.Tools method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="content.html#occmodel.Solid.writeSTEP">writeSTEP() (occmodel.Solid method)</a>
+  <dt><a href="content.html#occmodel.Tools.writeSTEP">writeSTEP() (occmodel.Tools method)</a>
   </dt>
 
       
-  <dt><a href="content.html#occmodel.Solid.writeSTL">writeSTL() (occmodel.Solid method)</a>
+  <dt><a href="content.html#occmodel.Tools.writeSTL">writeSTL() (occmodel.Tools method)</a>
+  </dt>
+
+      
+  <dt><a href="content.html#occmodel.Tools.writeVRML">writeVRML() (occmodel.Tools method)</a>
   </dt>
 
   </dl></td>
@@ -1446,7 +1606,7 @@
 
       </dl></dd>
       
-  <dt><a href="content.html#occmodel.Vertex.x">x() (occmodel.Vertex method)</a>
+  <dt><a href="content.html#occmodel.Vertex.X">X() (occmodel.Vertex method)</a>
   </dt>
 
   </dl></td>
@@ -1476,7 +1636,7 @@
 
       </dl></dd>
       
-  <dt><a href="content.html#occmodel.Vertex.y">y() (occmodel.Vertex method)</a>
+  <dt><a href="content.html#occmodel.Vertex.Y">Y() (occmodel.Vertex method)</a>
   </dt>
 
   </dl></td>
@@ -1506,7 +1666,7 @@
 
       </dl></dd>
       
-  <dt><a href="content.html#occmodel.Vertex.z">z() (occmodel.Vertex method)</a>
+  <dt><a href="content.html#occmodel.Vertex.Z">Z() (occmodel.Vertex method)</a>
   </dt>
 
       

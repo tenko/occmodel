@@ -70,16 +70,23 @@ object to the viewer function.</p>
 <span class="n">viewer</span><span class="p">((</span><span class="n">solid</span><span class="p">,</span><span class="n">face</span><span class="p">,</span><span class="n">edge</span><span class="p">))</span>
 </pre></div>
 </div>
+<p>It is also possible to read objects from a STEP or BREP file and view
+the imported geometry.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">occmodel</span> <span class="kn">import</span> <span class="n">viewer</span><span class="p">,</span> <span class="n">Tools</span>
+<span class="n">objects</span> <span class="o">=</span> <span class="n">Tools</span><span class="o">.</span><span class="n">readSTEP</span><span class="p">(</span><span class="s">&#39;example.stp&#39;</span><span class="p">)</span>
+<span class="n">viewer</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="geometry">
 <h1>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h1>
-<p><strong>Vertex</strong> are 3d point objects which are used to reference start and end
-points of edges in order to properly join edges.</p>
-<p><strong>Edge</strong> are 3d curves which form border of faces. Closed edges like
-circles and ellipsis does not need to define start and end points to
-be valid.</p>
-<p><strong>Face</strong> are 3d surfaces which can be lofted, extruded etc. to form
-solids objects. Faces are created from</p>
+<p><strong>Vertex</strong> are 3d points which are used to reference start, end
+or seam points of edges..</p>
+<p><strong>Edge</strong> are 3d curve which are combined into wires.</p>
+<p><strong>Wire</strong> are composite curves created from edges defining boundaries of
+faces.</p>
+<p><strong>Face</strong> are underlying surface geometry which are constrained by
+wires.</p>
 <p><strong>Solid</strong> are the main object which contain rich functionalty to
 combine and edit solid objects.</p>
 <p>Point and vectors passed to the geometry functions can be any valid
@@ -90,19 +97,14 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <div class="section" id="line">
 <h2>Line<a class="headerlink" href="#line" title="Permalink to this headline">¶</a></h2>
 <p>Create single line.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">start</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
-<span class="n">end</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
-<span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createLine</span><span class="p">(</span><span class="n">end</span><span class="p">,</span><span class="n">start</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createLine</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="arc-3p">
 <h2>Arc 3P<a class="headerlink" href="#arc-3p" title="Permalink to this headline">¶</a></h2>
 <p>Create an arc defined by three points.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">start</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
-<span class="n">end</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
-<span class="n">pnt</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
-<span class="n">edge</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc3P</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">pnt</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc3P</span><span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="n">pnt</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -140,7 +142,7 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <h2>Face interior point<a class="headerlink" href="#face-interior-point" title="Permalink to this headline">¶</a></h2>
 <p>Create face from circle edge and interior point.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
-<span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">25</span><span class="p">),))</span>
+<span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createConstrained</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">25</span><span class="p">),))</span>
 </pre></div>
 </div>
 </div>
@@ -154,7 +156,8 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <span class="n">pnt</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
 <span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createArc3P</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">pnt</span><span class="p">)</span>
 
-<span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">((</span><span class="n">e1</span><span class="p">,</span><span class="n">e2</span><span class="p">))</span>
+<span class="n">w1</span> <span class="o">=</span> <span class="n">Wire</span><span class="p">()</span><span class="o">.</span><span class="n">createWire</span><span class="p">((</span><span class="n">e1</span><span class="p">,</span><span class="n">e2</span><span class="p">))</span>
+<span class="n">face</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">w1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -163,17 +166,6 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <p>Create a planar polygonal face</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">pnts</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">))</span>
 <span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createPolygonal</span><span class="p">(</span><span class="n">pnts</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="section">
-<h2>Section<a class="headerlink" href="#section" title="Permalink to this headline">¶</a></h2>
-<p>Create face from plane cutting through solid.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">createSphere</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">),</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
-
-<span class="n">plane</span> <span class="o">=</span> <span class="n">Plane</span><span class="o">.</span><span class="n">fromNormal</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">))</span>
-<span class="n">sec</span> <span class="o">=</span> <span class="n">solid</span><span class="o">.</span><span class="n">section</span><span class="p">(</span><span class="n">plane</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -255,7 +247,7 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">e1</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
 <span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createEllipse</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">5.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="n">rMajor</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">rMinor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">e3</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">10.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span>
-<span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">loft</span><span class="p">(((</span><span class="n">e1</span><span class="p">,),(</span><span class="n">e2</span><span class="p">,),(</span><span class="n">e3</span><span class="p">,)))</span>
+<span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">loft</span><span class="p">((</span><span class="n">e1</span><span class="p">,</span><span class="n">e2</span><span class="p">,</span><span class="n">e3</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -270,7 +262,7 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <span class="n">e2</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">()</span><span class="o">.</span><span class="n">createCircle</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">),</span><span class="n">normal</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span><span class="n">radius</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
 <span class="n">f1</span> <span class="o">=</span> <span class="n">Face</span><span class="p">()</span><span class="o">.</span><span class="n">createFace</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
 
-<span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="p">(</span><span class="n">e1</span><span class="p">,))</span>
+<span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -324,27 +316,6 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 </div>
 </div>
 </div>
-<div class="section" id="misc">
-<h1>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="read">
-<h2>Read<a class="headerlink" href="#read" title="Permalink to this headline">¶</a></h2>
-<p>Read solid from external STEP file.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">solid</span> <span class="o">=</span> <span class="n">Solid</span><span class="p">()</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">readSTEP</span><span class="p">(</span><span class="s">&#39;test.stp&#39;</span><span class="p">)</span>
-<span class="n">solid</span><span class="o">.</span><span class="n">heal</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="write">
-<h2>Write<a class="headerlink" href="#write" title="Permalink to this headline">¶</a></h2>
-<p>Write to external STEP file.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">createSphere</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">writeSTEP</span><span class="p">(</span><span class="s">&#39;test.stp&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
 
 
           </div>
@@ -368,7 +339,6 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <li><a class="reference internal" href="#face-interior-point">Face interior point</a></li>
 <li><a class="reference internal" href="#face-edge-sequence">Face edge sequence</a></li>
 <li><a class="reference internal" href="#polygonal-face">Polygonal face</a></li>
-<li><a class="reference internal" href="#section">Section</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#solids">Solids</a><ul>
@@ -379,11 +349,6 @@ python sequence of three numbers (Ref: Vector and Point classes)</p>
 <li><a class="reference internal" href="#loft">Loft</a></li>
 <li><a class="reference internal" href="#pipe">Pipe</a></li>
 <li><a class="reference internal" href="#advanced-solids">Advanced solids</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#misc">Misc</a><ul>
-<li><a class="reference internal" href="#read">Read</a></li>
-<li><a class="reference internal" href="#write">Write</a></li>
 </ul>
 </li>
 </ul>

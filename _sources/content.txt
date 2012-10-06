@@ -1,6 +1,11 @@
 Geometry
 ========
 
+Base
+----
+.. autoclass:: occmodel.Base
+    :members:
+    
 Vertex
 ------
 .. autoclass:: occmodel.Vertex
@@ -11,6 +16,11 @@ Edge
 .. autoclass:: occmodel.Edge
     :members:
 
+Wire
+----
+.. autoclass:: occmodel.Wire
+    :members:
+    
 Face
 ----
 .. autoclass:: occmodel.Face
@@ -21,6 +31,11 @@ Solid
 .. autoclass:: occmodel.Solid
     :members:
 
+Tools
+-----
+.. autoclass:: occmodel.Tools
+    :members:
+    
 Geometry Base
 =============
 
