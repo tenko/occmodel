@@ -729,8 +729,15 @@ cdef class GLUTViewer(Viewer):
         self.OnDraw()
         glutSwapBuffers()
 
-ARC, FACE, BOX, PIPE = 1, 2, 3, 4
-LOFT, UNION, DIFF, INT = 5, 6, 7, 8
+EDGE_PRIMITIVES = 1
+WIRE_PRIMITIVES = 2
+WIRE_OPERATIONS = 3
+FACE_CREATE_1 = 4
+FACE_CREATE_2 = 5
+FACE_CREATE_3 = 6
+SOLID_PRIMITIVES = 7
+SOLID_CREATE_1 = 8
+SOLID_CREATE_2 = 9
 
 class DemoViewer(GLUTViewer):
     def __init__(self, width, height):
@@ -739,151 +746,510 @@ class DemoViewer(GLUTViewer):
         
         self.menu = glutCreateMenu(self.OnMenu)
         glutSetMenu(self.menu)
-        glutAddMenuEntry("Arc example", ARC)
-        glutAddMenuEntry("Face example", FACE)
-        glutAddMenuEntry("Box example", BOX)
-        glutAddMenuEntry("Pipe example", PIPE)
-        glutAddMenuEntry("Loft example", LOFT)
-        glutAddMenuEntry("Union example", UNION)
-        glutAddMenuEntry("Diff example", DIFF)
-        glutAddMenuEntry("Int example", INT)
+        glutAddMenuEntry("Edge - Primitives", EDGE_PRIMITIVES)
+        glutAddMenuEntry("Wire - Primitives", WIRE_PRIMITIVES)
+        glutAddMenuEntry("Wire - Operations", WIRE_OPERATIONS)
+        glutAddMenuEntry("Face - Create 1", FACE_CREATE_1)
+        glutAddMenuEntry("Face - Create 2", FACE_CREATE_2)
+        glutAddMenuEntry("Face - Create 3", FACE_CREATE_3)
+        glutAddMenuEntry("Solid - Primitives", SOLID_PRIMITIVES)
+        glutAddMenuEntry("Solid - Create 1", SOLID_CREATE_1)
+        glutAddMenuEntry("Solid - Create 2", SOLID_CREATE_2)
         glutAttachMenu(GLUT_RIGHT_BUTTON)
+        
+        self.OnMenu(SOLID_CREATE_2)
         
     def OnMenu(self, value):
         self.Clear()
-        solid, edge, face = None, None, None
+        solid, face, wire, edge = None, None, None,None
         
-        if value == ARC:
-            SRC = \
-"""
-start = Vertex(1.,0.,0.)
-end = Vertex(-1.,0.,0.)
-pnt = (0.,1.,0.)
-edge = Edge().createArc3P(start,end,pnt)
-"""
-            start = Vertex(1.,0.,0.)
-            end = Vertex(-1.,0.,0.)
-            pnt = (0.,1.,0.)
-            edge = Edge().createArc3P(start,end,pnt)
+        objects = []
+        add = objects.append
         
-        elif value == FACE:
+        if value == EDGE_PRIMITIVES:
             SRC = \
 """
-e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
-face = Face().createConstrained(e1, ((0.,.5,.25),))
-"""
-            print >>sys.stdout, SRC
-            
-            e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
-            face = Face().createConstrained(e1, ((0.,.5,.25),))
-        
-        elif value == BOX:
-            SRC = \
-"""
-solid = Solid().createBox((0.,0.,0.),(100.,100.,100.))
-solid.shell(-5, lambda near,far: near[2] > 50 and far[2] > 50)
-solid.fillet(2., lambda near,far: True)
-"""
-            print >>sys.stdout, SRC
-            
-            solid = Solid().createBox((0.,0.,0.),(100.,100.,100.))
-            solid.shell(-5, lambda near,far: near[2] > 50 and far[2] > 50)
-            solid.fillet(2., lambda near,far: True)
-            
-        elif value == PIPE:
-            SRC = \
-"""
-start = Vertex(0.,0.,0.)
-end = Vertex(2.,0.,2.)
-cen = (2.,0.,0.)
-e1 = Edge().createArc(start,end,cen)
+e1 = Edge().createLine(start = (0.,0.,0.), end = (1.,1.,0.))
 
-e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+e2 = Edge().createCircle(center = (0.,.5,0.), normal = (0.,0.,1.), radius = .5)
+
+e3 = Edge().createArc(start = (-.5,0.,0.), end = (.5,1.,0.), center = (.5,0.,0.))
+
+e4 = Edge().createArc3P(start = (1.,0.,0.), end = (-1.,0.,0.), pnt = (0.,1.,0.))
+
+e5 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .5, rMinor=.2)
+
+e6 = Edge().createHelix(pitch = .5, height = 1., radius = .25, angle = pi/5.)
+
+pnts = ((0.,0.,0.), (0.,1.,0.), (1.,.5,0.), (1.,0.,0.))
+e7 = Edge().createBezier(points = pnts)
+
+pnts = ((0.,0.,0.), (0.,.5,0.), (1.,.25,0.),(1.,0.,0.))
+e8 = Edge().createSpline(points = pnts)
+"""
+            e1 = Edge().createLine(start = (0.,0.,0.), end = (1.,1.,0.))
+            add(e1)
+            
+            e2 = Edge().createCircle(center = (0.,.5,0.), normal = (0.,0.,1.), radius = .5)
+            add(e2)
+            
+            e3 = Edge().createArc(start = (-.5,0.,0.), end = (.5,1.,0.), center = (.5,0.,0.))
+            add(e3)
+            
+            e4 = Edge().createArc3P(start = (1.,0.,0.), end = (-1.,0.,0.), pnt = (0.,1.,0.))
+            add(e4)
+            
+            e5 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .5, rMinor=.2)
+            add(e5)
+            
+            e6 = Edge().createHelix(pitch = .5, height = 1., radius = .25, angle = M_PI/5.)
+            add(e6)
+            
+            pnts = ((0.,0.,0.), (0.,1.,0.), (1.,.5,0.), (1.,0.,0.))
+            e7 = Edge().createBezier(points = pnts)
+            add(e7)
+            
+            pnts = ((0.,0.,0.), (0.,.5,0.), (1.,.25,0.),(1.,0.,0.))
+            e8 = Edge().createSpline(points = pnts)
+            add(e8)
+            
+            x,y = 0.,2.
+            for e in (e1,e2,e3,e4):
+                e.translate((x,y,0))
+                x += 1.5
+
+            x,y = 0.,0.
+            for e in (e5,e6,e7,e8):
+                e.translate((x,y,0))
+                x += 1.5
+        
+        elif value == WIRE_PRIMITIVES:
+            SRC = \
+"""
+w1 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+
+w2 = Wire().createRectangle(width = 1., height = 0.75, radius = .25)
+
+w3 = Wire().createPolygon((
+    (-.5,-.5,0.),
+    (.5,-.5,0.),
+    (0.,.5,0.)),
+    close = True,
+)
+
+w4 = Wire().createRegularPolygon(radius = .5, sides = 6.)
+"""
+            w1 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+            add(w1)
+
+            w2 = Wire().createRectangle(width = 1., height = 0.75, radius = .25)
+            add(w2)
+
+            w3 = Wire().createPolygon((
+                (-.5,-.5,0.),
+                (.5,-.5,0.),
+                (0.,.5,0.)),
+                close = True,
+            )
+            add(w3)
+
+            w4 = Wire().createRegularPolygon(radius = .5, sides = 6.)
+            add(w4)
+
+            x,y = 0.,0.
+            for w in objects:
+                w.translate((x,y,0))
+                x += 1.5
+        
+        elif value == WIRE_OPERATIONS:
+            SRC = \
+"""
+w1 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+add(w1)
+
+w2 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+w2.offset(0.1)
+
+# fillet all edges
+w3 = Wire().createRegularPolygon(radius = .5, sides = 6.)
+w3.fillet(0.2)
+
+# chamfer all edges
+w4 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+w4.chamfer(0.15)
+
+# wire boolean cut operation
+w5 = Wire().createRectangle(width = 1., height = 1., radius = 0.)
+e1 = Edge().createCircle(center=(-.5,-.5,0.),normal=(0.,0.,1.),radius = .35)
+e2 = Edge().createEllipse(center=(.5,.5,0.),normal=(0.,0.,1.), rMajor = .75, rMinor=.35)
+w5.cut((e1,e2))
+
+# wire boolean common operation
+w6 = Wire().createRectangle(width = 1., height = 1., radius = 0.)
+e2 = Edge().createEllipse(center=(-.5,-.5,0.),normal=(0.,0.,1.), rMajor = .75, rMinor=.35)
+e2.rotate(-pi/.6, (0.,0.,1.), (-.5,-.5,0.))
+w6.common(e2)
+"""
+            w1 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+            add(w1)
+
+            w2 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+            w2.offset(0.1)
+            add(w2)
+
+            w3 = Wire().createRegularPolygon(radius = .5, sides = 6.)
+            w3.fillet(0.2)
+            add(w3)
+
+            w4 = Wire().createRectangle(width = 1., height = 0.75, radius = 0.)
+            w4.chamfer(0.15)
+            add(w4)
+
+            w5 = Wire().createRectangle(width = 1., height = 1., radius = 0.)
+            e1 = Edge().createCircle(center=(-.5,-.5,0.),normal=(0.,0.,1.),radius = .35)
+            e2 = Edge().createEllipse(center=(.5,.5,0.),normal=(0.,0.,1.), rMajor = .75, rMinor=.35)
+            w5.cut((e1,e2))
+            add(w5)
+
+            w6 = Wire().createRectangle(width = 1., height = 1., radius = 0.)
+            e2 = Edge().createEllipse(center=(-.5,-.5,0.),normal=(0.,0.,1.), rMajor = .75, rMinor=.35)
+            e2.rotate(-M_PI/.6, (0.,0.,1.), (-.5,-.5,0.))
+            w6.common(e2)
+            add(w6)
+
+            x,y = 0.,0.
+            for w in objects[1:]:
+                w.translate((x,y,0))
+                x += 1.5
+        
+        elif value == FACE_CREATE_1:
+            SRC = \
+"""
+# create planar face from outer wire and edges/wires defining hole
+w1 = Wire().createRectangle(width = 1., height = 1., radius = 0.)
+e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .25)
+f1 = Face().createFace((w1, e1))
+
+# create a face constrained by circle and points
+e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .5)
+f2 = Face().createConstrained(e2, ((0.,.0,.25),))
+
+# create planar polygonal face from series of points
+pnts = ((-.5,-.5,0.), (0.,.5,0.), (1.,.5,0.), (.5,-.5,0.))
+f3 = Face().createPolygonal(pnts)
+"""
+            w1 = Wire().createRectangle(width = 1., height = 1., radius = 0.)
+            e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .25)
+            f1 = Face().createFace((w1, e1))
+            add(f1)
+
+            e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .5)
+            f2 = Face().createConstrained(e2, ((0.,.0,.25),))
+            add(f2)
+
+            pnts = ((-.5,-.5,0.), (0.,.5,0.), (1.,.5,0.), (.5,-.5,0.))
+            f3 = Face().createPolygonal(pnts)
+            add(f3)
+
+            x,y = 0.,0.
+            for w in objects:
+                w.translate((x,y,0))
+                x += 1.5
+        
+        elif value == FACE_CREATE_2:
+            SRC = \
+"""
+# create face by extruding edge/wire
+e1 = Edge().createArc(start = (-.5,-.25,0.), end = (.5,.75,0.), center = (.5,-.25,0.))
+f1 = Face().extrude(e1, (0.,0.,0.), (0.,0.,1.))
+
+# create face by revolving edge
+pnts = ((0.,0.,0.), (0.,1.,0.), (1.,.5,0.), (1.,0.,0.))
+e2 = Edge().createBezier(points = pnts)
+f2 = Face().revolve(e2, (0.,-1.,0.), (1.,-1.,0.), pi/2.)
+
+# create face by sweeping edge along spine
+e3 = Edge().createArc((0.,0.,0.), (1.,0.,1.), (1.,0.,0.))
+e4 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .25)
+f3 = Face().sweep(e3, e4)
+
+# create face by lofting through edges
+e5 = Edge().createArc((0.,0.,0.),(1.,0.,1.),(1.,0.,0.))
+e6 = Edge().createArc((0.,1.,0.),(2.,1.,2.),(2.,1.,0.))
+f4 = Face().loft((e5,e6))
+"""
+            e1 = Edge().createArc(start = (-.5,-.25,0.), end = (.5,.75,0.), center = (.5,-.25,0.))
+            f1 = Face().extrude(e1, (0.,0.,0.), (0.,0.,1.))
+            add(f1)
+
+            pnts = ((0.,0.,0.), (0.,1.,0.), (1.,.5,0.), (1.,0.,0.))
+            e2 = Edge().createBezier(points = pnts)
+            f2 = Face().revolve(e2, (0.,-1.,0.), (1.,-1.,0.), M_PI/2.)
+            add(f2)
+
+            e3 = Edge().createArc((0.,0.,0.), (1.,0.,1.), (1.,0.,0.))
+            e4 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .25)
+            f3 = Face().sweep(e3, e4)
+            add(f3)
+
+            e5 = Edge().createArc((0.,0.,0.),(1.,0.,1.),(1.,0.,0.))
+            e6= Edge().createArc((0.,1.,0.),(2.,1.,2.),(2.,1.,0.))
+            f4 = Face().loft((e5,e6))
+            add(f4)
+
+            x,y = 0.,0.
+            for w in objects:
+                w.translate((x,y,0))
+                x += 1.5
+        
+        elif value == FACE_CREATE_3:
+            SRC = \
+"""
+# cut face by edge
+e1 = Edge().createArc(start = (-.5,-.25,0.), end = (.5,.75,0.), center = (.5,-.25,0.))
+f1 = Face().extrude(e1, (0.,0.,0.), (0.,0.,1.))
+e2 = Edge().createCircle(center=(.5,.5,0.),normal=(0.,1.,0.),radius = .75)
+f1.cut(e2)
+
+# find common face between circulare face and ellipse
+e3 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .5)
+f2 = Face().createFace(e3)
+e4 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .75, rMinor=.3)
+f2.common(e4)
+"""
+            e1 = Edge().createArc(start = (-.5,-.25,0.), end = (.5,.75,0.), center = (.5,-.25,0.))
+            f1 = Face().extrude(e1, (0.,0.,0.), (0.,0.,1.))
+            e2 = Edge().createCircle(center=(.5,.5,0.),normal=(0.,1.,0.),radius = .75)
+            f1.cut(e2)
+            add(f1)
+
+            e3 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .5)
+            f2 = Face().createFace(e3)
+            e4 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .75, rMinor=.3)
+            f2.common(e4)
+            add(f2)
+
+            x,y = 0.,0.
+            for w in objects:
+                w.translate((x,y,0))
+                x += 1.5
+        
+        elif value == SOLID_PRIMITIVES:
+            SRC = \
+"""
+# solid sphere from center and radius
+s1 = Solid().createSphere((0.,0.,0.),.5)
+
+# solid cylinder from two points and radius
+s2 = Solid().createCylinder((0.,0.,0.),(0.,0.,1.), .25)
+
+# solid torus from two points defining axis, ring radius and radius.
+s3 = Solid().createTorus((0.,0.,0.),(0.,0.,.1), .5, .1)
+
+# solid cone from two points defining axis and upper and lower radius
+s4 = Solid().createCone((0.,0.,0.),(0.,0.,1.), .2, .5)
+
+# solid box from two points defining diagonal of box
+s5 = Solid().createBox((-.5,-.5,-.5),(.5,.5,.5))
+"""
+            s1 = Solid().createSphere((0.,0.,0.),.5)
+            add(s1)
+
+            s2 = Solid().createCylinder((0.,0.,0.),(0.,0.,1.), .25)
+            add(s2)
+
+            s3 = Solid().createTorus((0.,0.,0.),(0.,0.,.1), .5, .1)
+            add(s3)
+
+            s4 = Solid().createCone((0.,0.,0.),(0.,0.,1.), .2, .5)
+            add(s4)
+
+            s5 = Solid().createBox((-.5,-.5,-.5),(.5,.5,.5))
+            add(s5)
+
+            x,y = 0.,0.
+            for w in objects:
+                w.translate((x,y,0))
+                x += 1.5
+
+        elif value == SOLID_CREATE_1:
+            SRC = \
+"""
+# create solid by extruding face
+e1 = Edge().createLine((-.5,0.,0.),(.5,0.,0.))
+e2 = Edge().createArc3P((.5,0.,0.),(-.5,0.,0.),(0.,.5,0.))
+w1 = Wire().createWire((e1,e2))
+f1 = Face().createFace(w1)
+s1 = Solid().extrude(f1, (0.,0.,0.), (0.,0.,1.))
+
+# create solid by revolving face
+e2 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .5, rMinor=.2)
+f2 = Face().createFace(e2)
+s2 = Solid().revolve(f2, (1.,0.,0.), (1.,1.,0.), pi/2.)
+
+# create solid by sweeping wire along wire path
+w1 = Wire().createPolygon((
+    (0.,0.,0.),
+    (0.,0.,1.),
+    (.75,0.,1.),
+    (.75,0.,0.)),
+    close = False
+)
+e3 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .2)
+s3 = Solid().sweep(w1, e3, cornerMode = SWEEP_RIGHT_CORNER)
+
+# create solid by lofting through edges, wires and optional start/end vertex.
+e4 = Edge().createCircle(center=(.25,0.,0.),normal=(0.,0.,1.),radius = .25)
+e5 = Edge().createCircle(center=(.25,0.,.5),normal=(0.,0.,1.),radius = .5)
+v1 = Vertex(.25,0.,1.)
+s4 = Solid().loft((e4,e5,v1))
+
+# create solid by sweeping face along path
+e6 = Edge().createHelix(.4, 1., .4)
+e7 = Edge().createCircle(center=(.5,0.,0.),normal=(0.,1.,0.),radius = 0.1)
+f3 = Face().createFace(e7)
+s5 = Solid().pipe(f3, e6)
+"""
+            e1 = Edge().createLine((-.5,0.,0.),(.5,0.,0.))
+            e2 = Edge().createArc3P((.5,0.,0.),(-.5,0.,0.),(0.,.5,0.))
+            w1 = Wire().createWire((e1,e2))
+            f1 = Face().createFace(w1)
+            s1 = Solid().extrude(f1, (0.,0.,0.), (0.,0.,1.))
+            add(s1)
+
+            e2 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .5, rMinor=.2)
+            f2 = Face().createFace(e2)
+            s2 = Solid().revolve(f2, (1.,0.,0.), (1.,1.,0.), M_PI/2.)
+            add(s2)
+
+            w1 = Wire().createPolygon((
+                (0.,0.,0.),
+                (0.,0.,1.),
+                (.75,0.,1.),
+                (.75,0.,0.)),
+                close = False
+            )
+            e3 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .2)
+            s3 = Solid().sweep(w1, e3, cornerMode = SWEEP_RIGHT_CORNER)
+            add(s3)
+
+            e4 = Edge().createCircle(center=(.25,0.,0.),normal=(0.,0.,1.),radius = .25)
+            e5 = Edge().createCircle(center=(.25,0.,.5),normal=(0.,0.,1.),radius = .5)
+            v1 = Vertex(.25,0.,1.)
+            s4 = Solid().loft((e4,e5,v1))
+            add(s4)
+
+            e6 = Edge().createHelix(.4, 1., .4)
+            e7 = Edge().createCircle(center=(.5,0.,0.),normal=(0.,1.,0.),radius = 0.1)
+            f3 = Face().createFace(e7)
+            s5 = Solid().pipe(f3, e6)
+            add(s5)
+
+            x,y = 0.,0.
+            for w in objects:
+                w.translate((x,y,0))
+                x += 1.5
+
+        elif value == SOLID_CREATE_2:
+            SRC = \
+"""
+# fuse solids
+s1 = Solid().createBox((0.,0.,0.),(.5,.5,.5))
+s2 = Solid().createBox((.25,.25,.25),(.75,.75,.75))
+s1.fuse(s2)
+
+# modifying solid by cutting against edge,wire,face or solid.
+# Edge and wire always cut through, but Face only cuts in the
+# direction of the normal.
+s2 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+e1 = Edge().createCircle(center=(0.5,0.5,1.),normal=(0.,0.,1.),radius = 0.1)
+e2 = Edge().createCircle(center=(.5,0.,.5),normal=(0.,0.,1.),radius = 0.25)
 f1 = Face().createFace(e2)
+s3 = Solid().createSphere((1.,1.,1.),.35)
+s2.cut((e1,f1,s3))
 
-solid = Solid().pipe(f1, e1)
+# find common shape
+s4 = Solid().createSphere((.5,.5,0.),.75)
+s5 = Solid().createCylinder((.5,.5,-1),(0.,.5,1.), .5)
+s4.common(s5)
+
+# fillet edges
+s6 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+s6.fillet(.2)
+
+# chamfer edges
+s7 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+s7.chamfer(.2)
+
+# shell operation
+s8 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+s8.shell(-.1)
+
+# offset face to create solid
+e3 = Edge().createArc((0.,0.,0.),(.5,0.,.5),(.5,0.,0.))
+e4= Edge().createArc((0.,.5,0.),(1.,.5,1.),(1.,.5,0.))
+f2 = Face().loft((e3,e4))
+s9 = Solid().offset(f2, 0.2)
 """
-            print >>sys.stdout, SRC
-            
-            start = Vertex(0.,0.,0.)
-            end = Vertex(2.,0.,2.)
-            cen = (2.,0.,0.)
-            e1 = Edge().createArc(start,end,cen)
+            s1 = Solid().createBox((0.,0.,0.),(.5,.5,.5))
+            s2 = Solid().createBox((.25,.25,.25),(.75,.75,.75))
+            s1.fuse(s2)
+            add(s1)
 
-            e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+            s2 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+            e1 = Edge().createCircle(center=(0.5,0.5,1.),normal=(0.,0.,1.),radius = 0.1)
+            e2 = Edge().createCircle(center=(.5,0.,.5),normal=(0.,0.,1.),radius = 0.25)
             f1 = Face().createFace(e2)
-            
-            solid = Solid().pipe(f1, e1)
+            s3 = Solid().createSphere((1.,1.,1.),.35)
+            s2.cut((e1,f1,s3))
+            add(s2)
+
+            s4 = Solid().createSphere((.5,.5,0.),.75)
+            s5 = Solid().createCylinder((.5,.5,-1),(0.,.5,1.), .5)
+            s4.common(s5)
+            add(s4)
+
+            s6 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+            s6.fillet(.2)
+            add(s6)
+
+            s7 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+            s7.chamfer(.2)
+            add(s7)
+
+            s8 = Solid().createBox((0.,0.,0.),(1.,1.,1.))
+            s8.shell(-.1)
+            add(s8)
+
+            e3 = Edge().createArc((0.,0.,0.),(.5,0.,.5),(.5,0.,0.))
+            e4= Edge().createArc((0.,.5,0.),(1.,.5,1.),(1.,.5,0.))
+            f2 = Face().loft((e3,e4))
+            s9 = Solid().offset(f2, 0.2)
+            add(s9)
+
+            x,y = 0.,0.
+            for w in objects:
+                w.translate((x,y,0))
+                x += 1.5
+                
+        # show source
+        print >>sys.stdout, SRC
         
-        elif value == LOFT:
-            SRC = \
-"""
-e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
-e2 = Edge().createEllipse(center=(0.,0.,5.),normal=(0.,0.,1.), rMajor = 2.0, rMinor=1.0)
-e3 = Edge().createCircle(center=(0.,0.,10.),normal=(0.,0.,1.),radius = 1.0)
-solid = Solid().loft((e1,e2,e3))
-"""
-            print >>sys.stdout, SRC
+        for obj in objects:
+            if not obj.isValid() or obj.isNull():
+                print("skipped object: '%s'" % str(obj))
+                continue
+                
+            bbox = obj.boundingBox()
             
-            e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
-            e2 = Edge().createEllipse(center=(0.,0.,5.),normal=(0.,0.,1.), rMajor = 2.0, rMinor=1.0)
-            e3 = Edge().createCircle(center=(0.,0.,10.),normal=(0.,0.,1.),radius = 1.0)
-            solid = Solid().loft((e1,e2,e3))
-        
-        elif value == UNION:
-            SRC = \
-"""
-s1 = Solid().createSphere((0.,0.,0.),.5)
-s2 = Solid().createSphere((.25,0.,0.),.5)
-solid = s1.booleanUnion(s2)
-"""
-            print >>sys.stdout, SRC
+            if isinstance(obj, (Face, Solid)):
+                data = obj.createMesh()
+            else:
+                data = obj.tesselate()
             
-            s1 = Solid().createSphere((0.,0.,0.),.5)
-            s2 = Solid().createSphere((.25,0.,0.),.5)
-            solid = s1.booleanUnion(s2)
-        
-        elif value == DIFF:
-            SRC = \
-"""
-s1 = Solid().createSphere((0.,0.,0.),.5)
-s2 = Solid().createSphere((.25,0.,0.),.5)
-solid = s1.booleanDifference(s2)
-"""
-            print >>sys.stdout, SRC
+            self.addObject(data, bbox, 'blue')
             
-            s1 = Solid().createSphere((0.,0.,0.),.5)
-            s2 = Solid().createSphere((.25,0.,0.),.5)
-            solid = s1.booleanDifference(s2)
-        
-        elif value == INT:
-            SRC = \
-"""
-s1 = Solid().createSphere((0.,0.,0.),.5)
-s2 = Solid().createSphere((.25,0.,0.),.5)
-solid = s1.booleanIntersection(s2)
-"""
-            print >>sys.stdout, SRC
-            
-            s1 = Solid().createSphere((0.,0.,0.),.5)
-            s2 = Solid().createSphere((.25,0.,0.),.5)
-            solid = s1.booleanIntersection(s2)
-            
-        if not solid is None:
-            bbox = solid.boundingBox()
-            obj = solid.createMesh()
-            
-        elif not face is None:
-            bbox = face.boundingBox()
-            obj = face.createMesh()
-            
-        elif not edge is None:
-            bbox = edge.boundingBox()
-            obj = edge.tesselate()
-            
-        self.addObject(obj, bbox, 'blue')
         self.OnFit()
-        glutPostRedisplay()
         
 def demo():
     '''
@@ -909,6 +1275,11 @@ def viewer(objs, colors = None, bint qualityNormals = False):
         colors = COLORS
         
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
+        # skip non-valid or Null objects.
+        if not obj.isValid() or obj.isNull():
+            print("skipped object: '%s'" % str(obj))
+            continue
+        
         try:
             if isinstance(obj, (Face,Solid)):
                 data = obj.createMesh(qualityNormals = qualityNormals)
