@@ -34,18 +34,18 @@ the imported geometry.
 Geometry
 ========
 
-**Vertex** are 3d points which are used to reference start, end
+:class:`occmodel.Vertex` are 3d points which are used to reference start, end
 or seam points of edges..
 
-**Edge** are 3d curve which are combined into wires.
+:class:`occmodel.Edge` are 3d curve which are combined into wires.
 
-**Wire** are composite curves created from edges defining boundaries of
+:class:`occmodel.Wire` are composite curves created from edges defining boundaries of
 faces.
 
-**Face** are underlying surface geometry which are constrained by
+:class:`occmodel.Face` are underlying surface geometry which are constrained by
 wires.
 
-**Solid** are the main object which contain rich functionalty to
+:class:`occmodel.Solid` are the main object which contain rich functionalty to
 combine and edit solid objects.
 
 Point and vectors passed to the geometry functions can be any valid
@@ -57,7 +57,7 @@ Edges
 Line
 ----
 
-Create single line.
+Create single line Edge.
 
 .. code-block:: python
 
@@ -66,7 +66,7 @@ Create single line.
 Arc 3P
 ------
 
-Create an arc defined by three points.
+Create an arc Edge defined by three points.
 
 .. code-block:: python
 
@@ -75,7 +75,7 @@ Create an arc defined by three points.
 Circle
 ------
 
-Create circle curve.
+Create circle Edge
 
 .. code-block:: python
 
@@ -84,26 +84,26 @@ Create circle curve.
 Bezier
 ------
 
-Create bezier curve
+Create bezier Edge
 
 .. code-block:: python
 
     start = Vertex(0.,0.,0.)
     end = Vertex(1.,0.,0.)
     pnts = ((0.,2.,0.), (1.,1.5,0.))
-    b1 = Edge().createBezier(start,end,pnts)
+    e1 = Edge().createBezier(start,end,pnts)
 
 Spline
 ------
 
-Create a spline curve
+Create a spline Edge
 
 .. code-block:: python
 
     start = Vertex(0.,0.,0.)
     end = Vertex(1.,0.,0.)
     pnts = ((0.,2.,0.), (5.,1.5,0.))
-    s1 = Edge().createSpline(start,end,pnts)
+    e1 = Edge().createSpline(start,end,pnts)
 
 Faces
 =====
@@ -116,7 +116,7 @@ Create face from circle edge and interior point.
 .. code-block:: python
 
     e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
-    face = Face().createConstrained(e1, ((0.,.5,.25),))
+    f1 = Face().createConstrained(e1, ((0.,.5,.25),))
 
 Face edge sequence
 ------------------
@@ -133,7 +133,7 @@ Create face from sequence of edges.
     e2 = Edge().createArc3P(start,end,pnt)
     
     w1 = Wire().createWire((e1,e2))
-    face = Face().createFace(w1)
+    f1 = Face().createFace(w1)
 
 Polygonal face
 --------------
@@ -192,7 +192,7 @@ Boolean union between two solid spheres.
 
     s1 = Solid().createSphere((0.,0.,0.),.5)
     s2 = Solid().createSphere((.25,0.,0.),.5)
-    solid = s1.booleanUnion(s2)
+    s1.fuse(s2)
 
 Boolean difference between two solid spheres.
 
@@ -200,7 +200,7 @@ Boolean difference between two solid spheres.
 
     s1 = Solid().createSphere((0.,0.,0.),.5)
     s2 = Solid().createSphere((.25,0.,0.),.5)
-    solid = s1.booleanDifference(s2)
+    s1.cut(s2)
 
 Boolean intersection between two solid spheres.
 
@@ -208,7 +208,7 @@ Boolean intersection between two solid spheres.
 
     s1 = Solid().createSphere((0.,0.,0.),.5)
     s2 = Solid().createSphere((.25,0.,0.),.5)
-    solid = s1.booleanIntersection(s2)
+    s1.common(s2)
     
 Extrude
 -------
@@ -217,13 +217,15 @@ Extrude face along vector.
 
 .. code-block:: python
 
-    start = None
-    end = None
-    pnts = ((0.,0.,0.),(0.,2.,0.), (5.,1.5,0.))
-    e1 = Edge().createSpline(start,end,pnts)
-    
+    pnts = (
+        (0.,0.,0.),
+        (0.,2.,0.),
+        (5.,1.5,0.),
+        (0.,0.,0.)
+    )
+    e1 = Edge().createSpline(points = pnts)
     face = Face().createFace(e1)
-    
+
     solid = Solid().extrude(face, (0.,0.,0.), (0.,0.,5.))
 
 Revolve
@@ -236,7 +238,7 @@ Revolve face to create solid.
     e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
     face = Face().createFace(e1)
     
-    solid = Solid().revolve(face, (0.,2.,0.), (1.,2.,0.), 90.)
+    solid = Solid().revolve(face, (0.,2.,0.), (1.,2.,0.), pi/2.)
     
 Loft
 ----
@@ -257,14 +259,9 @@ Extrude circle along arc edge
 
 .. code-block:: python
 
-    start = Vertex(0.,0.,0.)
-    end = Vertex(2.,0.,2.)
-    cen = (2.,0.,0.)
-    e1 = Edge().createArc(start,end,cen)
-
+    e1 = Edge().createArc((0.,0.,0.),(2.,0.,2.),(2.,0.,0.))
     e2 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
     f1 = Face().createFace(e2)
-
     solid = Solid().pipe(f1, e1)
 
 Advanced solids
@@ -279,8 +276,14 @@ Create open box with fillet edges.
 .. code-block:: python
 
     solid = Solid().createBox((0.,0.,0.),(100.,100.,100.))
-    solid.shell(-5, lambda near,far: near[2] > 50 and far[2] > 50)
-    solid.fillet(2., lambda near,far: True)
+    pnt = Point(0.,0.,0.)
+    face = None
+    for face in FaceIterator(solid):
+        bbox = face.boundingBox()
+        if bbox.near.z > 50. and bbox.far.z > 50.:
+            break
+    solid.shell(-5., face)
+    solid.fillet(2.)
 
 Union of cyllinders with fillet intersection edge.
 
@@ -292,12 +295,17 @@ Union of cyllinders with fillet intersection edge.
 
     s1 = Solid().createCylinder((0.,0.,-2.),(0.,0.,2.), 1.)
     s2 = Solid().createCylinder((0.,-2.,0.),(0.,2.,0.), .9)
-    solid = s1.booleanUnion(s2)
+    s1.fuse(s2)
 
-    def fillet(near, far):
-        return all(abs(coord) < 1.5 for coord in (near[2], far[2], near[1], far[1]))
-        
-    solid.fillet(0.3, fillet)
+    edges = []
+    origo = Point(0.,0.,0.)
+    for edge in EdgeIterator(s1):
+        bbox = edge.boundingBox()
+        if bbox.near.distanceTo(origo) < 1.75:
+            if bbox.far.distanceTo(origo) < 1.75:
+                edges.append(edge)
+
+    s1.fillet(0.3, edges)
 
 Construc bowl like solid.
 
@@ -310,14 +318,20 @@ Construc bowl like solid.
     # cut sphere in half
     solid = Solid().createSphere((0.,0.,0.),10.)
     box = Solid().createBox((-11.,-11.,0.),(11.,11.,11.))
-    solid.booleanDifference(box)
-    
+    solid.cut(box)
+
     # shell operation
-    solid.shell(-2., lambda near,far: near[2] > -1 and far[2] > -1)
-    
+    face = None
+    for face in FaceIterator(solid):
+        bbox = face.boundingBox()
+        if bbox.near.z > -1. and bbox.far.z > -1.:
+            break
+            
+    solid.shell(-2., face)
+
     # foot
     cone = Solid().createCone((0.,0.,-11.), (0.,0.,-7.), 5., 6.)
-    solid.booleanUnion(cone)
-    
+    solid.fuse(cone)
+
     # fillet all edges
-    solid.fillet(.25, lambda near, far: True)
+    solid.fillet(.25)
