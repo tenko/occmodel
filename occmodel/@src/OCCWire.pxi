@@ -83,7 +83,7 @@ cdef class Wire(Base):
         ret = occ.createWire(cedges)
             
         if ret != 0:
-            raise OCCError('Failed to create wire from edges')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -315,7 +315,7 @@ cdef class Wire(Base):
         ret = occ.project(<c_OCCBase *>face.thisptr)
             
         if ret != 0:
-            raise OCCError('Failed to project wire')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -329,7 +329,7 @@ cdef class Wire(Base):
         ret = occ.offset(distance, joinType)
             
         if ret != 0:
-            raise OCCError('Failed to offset wires')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -366,7 +366,7 @@ cdef class Wire(Base):
         ret = occ.fillet(cvertices, cradius)
             
         if ret != 0:
-            raise OCCError('Failed to create fillet')
+            raise OCCError(errorMessage)
         
         return self
     
@@ -403,7 +403,7 @@ cdef class Wire(Base):
         ret = occ.chamfer(cvertices, cdistance)
             
         if ret != 0:
-            raise OCCError('Failed to create chamfer')
+            raise OCCError(errorMessage)
         
         return self
     

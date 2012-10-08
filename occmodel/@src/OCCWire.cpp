@@ -16,6 +16,13 @@ OCCWire *OCCWire::copy(bool deepCopy = false)
             ret->setShape(this->getShape());
         }
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to copy wire");
+        }
         return NULL;
     }
     return ret;
@@ -45,6 +52,13 @@ int OCCWire::createWire(std::vector<OCCEdge *> edges)
         }
         this->setShape(wm.Wire());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create wire");
+        }
         return 1;
     }
     return 0;
@@ -60,7 +74,7 @@ int OCCWire::project(OCCBase *face) {
         NP.Add(this->getWire());
         NP.Build();
         if (!NP.IsDone())
-            return 1;
+            StdFail_NotDone::Raise("project operation failed");
         
         for (ex.Init(NP.Shape(), TopAbs_EDGE); ex.More(); ex.Next()) {
             if (!ex.Current().IsNull()) {
@@ -69,11 +83,18 @@ int OCCWire::project(OCCBase *face) {
         }
         ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges,Precision::Confusion(),Standard_True,wires);
         if (wires->Length() != 1)
-            return 1;
+            StdFail_NotDone::Raise("project operation created empty result");
         
         this->setShape(wires->Value(1));
         
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to project wire");
+        }
         return 1;
     }
     return 0;
@@ -94,6 +115,13 @@ int OCCWire::offset(double distance, int joinType = 0) {
         MO.Perform(distance);
         this->setShape(MO.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to offset wire");
+        }
         return 1;
     }
     return 0;
@@ -117,7 +145,7 @@ int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radiu
                 // radius given for each vertex
                 MF.AddFillet(vertex->getVertex(), radius[i]);
             } else {
-                return 1;
+                StdFail_NotDone::Raise("radius argument has wrong size");
             }
         }
         
@@ -130,7 +158,7 @@ int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radiu
         
         TopExp::MapShapes(MF.Shape(), TopAbs_WIRE, aMap);
         if(aMap.Extent() != 1)
-            return 1;
+            StdFail_NotDone::Raise("Fillet operation did not result in single wire");
         
         //add edges to the wire
         Ex.Clear();
@@ -142,6 +170,13 @@ int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radiu
         this->setShape(wire);
         
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to fillet wire");
+        }
         return 1;
     }
     return 0;
@@ -196,7 +231,7 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
                     // distance given for each vertex
                     MF.AddChamfer(firstEdge, nextEdge, distances[i], distances[i]);
                 } else {
-                    return 1;
+                    StdFail_NotDone::Raise("distances argument has wrong size");
                 }
             
             }
@@ -205,12 +240,12 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
         }
         
         if(MF.Status() != ChFi2d_IsDone)
-            return 1;
+            StdFail_NotDone::Raise("chamfer operation failed");
         
         TopTools_IndexedMapOfShape aMap;
         TopExp::MapShapes(MF.Shape(), TopAbs_WIRE, aMap);
         if(aMap.Extent() != 1)
-            return 1;
+            StdFail_NotDone::Raise("chamfer result did not result in single wire");;
         
         //add edges to the wire
         BRepBuilderAPI_MakeWire wire;
@@ -223,6 +258,13 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
         this->setShape(wire.Shape());
         
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to chamfer wire");
+        }
         return 1;
     }
     return 0;

@@ -34,7 +34,7 @@ include "Viewer.pxi"
 
 class OCCError(Exception):
     pass
-  
+    
 cdef class Mesh:
     '''
     Mesh - Represent triangle mesh for viewing purpose

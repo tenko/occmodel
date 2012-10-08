@@ -147,6 +147,14 @@ int OCCTools::writeBREP(const char *filename, std::vector<OCCBase *> shapes)
         }
         BRepTools::Write(C, filename);
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        //printf("ERROR: %s\n", e->GetMessageString());
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to write BREP file");
+        }
         return 1;
     }
     return 0;
@@ -169,11 +177,20 @@ int OCCTools::writeSTEP(const char *filename, std::vector<OCCBase *> shapes)
         
         for (unsigned i = 0; i < shapes.size(); i++) {
             status = writer.Transfer(shapes[i]->getShape(), STEPControl_AsIs);
-            if (status != IFSelect_RetDone)
-                return 1;
+            if (status != IFSelect_RetDone) {
+                StdFail_NotDone::Raise("Failed to write STEP file");
+            }
         }
         status = writer.Write(filename);
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        //printf("ERROR: %s\n", e->GetMessageString());
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to write STEP file");
+        }
         return 1;
     }
     return 0;
@@ -192,6 +209,14 @@ int OCCTools::writeSTL(const char *filename, std::vector<OCCBase *> shapes)
         StlAPI_Writer writer;
         writer.Write(shape, filename);
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        //printf("ERROR: %s\n", e->GetMessageString());
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to write STL file");
+        }
         return 1;
     }
     return 0;
@@ -210,6 +235,14 @@ int OCCTools::writeVRML(const char *filename, std::vector<OCCBase *> shapes)
         VrmlAPI_Writer writer;
         writer.Write(shape, filename);
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        //printf("ERROR: %s\n", e->GetMessageString());
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to write VRML file");
+        }
         return 1;
     }
     return 0;
@@ -221,11 +254,19 @@ int OCCTools::readBREP(const char *filename, std::vector<OCCBase *>& shapes)
         // read brep-file
         TopoDS_Shape shape;
         BRep_Builder aBuilder;
-        if (!BRepTools::Read(shape, filename, aBuilder))
-            return 1;
-        
+        if (!BRepTools::Read(shape, filename, aBuilder)) {
+            StdFail_NotDone::Raise("Failed to read BFREP file");
+        }
         extractShape(shape, shapes);
     } catch (Standard_Failure) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        //printf("ERROR: %s\n", e->GetMessageString());
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to read BREP file");
+        }
         return 1;
     }
     return 0;
@@ -238,7 +279,14 @@ int OCCTools::readBREP(std::istream& str, TopoDS_Shape& shape)
         BRep_Builder aBuilder;
         BRepTools::Read(shape, str, aBuilder);
     } catch (Standard_Failure) {
-        return 1;
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        //printf("ERROR: %s\n", e->GetMessageString());
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to read BREP file");
+        }
     }
     return 0;
 }
@@ -251,8 +299,9 @@ int OCCTools::readSTEP(const char *filename, std::vector<OCCBase *>& shapes)
         Interface_Static::SetCVal("xstep.cascade.unit","M");
         Interface_Static::SetIVal("read.step.nonmanifold", 1);
         
-        if (aReader.ReadFile(filename) != IFSelect_RetDone)
-            return 1;
+        if (aReader.ReadFile(filename) != IFSelect_RetDone) {
+            StdFail_NotDone::Raise("Failed to read STEP file");
+        }
         
         // Root transfers
         int nbr = aReader.NbRootsForTransfer();
@@ -269,6 +318,14 @@ int OCCTools::readSTEP(const char *filename, std::vector<OCCBase *>& shapes)
             extractShape(aShape, shapes);
         }
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        //printf("ERROR: %s\n", e->GetMessageString());
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to read STEP file");
+        }
         return 1;
     }
     return 0;

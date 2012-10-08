@@ -119,7 +119,7 @@ cdef class Edge(Base):
         ret = occ.createLine(<c_OCCVertex *>vstart.thisptr, <c_OCCVertex *>vend.thisptr)
         
         if ret != 0:
-            raise OCCError('Failed to create line')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -154,7 +154,7 @@ cdef class Edge(Base):
                             <c_OCCVertex *>vend.thisptr, cpnt)
         
         if ret != 0:
-            raise OCCError('Failed to create arc')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -190,7 +190,7 @@ cdef class Edge(Base):
                               <c_OCCVertex *>vend.thisptr, cpnt)
         
         if ret != 0:
-            raise OCCError('Failed to create arc')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -217,7 +217,7 @@ cdef class Edge(Base):
         ret = occ.createCircle(ccen, cnor, radius)
         
         if ret != 0:
-            raise OCCError('Failed to create circle')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -245,7 +245,7 @@ cdef class Edge(Base):
         ret = occ.createEllipse(ccen, cnor, rMajor, rMinor)
         
         if ret != 0:
-            raise OCCError('Failed to create ellipse')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -263,7 +263,7 @@ cdef class Edge(Base):
         ret = occ.createHelix(pitch, height, radius, angle, leftHanded)
         
         if ret != 0:
-            raise OCCError('Failed to create ellipse')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -301,7 +301,7 @@ cdef class Edge(Base):
                                    <c_OCCVertex *>end.thisptr, cpoints)
             
         if ret != 0:
-            raise OCCError('Failed to create edge')
+            raise OCCError(errorMessage)
             
         return self
 
@@ -325,7 +325,7 @@ cdef class Edge(Base):
         cdef int ret
         
         if not points:
-            raise OCCError("Argumrnt 'points' missing")
+            raise OCCError("Argument 'points' missing")
         
         for point in points:
             tmp.clear()
@@ -341,7 +341,7 @@ cdef class Edge(Base):
                                    <c_OCCVertex *>end.thisptr, cpoints, tolerance)
             
         if ret != 0:
-            raise OCCError('Failed to create edge')
+            raise OCCError(errorMessage)
             
         return self
 
@@ -394,7 +394,7 @@ cdef class Edge(Base):
                                    cknots, cweights, cmults)
             
         if ret != 0:
-            raise OCCError('Failed to create edge')
+            raise OCCError(errorMessage)
             
         return self
         

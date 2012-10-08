@@ -171,7 +171,7 @@ cdef class Base:
         
         ret = occ.transform(cmat, <c_OCCBase *>target.thisptr)
         if ret != 0:
-            raise OCCError('Failed to transform object')
+            raise OCCError(errorMessage)
             
         return target
         
@@ -201,7 +201,7 @@ cdef class Base:
         
         ret = occ.translate(cdelta, <c_OCCBase *>target.thisptr)
         if ret != 0:
-            raise OCCError('Failed to translate object')
+            raise OCCError(errorMessage)
             
         return target
     
@@ -242,7 +242,7 @@ cdef class Base:
         
         ret = occ.rotate(angle, cp1, cp2, <c_OCCBase *>target.thisptr)
         if ret != 0:
-            raise OCCError('Failed to rotate object')
+            raise OCCError(errorMessage)
             
         return target
 
@@ -273,7 +273,7 @@ cdef class Base:
         
         ret = occ.scale(cpnt, scale, <c_OCCBase *>target.thisptr)
         if ret != 0:
-            raise OCCError('Failed to scale object')
+            raise OCCError(errorMessage)
             
         return target
 
@@ -307,7 +307,7 @@ cdef class Base:
         
         ret = occ.mirror(cpnt, cnor, <c_OCCBase *>target.thisptr)
         if ret != 0:
-            raise OCCError('Failed to mirror object')
+            raise OCCError(errorMessage)
             
         return target
         
@@ -339,6 +339,6 @@ cdef class Base:
         cdef string cst= string(st)
         
         if occ.fromString(cst) != 0:
-            raise OCCError('Failed to restore object from string')
+            raise OCCError(errorMessage)
         
         return self

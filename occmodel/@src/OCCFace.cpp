@@ -16,6 +16,13 @@ OCCFace *OCCFace::copy(bool deepCopy = false)
             ret->setShape(this->getShape());
         }
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to copy face");
+        }
         return NULL;
     }
     return ret;
@@ -58,6 +65,13 @@ int OCCFace::createFace(std::vector<OCCWire *> wires) {
         this->setShape(MF.Shape());
         
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create face");
+        }
         return 1;
     }
     return 0;
@@ -78,6 +92,13 @@ int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> p
         this->setShape(aGenerator.Shape());
         
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create face");
+        }
         return 1;
     }
     return 0;
@@ -115,13 +136,33 @@ DVec OCCFace::centreOfMass() {
 }
 
 int OCCFace::offset(double offset, double tolerance = 1e-6) {
-    BRepOffset_MakeOffset MO(this->getShape(), offset, tolerance, BRepOffset_Skin,
-                             Standard_False, Standard_False, GeomAbs_Arc, Standard_False);
-    
-    if (!MO.IsDone())
+    try {
+        BRepOffset_MakeOffset MO(this->getShape(), offset, tolerance, BRepOffset_Skin,
+                                 Standard_False, Standard_False, GeomAbs_Intersection, Standard_False);
+        
+        if (!MO.IsDone()) {
+            StdFail_NotDone::Raise("Failed to offset face");
+        }
+        
+        const TopoDS_Shape& tmp = MO.Shape();
+        BRepCheck_Analyzer aChecker(tmp);
+        
+        if (tmp.IsNull() || !aChecker.IsValid()) {
+            StdFail_NotDone::Raise("offset result not valid");
+        }
+        
+        this->setShape(tmp);
+        
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to offset face");
+        }
         return 1;
-    
-    this->setShape(MO.Shape());
+    }
     return 0;
 }
 
@@ -133,11 +174,19 @@ int OCCFace::createPolygonal(std::vector<DVec> points)
             MP.Add(gp_Pnt(points[i][0], points[i][1], points[i][2]));
         }
         MP.Close();
-        if (!MP.IsDone())
-            return 1;
+        if (!MP.IsDone()) {
+            StdFail_NotDone::Raise("failed to create face");;
+        }
         BRepBuilderAPI_MakeFace MF(MP.Wire(), false);
         this->setShape(MF.Face());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create face");
+        }
         return 1;
     }
     return 0;
@@ -148,16 +197,22 @@ int OCCFace::extrude(OCCBase *shape, DVec p1, DVec p2) {
         const TopoDS_Shape& shp = shape->getShape();
         // Only accept Edge or Wire
         TopAbs_ShapeEnum type = shp.ShapeType();
-        if (type != TopAbs_EDGE && type != TopAbs_WIRE)
-            return 1;
+        if (type != TopAbs_EDGE && type != TopAbs_WIRE) {
+            StdFail_NotDone::Raise("expected Edge or Wire");
+        }
         gp_Vec direction(gp_Pnt(p1[0], p1[1], p1[2]),
                          gp_Pnt(p2[0], p2[1], p2[2]));
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
         BRepPrimAPI_MakePrism MP(shp, direction, Standard_False);
         this->setShape(MP.Shape());
     } catch(Standard_Failure &err) {
-        //Handle_Standard_Failure e = Standard_Failure::Caught();
-        //printf("ERROR: %s\n", e->GetMessageString());
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to extrude");
+        }
         return 1;
     }
     return 0;
@@ -169,16 +224,24 @@ int OCCFace::revolve(OCCBase *shape, DVec p1, DVec p2, double angle)
         const TopoDS_Shape& shp = shape->getShape();
         // Only accept Edge or Wire
         TopAbs_ShapeEnum type = shp.ShapeType();
-        if (type != TopAbs_EDGE && type != TopAbs_WIRE)
-            return 1;
+        if (type != TopAbs_EDGE && type != TopAbs_WIRE) {
+            StdFail_NotDone::Raise("Expected Edge or Wire");
+        }
         gp_Dir direction(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
         BRepPrimAPI_MakeRevol MR(shp, axisOfRevolution, angle, Standard_False);
         if (!MR.IsDone()) {
-            return 1;
+            StdFail_NotDone::Raise("Failed in revolve operation");;
         }
         this->setShape(MR.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to revolve");
+        }
         return 1;
     }
     return 0;
@@ -202,12 +265,19 @@ int OCCFace::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMo
             PS.Add(profiles[i]->getShape());
         }
         if (!PS.IsReady()) {
-            return 1;
+            StdFail_NotDone::Raise("Failed in sweep operation");
         }
         PS.Build();
         
         this->setShape(PS.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to sweep");
+        }
         return 1;
     }
     return 0;
@@ -233,10 +303,17 @@ int OCCFace::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
         //TS.CheckCompatibility(Standard_False);  
         TS.Build();
         if (!TS.IsDone()) {
-            return 1;
+            StdFail_NotDone::Raise("Failed in loft operation");;
         }
         this->setShape(TS.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to loft");
+        }
         return 1;
     }
     return 0;
@@ -288,9 +365,17 @@ int OCCFace::boolean(OCCSolid *tool, BoolOpType op) {
                 idx++;
             }
         }
-        if (idx == 0) return 1;
+        if (idx == 0)
+            StdFail_NotDone::Raise("no results from boolean operation");;
         this->setShape(shape);
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed in boolean operation");
+        }
         return 1;
     }
     return 0;
@@ -329,8 +414,13 @@ OCCMesh *OCCFace::createMesh(double factor, double angle, bool qualityNormals = 
             mesh->extractFaceMesh(this->getFace(), qualityNormals);
         }
     } catch(Standard_Failure &err) {
-        //Handle_Standard_Failure e = Standard_Failure::Caught();
-        //printf("ERROR: %s\n", e->GetMessageString());
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create mesh");
+        }
         return NULL;
     }
     return mesh;

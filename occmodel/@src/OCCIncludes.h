@@ -6,6 +6,7 @@
 #include <iostream>
 using std::iostream;
 
+#include <StdFail_NotDone.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <TColgp_HArray1OfPnt.hxx>

@@ -10,7 +10,7 @@ int OCCBase::transform(DVec mat, OCCBase *target)
         TopoDS_Shape shape = this->getShape();
         
         if (shape.IsNull())
-            return 1;
+            StdFail_NotDone::Raise("Null shape");
         
         gp_Trsf trans;
         trans.SetValues(
@@ -33,6 +33,13 @@ int OCCBase::transform(DVec mat, OCCBase *target)
             target->setShape(aTrans.Shape());
         }
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to transform object");
+        }
         return 1;
     }
     return 0;
@@ -44,7 +51,7 @@ int OCCBase::translate(DVec delta, OCCBase *target)
         TopoDS_Shape shape = this->getShape();
         
         if (shape.IsNull())
-            return 1;
+            StdFail_NotDone::Raise("Null shape");
         
         gp_Trsf trans;
         trans.SetTranslation(gp_Pnt(0,0,0), gp_Pnt(delta[0],delta[1],delta[2]));
@@ -53,6 +60,13 @@ int OCCBase::translate(DVec delta, OCCBase *target)
         aTrans.Check();
         target->setShape(aTrans.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to translate object");
+        }
         return 1;
     }
     return 0;
@@ -64,7 +78,7 @@ int OCCBase::rotate( double angle, DVec p1, DVec p2, OCCBase *target)
         TopoDS_Shape shape = this->getShape();
         
         if (shape.IsNull())
-            return 1;
+            StdFail_NotDone::Raise("Null shape");
         
         gp_Trsf trans;
         gp_Vec dir(gp_Pnt(p1[0], p1[1], p1[2]), gp_Pnt(p2[0], p2[1], p2[2]));
@@ -75,6 +89,13 @@ int OCCBase::rotate( double angle, DVec p1, DVec p2, OCCBase *target)
         aTrans.Check();
         target->setShape(aTrans.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to rotate object");
+        }
         return 1;
     }
     return 0;
@@ -86,7 +107,7 @@ int OCCBase::scale(DVec pnt, double scale, OCCBase *target)
         TopoDS_Shape shape = this->getShape();
         
         if (shape.IsNull())
-            return 1;
+            StdFail_NotDone::Raise("Null shape");
         
         gp_Trsf trans;
         trans.SetScale(gp_Pnt(pnt[0],pnt[1],pnt[2]), scale);
@@ -95,6 +116,13 @@ int OCCBase::scale(DVec pnt, double scale, OCCBase *target)
         aTrans.Check();
         target->setShape(aTrans.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to scale object");
+        }
         return 1;
     }
     return 0;
@@ -106,7 +134,7 @@ int OCCBase::mirror(DVec pnt, DVec nor, OCCBase *target)
         TopoDS_Shape shape = this->getShape();
         
         if (shape.IsNull())
-            return 1;
+            StdFail_NotDone::Raise("Null shape");
         
         gp_Ax2 ax2(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
         gp_Trsf trans;
@@ -114,6 +142,13 @@ int OCCBase::mirror(DVec pnt, DVec nor, OCCBase *target)
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_False);
         target->setShape(aTrans.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to mirror object");
+        }
         return 1;
     }
     return 0;
@@ -124,7 +159,8 @@ int OCCBase::findPlane(double *origin, double *normal, double tolerance = 1e-6)
     try {
         const TopoDS_Shape& shape = this->getShape();
         BRepBuilderAPI_FindPlane FP(shape, tolerance);
-        if(!FP.Found()) return 1;
+        if(!FP.Found())
+            StdFail_NotDone::Raise("Plane not found");
         const Handle_Geom_Plane plane = FP.Plane();
         const gp_Ax1 axis = plane->Axis();
         
@@ -139,6 +175,13 @@ int OCCBase::findPlane(double *origin, double *normal, double tolerance = 1e-6)
         normal[2] = dir.Z();
         
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to find plane");
+        }
         return 1;
     }
     return 0;   

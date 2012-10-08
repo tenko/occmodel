@@ -78,7 +78,7 @@ cdef class Solid(Base):
         cdef Mesh ret = Mesh.__new__(Mesh, None)
         
         if mesh == NULL:
-            raise OCCError('Failed to create mesh')
+            raise OCCError(errorMessage)
         
         ret.thisptr = mesh
         return ret
@@ -101,7 +101,7 @@ cdef class Solid(Base):
         
         ret = occ.createSolid(cfaces, tolerance)
         if ret != 0:
-            raise OCCError('Failed to sew faces')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -127,7 +127,7 @@ cdef class Solid(Base):
         
         ret = occ.addSolids(csolids)
         if ret != 0:
-            raise OCCError('Failed to add solids')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -153,7 +153,7 @@ cdef class Solid(Base):
         
         ret = occ.createSphere(cen, radius)
         if ret != 0:
-            raise OCCError('Failed to create solid')
+            raise OCCError(errorMessage)
             
         return self
 
@@ -183,7 +183,7 @@ cdef class Solid(Base):
         
         ret = occ.createCylinder(cp1, cp2, radius)
         if ret != 0:
-            raise OCCError('Failed to create solid')
+            raise OCCError(errorMessage)
             
         return self
 
@@ -214,7 +214,7 @@ cdef class Solid(Base):
         
         ret = occ.createTorus(cp1, cp2, radius1, radius2)
         if ret != 0:
-            raise OCCError('Failed to create solid')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -245,7 +245,7 @@ cdef class Solid(Base):
         
         ret = occ.createCone(cp1, cp2, radius1, radius2)
         if ret != 0:
-            raise OCCError('Failed to create solid')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -271,7 +271,7 @@ cdef class Solid(Base):
         
         ret = occ.createBox(cp1, cp2)
         if ret != 0:
-            raise OCCError('Failed to create solid')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -300,7 +300,7 @@ cdef class Solid(Base):
         
         ret = occ.createPrism(<c_OCCFace *>face.thisptr, cnormal, isInfinite)
         if ret != 0:
-            raise OCCError('Failed to create prism solid')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -375,7 +375,7 @@ cdef class Solid(Base):
         
         ret = occ.extrude(<c_OCCFace *>face.thisptr, cp1, cp2)
         if ret != 0:
-            raise OCCError('Failed to create solid')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -407,7 +407,7 @@ cdef class Solid(Base):
         
         ret = occ.revolve(<c_OCCFace *>face.thisptr, cp1, cp2, angle)
         if ret != 0:
-            raise OCCError('Failed to create solid')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -461,7 +461,7 @@ cdef class Solid(Base):
         ret = occ.sweep(<c_OCCWire *>cspine.thisptr, cprofiles, cornerMode)
         
         if ret != 0:
-            raise OCCError('Failed to perform sweep')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -501,7 +501,7 @@ cdef class Solid(Base):
         ret = occ.loft(cprofiles, ruled, tolerance)
         
         if ret != 0:
-            raise OCCError('Failed to loft profiles')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -530,7 +530,7 @@ cdef class Solid(Base):
         ret = occ.pipe(<c_OCCFace *>face.thisptr, <c_OCCWire *>wire.thisptr)
             
         if ret != 0:
-            raise OCCError('Failed to make pipe')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -669,7 +669,7 @@ cdef class Solid(Base):
         ret = occ.fillet(cedges, cradius)
             
         if ret != 0:
-            raise OCCError('Failed to create fillet')
+            raise OCCError(errorMessage)
         
         return self
         
@@ -706,7 +706,7 @@ cdef class Solid(Base):
         ret = occ.chamfer(cedges, cdistances)
             
         if ret != 0:
-            raise OCCError('Failed to create chamfer')
+            raise OCCError(errorMessage)
         
         return self
         
@@ -735,7 +735,7 @@ cdef class Solid(Base):
         ret = occ.shell(cfaces, offset, tolerance)
             
         if ret != 0:
-            raise OCCError('Shell operation failed')
+            raise OCCError(errorMessage)
         
         return self
 
@@ -752,7 +752,7 @@ cdef class Solid(Base):
         ret = occ.offset(<c_OCCFace *>face.thisptr, offset, tolerance)
             
         if ret != 0:
-            raise OCCError('Offset operation failed')
+            raise OCCError(errorMessage)
         
         return self
         
@@ -778,7 +778,7 @@ cdef class Solid(Base):
         
         ret.thisptr = occ.section(cpnt, cnor)
         if ret.thisptr == NULL:
-            raise OCCError('Failed to create section')
+            raise OCCError(errorMessage)
             
         return ret
 

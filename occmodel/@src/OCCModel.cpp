@@ -4,6 +4,12 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
+char errorMessage[256];
+
+void setErrorMessage(const char *err) {
+    strncpy(errorMessage, err, 255);
+}
+
 int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = false)
 {
     int vsize = this->vertices.size();
@@ -12,15 +18,15 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
     DVec dtmp;
     IVec itmp;
     
-    if(face.IsNull())
-        return 1;
-    
     try {
+        if(face.IsNull())
+            StdFail_NotDone::Raise("Face is Null");
+    
         TopLoc_Location loc;
         Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(face, loc);
         
         if(tri.IsNull())
-            return 1;
+            StdFail_NotDone::Raise("No triangulation created");
         
         gp_Trsf tr = loc;
         const TColgp_Array1OfPnt& narr = tri->Nodes();
@@ -140,8 +146,13 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
         }
         
     } catch(Standard_Failure &err) {
-        //Handle_Standard_Failure e = Standard_Failure::Caught();
-        //printf("ERROR: %s\n", e->GetMessageString());
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to mesh object");
+        }
         return 1;
     }
     

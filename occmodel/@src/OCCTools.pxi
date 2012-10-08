@@ -23,7 +23,7 @@ cdef class Tools:
         ret = writeBREP(filename, cshapes)
         
         if ret != 0:
-            raise OCCError('Failed to export objects')
+            raise OCCError(errorMessage)
             
         return True
     
@@ -46,7 +46,7 @@ cdef class Tools:
         ret = writeSTEP(filename, cshapes)
         
         if ret != 0:
-            raise OCCError('Failed to export objects')
+            raise OCCError(errorMessage)
             
         return True
     
@@ -69,7 +69,7 @@ cdef class Tools:
         ret = writeSTL(filename, cshapes)
         
         if ret != 0:
-            raise OCCError('Failed to export objects')
+            raise OCCError(errorMessage)
             
         return True
     
@@ -92,7 +92,7 @@ cdef class Tools:
         ret = writeVRML(filename, cshapes)
         
         if ret != 0:
-            raise OCCError('Failed to export objects')
+            raise OCCError(errorMessage)
             
         return True
 
@@ -112,7 +112,10 @@ cdef class Tools:
         cdef int i
         
         ret = readBREP(filename, cshapes)
-        if ret != 0 or cshapes.size() == 0:
+        if ret != 0:
+            raise OCCError(errorMessage)
+            
+        if cshapes.size() == 0:
             raise OCCError('Failed to import objects')
         
         res = []
@@ -165,7 +168,7 @@ cdef class Tools:
         
         ret = readSTEP(filename, cshapes)
         if ret != 0 or cshapes.size() == 0:
-            raise OCCError('Failed to import objects')
+            raise OCCError(errorMessage)
         
         res = []
         for i in range(cshapes.size()):

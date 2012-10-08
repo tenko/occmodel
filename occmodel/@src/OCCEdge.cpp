@@ -16,6 +16,13 @@ OCCEdge *OCCEdge::copy(bool deepCopy = false)
             ret->setShape(this->getShape());
         }
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to copy edge");
+        }
         return NULL;
     }
     return ret;
@@ -65,6 +72,13 @@ int OCCEdge::createLine(OCCVertex *start, OCCVertex *end) {
         GC_MakeLine line(aP1, aP2);
         this->setShape(BRepBuilderAPI_MakeEdge(line, start->vertex, end->vertex));
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create line");
+        }
         return 1;
     }
     return 0;
@@ -87,6 +101,13 @@ int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, DVec center) {
         
         this->setShape(BRepBuilderAPI_MakeEdge(arc, start->vertex, end->vertex));
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create arc");
+        }
         return 1;
     }
     return 0;
@@ -100,6 +121,13 @@ int OCCEdge::createArc3P(OCCVertex *start, OCCVertex *end, DVec aPoint) {
         GC_MakeArcOfCircle arc(aP1, aP2, aP3);
         this->setShape(BRepBuilderAPI_MakeEdge(arc, start->vertex, end->vertex));
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create arc");
+        }
         return 1;
     }
     return 0;
@@ -111,11 +139,15 @@ int OCCEdge::createCircle(DVec center, DVec normal, double radius)
         gp_Pnt aP1(center[0], center[1], center[2]);
         gp_Dir aD1(normal[0], normal[1], normal[2]);
         gce_MakeCirc circle(aP1, aD1, radius);
-        if (!circle.IsDone()) {
-            return 1;
-        }
         this->setShape(BRepBuilderAPI_MakeEdge(circle));
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create circle");
+        }
         return 1;
     }
     return 0;
@@ -126,12 +158,15 @@ int OCCEdge::createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor)
     try {
         gp_Ax2 ax2(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
         gce_MakeElips ellipse(ax2, rMajor, rMinor);
-        
-        if (!ellipse.IsDone()) {
-            return 1;
-        }
         this->setShape(BRepBuilderAPI_MakeEdge(ellipse));
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create ellipse");
+        }
         return 1;
     }
     return 0;
@@ -165,6 +200,13 @@ int OCCEdge::createHelix(double pitch, double height, double radius, double angl
         BRepLib::BuildCurves3d(edge);
         
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create helix");
+        }
         return 1;
     }
     return 0;
@@ -203,6 +245,13 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         }
         
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create bezier");
+        }
         return 1;
     }
     return 0;
@@ -243,10 +292,6 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         GeomAPI_Interpolate INT(ctrlPoints, periodic, tol);
         INT.Perform();
         
-        if (!INT.IsDone()) {
-            return 1;
-        }
-        
         Handle(Geom_BSplineCurve) curve = INT.Curve();
         if (vertices) {
             this->setShape(BRepBuilderAPI_MakeEdge(curve, start->vertex, end->vertex));
@@ -254,6 +299,13 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
             this->setShape(BRepBuilderAPI_MakeEdge(curve));
         }
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create spline");
+        }
         return 1;
     }
     return 0;
@@ -318,6 +370,13 @@ int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> poi
             this->setShape(BRepBuilderAPI_MakeEdge(NURBS));
         }
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create nurbs");
+        }
         return 1;
     }
     return 0;

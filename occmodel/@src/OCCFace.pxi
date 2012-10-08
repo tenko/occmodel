@@ -78,7 +78,7 @@ cdef class Face(Base):
         cdef Mesh ret = Mesh.__new__(Mesh, None)
         
         if mesh == NULL:
-            raise OCCError('Failed to create mesh')
+            raise OCCError(errorMessage)
         
         ret.thisptr = mesh
         return ret
@@ -160,7 +160,10 @@ cdef class Face(Base):
             
         ret = occ.createConstrained(cedges, cpoints)
         
-        if ret != 0 or not self.isValid() or self.isNull():
+        if ret != 0:
+            raise OCCError(errorMessage)
+            
+        if not self.isValid() or self.isNull():
             raise OCCError('Failed to create face')
             
         return self
@@ -190,7 +193,10 @@ cdef class Face(Base):
         
         ret = occ.createPolygonal(cpoints)
         
-        if ret != 0 or not self.isValid() or self.isNull():
+        if ret != 0:
+            raise OCCError(errorMessage)
+            
+        if not self.isValid() or self.isNull():
             raise OCCError('Failed to create face')
             
         return self
@@ -234,7 +240,7 @@ cdef class Face(Base):
         ret = occ.offset(offset, tolerance)
             
         if ret != 0:
-            raise OCCError('Offset operation failed')
+            raise OCCError(errorMessage)
         
         return self
         
@@ -265,7 +271,7 @@ cdef class Face(Base):
         
         ret = occ.extrude(<c_OCCBase *>shape.thisptr, cp1, cp2)
         if ret != 0:
-            raise OCCError('Failed to create face')
+            raise OCCError(errorMessage)
             
         return self
     
@@ -298,7 +304,7 @@ cdef class Face(Base):
         
         ret = occ.revolve(<c_OCCBase *>shape.thisptr, cp1, cp2, angle)
         if ret != 0:
-            raise OCCError('Failed to create face')
+            raise OCCError(errorMessage)
             
         return self
 
@@ -346,7 +352,7 @@ cdef class Face(Base):
         ret = occ.sweep(<c_OCCWire *>cspine.thisptr, cprofiles, cornerMode)
         
         if ret != 0:
-            raise OCCError('Failed to perform sweep')
+            raise OCCError(errorMessage)
             
         return self
         
@@ -384,7 +390,7 @@ cdef class Face(Base):
         ret = occ.loft(cprofiles, ruled, tolerance)
         
         if ret != 0:
-            raise OCCError('Failed to loft profiles')
+            raise OCCError(errorMessage)
             
         return self
         

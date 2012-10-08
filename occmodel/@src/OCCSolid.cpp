@@ -18,6 +18,13 @@ int OCCSolid::createSolid(std::vector<OCCFace *> faces, double tolerance)
         
         this->setShape(SW.SewedShape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create solid");
+        }
         return 1;
     }
     return 0;
@@ -36,6 +43,13 @@ OCCSolid *OCCSolid::copy(bool deepCopy = false)
             ret->setShape(this->getShape());
         }
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to copy object");
+        }
         return NULL;
     }
     return ret;
@@ -102,8 +116,13 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle, bool qualityNormals =
             }
         }
     } catch(Standard_Failure &err) {
-        //Handle_Standard_Failure e = Standard_Failure::Caught();
-        //printf("ERROR: %s\n", e->GetMessageString());
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to mesh object");
+        }
         return NULL;
     }
     return mesh;
@@ -120,6 +139,13 @@ int OCCSolid::addSolids(std::vector<OCCSolid *> solids)
         }
         this->setShape(C);
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to add solid");
+        }
         return 1;
     }
     return 0;
@@ -131,6 +157,13 @@ int OCCSolid::createSphere(DVec center, double radius)
         gp_Pnt aP(center[0], center[1], center[2]);
         this->setShape(BRepPrimAPI_MakeSphere(aP, radius).Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create sphere");
+        }
         return 1;
     }
     return 0;
@@ -148,11 +181,15 @@ int OCCSolid::createCylinder(DVec p1, DVec p2, double radius)
         gp_Ax2 anAxes(aP, aV);
         BRepPrimAPI_MakeCylinder MC(anAxes, radius, H);
         MC.Build();
-        if (!MC.IsDone()) {
-            return 1;
-        }
         this->setShape(MC.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create cylinder");
+        }
         return 1;
     }
     return 0;
@@ -169,11 +206,15 @@ int OCCSolid::createTorus(DVec p1, DVec p2, double radius1, double radius2) {
         gp_Ax2 anAxes(aP, aV);
         BRepPrimAPI_MakeTorus MC(anAxes, radius1, radius2);
         MC.Build();
-        if (!MC.IsDone()) {
-            return 1;
-        }
         this->setShape(MC.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create torus");
+        }
         return 1;
     }
     return 0;
@@ -190,11 +231,15 @@ int OCCSolid::createCone(DVec p1, DVec p2, double radius1, double radius2) {
         gp_Ax2 anAxes(aP, aV);
         BRepPrimAPI_MakeCone MC(anAxes, radius1, radius2, H);
         MC.Build();
-        if (!MC.IsDone()) {
-            return 1;
-        }
         this->setShape(MC.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create cone");
+        }
         return 1;
     }
     return 0;
@@ -206,11 +251,15 @@ int OCCSolid::createBox(DVec p1, DVec p2) {
         gp_Pnt aP2(p2[0], p2[1], p2[2]);
         BRepPrimAPI_MakeBox MB(aP1, aP2);
         MB.Build();
-        if (!MB.IsDone()) {
-            return 1;
-        }
         this->setShape(MB.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create box");
+        }
         return 1;
     }
     return 0;
@@ -224,11 +273,15 @@ int OCCSolid::createPrism(OCCFace *face, DVec normal, bool isInfinite) {
         if (!isInfinite) inf = Standard_False;
         
         BRepPrimAPI_MakePrism MP(face->getShape(), direction, inf);
-        if (!MP.IsDone()) {
-            return 1;
-        }
         this->setShape(MP.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create prism");
+        }
         return 1;
     }
     return 0;
@@ -280,11 +333,15 @@ int OCCSolid::extrude(OCCFace *face, DVec p1, DVec p2)
 
         BRepPrimAPI_MakePrism MP(face->getShape(), direction,
                                  Standard_False);
-        if (!MP.IsDone()) {
-            return 1;
-        }
         this->setShape(MP.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to extrude");
+        }
         return 1;
     }
     return 0;
@@ -296,11 +353,15 @@ int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
         gp_Dir direction(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
         BRepPrimAPI_MakeRevol MR(face->getShape(), axisOfRevolution, angle, Standard_False);
-        if (!MR.IsDone()) {
-            return 1;
-        }
         this->setShape(MR.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to revolve");
+        }
         return 1;
     }
     return 0;
@@ -310,13 +371,15 @@ int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
 {
     try {
         BRepOffsetAPI_MakePipe MP(wire->wire, face->getShape());
-        if (!MP.IsDone()) {
-            return 1;
-        }
         this->setShape(MP.Shape());
     } catch(Standard_Failure &err) {
-        //Handle_Standard_Failure e = Standard_Failure::Caught();
-        //printf("ERROR: %s\n", e->GetMessageString());
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create pipe");
+        }
         return 1;
     }
     return 0;
@@ -340,14 +403,21 @@ int OCCSolid::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerM
             PS.Add(profiles[i]->getShape());
         }
         if (!PS.IsReady()) {
-            return 1;
+            StdFail_NotDone::Raise("Failed to create sweep");
         }
         PS.Build();
         if (!PS.MakeSolid()) {
-            return 1;
+            StdFail_NotDone::Raise("Failed to create a solid object from sweep");
         }
         this->setShape(PS.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create sweep");
+        }
         return 1;
     }
     return 0;
@@ -372,11 +442,15 @@ int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance
         }
         //TS.CheckCompatibility(Standard_False);  
         TS.Build();
-        if (!TS.IsDone()) {
-            return 1;
-        }
         this->setShape(TS.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to loft");
+        }
         return 1;
     }
     return 0;
@@ -426,6 +500,13 @@ int OCCSolid::boolean(OCCSolid *tool, BoolOpType op) {
         
         this->setShape(shape);
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed in boolean operation");
+        }
         return 1;
     }
     return 0;
@@ -434,134 +515,176 @@ int OCCSolid::boolean(OCCSolid *tool, BoolOpType op) {
 int OCCSolid::chamfer(std::vector<OCCEdge *> edges, std::vector<double> distances) {
     int edges_size = edges.size();
     int distances_size = distances.size();
-    BRepFilletAPI_MakeChamfer CF(solid);
     
-    TopTools_IndexedDataMapOfShapeListOfShape mapEdgeFace;
-    TopExp::MapShapesAndAncestors(solid, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
-    
-    for (unsigned i=0; i<edges.size(); i++) {
-            OCCEdge *edge = edges[i];
-            
-            // skip degenerated edge
-            if (BRep_Tool::Degenerated(edge->getEdge()))
-                continue;
+    try {
+        BRepFilletAPI_MakeChamfer CF(solid);
         
-            const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge->getEdge()).First());
-            
-            // skip edge if it is a seam
-            if (BRep_Tool::IsClosed(edge->getEdge(), face))
-                continue;
-            
-            
-            if (distances_size == 1) {
-                // single distance
-                CF.Add(distances[0], edge->getEdge(), face);
+        TopTools_IndexedDataMapOfShapeListOfShape mapEdgeFace;
+        TopExp::MapShapesAndAncestors(solid, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
+        
+        for (unsigned i=0; i<edges.size(); i++) {
+                OCCEdge *edge = edges[i];
                 
-            } else if (distances_size == edges_size) {
-                // distance given for each edge
-                CF.Add(distances[i], edge->getEdge(), face);
+                // skip degenerated edge
+                if (BRep_Tool::Degenerated(edge->getEdge()))
+                    continue;
+            
+                const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge->getEdge()).First());
                 
-            } else {
-                return 1;
-            }
-    }
-    
-    CF.Build();
-    
-    if (!CF.IsDone()) return 1;
-    
-    const TopoDS_Shape& tmp = CF.Shape();
-    
-    if (tmp.IsNull()) return 1;
-    
-    // Check shape validity
-    BRepCheck_Analyzer ana (tmp, false);
-    if (!ana.IsValid()) {
+                // skip edge if it is a seam
+                if (BRep_Tool::IsClosed(edge->getEdge(), face))
+                    continue;
+                
+                
+                if (distances_size == 1) {
+                    // single distance
+                    CF.Add(distances[0], edge->getEdge(), face);
+                    
+                } else if (distances_size == edges_size) {
+                    // distance given for each edge
+                    CF.Add(distances[i], edge->getEdge(), face);
+                    
+                } else {
+                    StdFail_NotDone::Raise("size of distances argument not correct");;
+                }
+        }
+        
+        CF.Build();
+        
+        if (!CF.IsDone())
+            StdFail_NotDone::Raise("Failed to chamfer solid");
+        
+        const TopoDS_Shape& tmp = CF.Shape();
+        
+        if (tmp.IsNull())
+            StdFail_NotDone::Raise("Chamfer operaton return Null shape");
+        
+        // Check shape validity
+        BRepCheck_Analyzer ana (tmp, false);
+        if (!ana.IsValid()) {
+            StdFail_NotDone::Raise("Chamfer operation created invalid shape");
+        }
+        this->setShape(tmp);
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to chamfer solid");
+        }
         return 1;
     }
-  
-    this->setShape(tmp);
     return 0;
 }
 
 int OCCSolid::fillet(std::vector<OCCEdge *> edges, std::vector<double> radius) {
     int edges_size = edges.size();
     int radius_size = radius.size();
-    BRepFilletAPI_MakeFillet fill(solid);
     
-    TopTools_IndexedDataMapOfShapeListOfShape mapEdgeFace;
-    TopExp::MapShapesAndAncestors(solid, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
-    
-    for (unsigned i=0; i<edges.size(); i++) {
-            OCCEdge *edge = edges[i];
+    try {
+        BRepFilletAPI_MakeFillet fill(solid);
         
-            // skip degenerated edge
-            if (BRep_Tool::Degenerated(edge->getEdge()))
-                continue;
+        TopTools_IndexedDataMapOfShapeListOfShape mapEdgeFace;
+        TopExp::MapShapesAndAncestors(solid, TopAbs_EDGE, TopAbs_FACE, mapEdgeFace);
+        
+        for (unsigned i=0; i<edges.size(); i++) {
+                OCCEdge *edge = edges[i];
             
-            
-            const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge->getEdge()).First());
-            
-            // skip edge if it is a seam
-            if (BRep_Tool::IsClosed(edge->getEdge(), face))
-                continue;
-            
-            if (radius_size == 1) {
-                // single radius
-                fill.Add(radius[0], edge->getEdge());
-            } else if (radius_size == edges_size) {
-                // radius given for each edge
-                fill.Add(radius[i], edge->getEdge());
-            } else if (radius_size == 2*edges_size) {
-                // variable radius
-                fill.Add(radius[2*i+0], radius[2*i+1], edge->getEdge());
-            } else {
-                return 1;
-            }
-    }
-    
-    fill.Build();
-    
-    if (!fill.IsDone()) return 1;
-    
-    const TopoDS_Shape& tmp = fill.Shape();
-    
-    if (tmp.IsNull()) return 1;
-    
-    // Check shape validity
-    BRepCheck_Analyzer ana (tmp, false);
-    if (!ana.IsValid()) {
+                // skip degenerated edge
+                if (BRep_Tool::Degenerated(edge->getEdge()))
+                    continue;
+                
+                
+                const TopoDS_Face& face = TopoDS::Face(mapEdgeFace.FindFromKey(edge->getEdge()).First());
+                
+                // skip edge if it is a seam
+                if (BRep_Tool::IsClosed(edge->getEdge(), face))
+                    continue;
+                
+                if (radius_size == 1) {
+                    // single radius
+                    fill.Add(radius[0], edge->getEdge());
+                } else if (radius_size == edges_size) {
+                    // radius given for each edge
+                    fill.Add(radius[i], edge->getEdge());
+                } else if (radius_size == 2*edges_size) {
+                    // variable radius
+                    fill.Add(radius[2*i+0], radius[2*i+1], edge->getEdge());
+                } else {
+                    StdFail_NotDone::Raise("radius argument size not valid");;
+                }
+        }
+        
+        fill.Build();
+        
+        if (!fill.IsDone())
+            StdFail_NotDone::Raise("Filler operation failed");
+        
+        const TopoDS_Shape& tmp = fill.Shape();
+        
+        if (tmp.IsNull())
+            StdFail_NotDone::Raise("Fillet operation resulted in Null shape");
+        
+        // Check shape validity
+        BRepCheck_Analyzer ana (tmp, false);
+        if (!ana.IsValid()) {
+            StdFail_NotDone::Raise("Fillet operation resulted in invalid shape");
+        }
+        
+        this->setShape(tmp);
+        
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to fillet solid");
+        }
         return 1;
     }
-  
-    this->setShape(tmp);
     return 0;
     
 }
 
 int OCCSolid::shell(std::vector<OCCFace *> faces, double offset, double tolerance) {
-    TopTools_ListOfShape facelist;
-    for (unsigned i=0; i<faces.size(); i++) {
-        OCCFace *face = faces[i];
-        facelist.Append(face->getShape());
-    }
+    try {
+        TopTools_ListOfShape facelist;
+        for (unsigned i=0; i<faces.size(); i++) {
+            OCCFace *face = faces[i];
+            facelist.Append(face->getShape());
+        }
+        
+        BRepOffsetAPI_MakeThickSolid TS(solid, facelist, offset, tolerance);
+        TS.Build();
+        
+        if (!TS.IsDone())
+            StdFail_NotDone::Raise("Shell operation failed");
+        
+        const TopoDS_Shape& tmp = TS.Shape();
+        
+        if (tmp.IsNull())
+            StdFail_NotDone::Raise("Shell operation resulted in Null shape");
+        
+        // Check shape validity
+        BRepCheck_Analyzer ana (tmp, false);
+        if (!ana.IsValid()) {
+            StdFail_NotDone::Raise("Shell operation resulted in invalid shape");
+        }
+      
+        this->setShape(tmp);
     
-    BRepOffsetAPI_MakeThickSolid TS(solid, facelist, offset, tolerance);
-    TS.Build();
-    
-    if (!TS.IsDone()) return 1;
-    
-    const TopoDS_Shape& tmp = TS.Shape();
-    
-    if (tmp.IsNull()) return 1;
-    
-    // Check shape validity
-    BRepCheck_Analyzer ana (tmp, false);
-    if (!ana.IsValid()) {
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to shell solid");
+        }
         return 1;
     }
-  
-    this->setShape(tmp);
     return 0;
 }
 
@@ -570,11 +693,15 @@ int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
         BRepOffset_MakeOffset MO(face->getShape(), offset, tolerance, BRepOffset_Skin,
                                  Standard_False, Standard_False, GeomAbs_Arc, Standard_True);
         
-        if (!MO.IsDone())
-            return 1;
-        
         this->setShape(MO.Shape());
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to offset face");
+        }
         return 1;
     }
     return 0;
@@ -593,7 +720,8 @@ OCCFace *OCCSolid::section(DVec pnt, DVec nor)
         gp_Pln pln(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
         
         BRepAlgoAPI_Section mkSection(getShape(), pln);
-        if (!mkSection.IsDone()) return NULL;
+        if (!mkSection.IsDone())
+            StdFail_NotDone::Raise("Section operation failed");
     
         for (ex.Init(mkSection.Shape(), TopAbs_EDGE); ex.More(); ex.Next()) {
             if (!ex.Current().IsNull()) {
@@ -603,13 +731,14 @@ OCCFace *OCCSolid::section(DVec pnt, DVec nor)
         
         ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges,Precision::Confusion(),Standard_True,wires);
         if (wires->Length() != 1)
-            return NULL;
+            StdFail_NotDone::Raise("No edges created");
         
         const TopoDS_Wire& wire = TopoDS::Wire(wires->Value(1));
         
         BRepBuilderAPI_MakeFace MFInit(pln, wire, Standard_True);
         MFInit.Build();
-        if (!MFInit.IsDone()) return NULL;
+        if (!MFInit.IsDone())
+            StdFail_NotDone::Raise("Could not create face");
         
         ShapeFix_Wire fixer(wire, MFInit.Face(), 1.0e-6);
         fixer.FixEdgeCurves();
@@ -617,10 +746,17 @@ OCCFace *OCCSolid::section(DVec pnt, DVec nor)
         
         BRepBuilderAPI_MakeFace MFRes(pln, fixer.Wire(), Standard_True);
         MFRes.Build();
-        if (!MFRes.IsDone()) return NULL;
         
         ret->setShape(MFRes.Face());
+        
     } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create section");
+        }
         return NULL;
     }
     return ret;

@@ -2,11 +2,12 @@
 //
 // See the LICENSE.txt file for license information. Please report all
 // bugs and problems to <gmsh@geuz.org>.
-
+#ifndef OCCMODEL_H
+#define OCCMODEL_H
 #include "OCCIncludes.h"
 #include <math.h>
-#include <sstream>
 #include <vector>
+#include <sstream>
 #include <limits>
 
 typedef std::vector<float> FVec;
@@ -17,6 +18,9 @@ enum BoolOpType {BOOL_FUSE, BOOL_CUT, BOOL_COMMON};
 
 class OCCBase;
 class OCCSolid;
+
+extern char errorMessage[256];
+void setErrorMessage(const char *err);
 
 class OCCMesh {
     public:
@@ -359,3 +363,4 @@ class OCCSolidIterator {
             }
         }
 };
+#endif

@@ -16,6 +16,8 @@ cdef extern from "<vector>" namespace "std":
        T& operator[](size_t)
 
 cdef extern from "OCCModel.h":
+    char errorMessage[256]
+    
     cdef cppclass c_OCCMesh "OCCMesh":
         vector[vector[double]] vertices
         vector[vector[double]] normals
