@@ -155,6 +155,11 @@ int OCCSolid::createSphere(DVec center, double radius)
 {
     try {
         gp_Pnt aP(center[0], center[1], center[2]);
+        
+        if (radius <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("radius to small");
+        }
+        
         this->setShape(BRepPrimAPI_MakeSphere(aP, radius).Shape());
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -176,6 +181,11 @@ int OCCSolid::createCylinder(DVec p1, DVec p2, double radius)
         const double dy = p2[1] - p1[1];
         const double dz = p2[2] - p1[2];
         const double H = sqrt(dx*dx + dy*dy + dz*dz);
+        
+        if (radius <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("radius to small");
+        }
+        
         gp_Pnt aP(p1[0], p1[1], p1[2]);
         gp_Vec aV(dx / H, dy / H, dz / H);
         gp_Ax2 anAxes(aP, aV);
@@ -195,7 +205,7 @@ int OCCSolid::createCylinder(DVec p1, DVec p2, double radius)
     return 0;
 }
 
-int OCCSolid::createTorus(DVec p1, DVec p2, double radius1, double radius2) {
+int OCCSolid::createTorus(DVec p1, DVec p2, double ringRadius, double radius) {
     try {
         const double dx = p2[0] - p1[0];
         const double dy = p2[1] - p1[1];
@@ -204,7 +214,16 @@ int OCCSolid::createTorus(DVec p1, DVec p2, double radius1, double radius2) {
         gp_Pnt aP(p1[0], p1[1], p1[2]);
         gp_Vec aV(dx / H, dy / H, dz / H);
         gp_Ax2 anAxes(aP, aV);
-        BRepPrimAPI_MakeTorus MC(anAxes, radius1, radius2);
+        
+        if (radius <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("radius to small");
+        }
+        
+        if (ringRadius <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("ringRadius to small");
+        }
+        
+        BRepPrimAPI_MakeTorus MC(anAxes, ringRadius, radius);
         MC.Build();
         this->setShape(MC.Shape());
     } catch(Standard_Failure &err) {

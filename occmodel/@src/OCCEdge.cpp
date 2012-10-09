@@ -138,6 +138,11 @@ int OCCEdge::createCircle(DVec center, DVec normal, double radius)
     try {
         gp_Pnt aP1(center[0], center[1], center[2]);
         gp_Dir aD1(normal[0], normal[1], normal[2]);
+        
+        if (radius <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("radius to small");
+        }
+        
         gce_MakeCirc circle(aP1, aD1, radius);
         this->setShape(BRepBuilderAPI_MakeEdge(circle));
     } catch(Standard_Failure &err) {
@@ -157,6 +162,11 @@ int OCCEdge::createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor)
 {
     try {
         gp_Ax2 ax2(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
+        
+        if (rMajor <= Precision::Confusion() || rMinor <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("radius to small");
+        }
+        
         gce_MakeElips ellipse(ax2, rMajor, rMinor);
         this->setShape(BRepBuilderAPI_MakeEdge(ellipse));
     } catch(Standard_Failure &err) {
@@ -176,6 +186,11 @@ int OCCEdge::createHelix(double pitch, double height, double radius, double angl
 {
     try {
         gp_Ax2 cylAx2(gp_Pnt(0.0,0.0,0.0) , gp::DZ());
+        
+        if (radius <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("radius to small");
+        }
+        
         Handle_Geom_Surface surf;
         if (angle <= 0.0) {
             surf = new Geom_CylindricalSurface(cylAx2, radius);
@@ -244,6 +259,10 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
             this->setShape(BRepBuilderAPI_MakeEdge(bezier));
         }
         
+        if (this->length() <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("bezier not valid");
+        }
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -267,7 +286,6 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         int vertices = 0;
         if (start != NULL && end != NULL) {
             vertices = 2;
-            periodic = true;
         }
         
         int nbControlPoints = points.size();

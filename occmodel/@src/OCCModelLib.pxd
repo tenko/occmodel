@@ -146,7 +146,7 @@ cdef extern from "OCCModel.h":
         int addSolids(vector[c_OCCSolid *] solids)
         int createSphere(vector[double] center, double radius)
         int createCylinder(vector[double] p1, vector[double] p2, double radius)
-        int createTorus(vector[double] p1, vector[double] p2, double radius1, double radius2)
+        int createTorus(vector[double] p1, vector[double] p2, double ringRadius, double radius)
         int createCone(vector[double] p1, vector[double] p2, double radius1, double radius2)
         int createBox(vector[double] p1, vector[double] p2)
         int createPrism(c_OCCFace *face, vector[double] normal, bint isInfinite)

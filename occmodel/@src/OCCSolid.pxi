@@ -187,14 +187,14 @@ cdef class Solid(Base):
             
         return self
 
-    cpdef createTorus(self, p1, p2, double radius1, double radius2):
+    cpdef createTorus(self, p1, p2, double ringRadius, double radius):
         '''
         Create torus
         
         :param p1: axis start
         :param p2: axis end
-        :param radius1: ring radius
-        :param radius2: radius
+        :param ringRadius: ring radius
+        :param radius: radius tube section
         
         example::
             
@@ -212,7 +212,7 @@ cdef class Solid(Base):
         cp2.push_back(p2[1])
         cp2.push_back(p2[2])
         
-        ret = occ.createTorus(cp1, cp2, radius1, radius2)
+        ret = occ.createTorus(cp1, cp2, ringRadius, radius)
         if ret != 0:
             raise OCCError(errorMessage)
             

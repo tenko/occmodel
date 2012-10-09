@@ -6,12 +6,14 @@ import unittest
 
 from math import pi, sin, cos, sqrt
 
-from occmodel import Vertex, Edge, Wire, Face
+from occmodel import Vertex, Edge, Wire, Face, OCCError
 
 class test_Face(unittest.TestCase):
     
     def test_createFace(self):
         eq = self.assertAlmostEqual
+        
+        self.assertRaises(OCCError, Face().createFace, Wire())
         
         # square face
         p1 = Vertex(0.,0.,0.)
@@ -22,9 +24,16 @@ class test_Face(unittest.TestCase):
         e2 = Edge().createLine(p2,p3)
         e3 = Edge().createLine(p3,p4)
         e4 = Edge().createLine(p4,p1)
-        w1 = Wire().createWire((e1,e2,e3,e4))
         
-        face = Face().createFace(w1)
+        w1 = Wire().createWire((e1,e1,e1,e1))
+        self.assertRaises(OCCError, Face().createFace, w1)
+        
+        w2 = Wire().createWire((e1,e2,e3,e4))
+        
+        face = Face().createFace(w2)
+        
+        self.assertEqual(face.numWires(), 1)
+        self.assertEqual(face.numFaces(), 1)
         eq(face.area(), 1.)
         
         # circular face

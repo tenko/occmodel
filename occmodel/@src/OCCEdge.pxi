@@ -403,6 +403,10 @@ cdef class Edge(Base):
         Return edge length
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        
+        if self.isNull() or not self.isValid():
+            raise OCCError('length not defined for object')
+            
         return occ.length()
 
 cdef class EdgeIterator:

@@ -319,7 +319,7 @@ class OCCSolid : public OCCBase {
         int addSolids(std::vector<OCCSolid *> solids);
         int createSphere(DVec center, double radius);
         int createCylinder(DVec p1, DVec p2, double radius);
-        int createTorus(DVec p1, DVec p2, double radius1, double radius2);
+        int createTorus(DVec p1, DVec p2, double ringRadius, double radius);
         int createCone(DVec p1, DVec p2, double radius1, double radius2);
         int createBox(DVec p1, DVec p2);
         int createPrism(OCCFace *face, DVec normal, bool isInfinite);
