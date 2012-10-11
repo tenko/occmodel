@@ -275,6 +275,27 @@ cdef class Solid(Base):
             
         return self
     
+    cpdef createText(self, double height, double depth, text, char *fontpath):
+        '''
+        Extrude TTF font data to solids
+        
+        :height: font height
+        :depth: extrusion depth
+        :text: text content. Only single line of text (UTF-8)
+        :fontpath: path to TTF font file
+        '''
+        cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
+        cdef char *c_str
+        
+        bytetext = unicode(text).encode('UTF-8','ignore')
+        c_str = bytetext
+        
+        ret = occ.createText(height, depth, c_str, fontpath)
+        if ret != 0:
+            raise OCCError(errorMessage)
+            
+        return self
+        
     cpdef createPrism(self, obj, normal, bint isInfinite):
         '''
         Create prism from edge/wire/face in direction of normal.

@@ -150,6 +150,7 @@ cdef extern from "OCCModel.h":
         int createCone(vector[double] p1, vector[double] p2, double radius1, double radius2)
         int createBox(vector[double] p1, vector[double] p2)
         int createPrism(c_OCCFace *face, vector[double] normal, bint isInfinite)
+        int createText(double height, double depth, char *text, char *fontpath)
         int extrude(c_OCCFace *face, vector[double] p1, vector[double] p2)
         int revolve(c_OCCFace *face, vector[double] p1, vector[double] p2, double angle)
         int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)

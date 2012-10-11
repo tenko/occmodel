@@ -31,6 +31,8 @@ class OCCMesh {
         int extractFaceMesh(const TopoDS_Face& face, bool qualityNormals);
 };
 
+unsigned int decutf8(unsigned int* state, unsigned int* codep, unsigned int byte);
+
 void printShapeType(const TopoDS_Shape& shape);
 int extractSubShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes);
 int extractShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes);
@@ -323,6 +325,7 @@ class OCCSolid : public OCCBase {
         int createCone(DVec p1, DVec p2, double radius1, double radius2);
         int createBox(DVec p1, DVec p2);
         int createPrism(OCCFace *face, DVec normal, bool isInfinite);
+        int createText(double height, double depth, const char *text, const char *fontpath);
         int extrude(OCCFace *face, DVec p1, DVec p2);
         int revolve(OCCFace *face, DVec p1, DVec p2, double angle);
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);

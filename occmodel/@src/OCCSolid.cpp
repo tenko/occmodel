@@ -4,6 +4,11 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
+#define STB_TRUETYPE_IMPLEMENTATION
+#define STBTT_malloc(x,u)    malloc(x)
+#define STBTT_free(x,u)      free(x)
+#include "stb_truetype.h"
+
 int OCCSolid::createSolid(std::vector<OCCFace *> faces, double tolerance)
 {
     try {
@@ -278,6 +283,227 @@ int OCCSolid::createBox(DVec p1, DVec p2) {
             setErrorMessage(msg);
         } else {
             setErrorMessage("Failed to create box");
+        }
+        return 1;
+    }
+    return 0;
+}
+
+int OCCSolid::createText(double height, double depth, const char *text, const char *fontpath)
+{
+    Handle(TopTools_HSequenceOfShape) wires = new TopTools_HSequenceOfShape;
+    Handle(TopTools_HSequenceOfShape) edges = new TopTools_HSequenceOfShape;
+    
+    FILE* fp = 0;
+    stbtt_fontinfo font;
+    float scale, x0, y0, x, y, newx, newy, cx, cy;
+    unsigned char* data = 0;
+    unsigned int codepoint, lastcp;
+	unsigned int state = 0;
+    int datasize, i, g, advance, ascent;
+    
+    try {
+        BRep_Builder Builder;
+        TopoDS_Compound Compound;
+        Builder.MakeCompound(Compound);
+        
+        // Read in the font data.
+        fp = fopen(fontpath, "rb");
+        if (!fp) {
+            StdFail_NotDone::Raise("failed to open font");
+        }
+        fseek(fp,0,SEEK_END);
+        datasize = (int)ftell(fp);
+        fseek(fp,0,SEEK_SET);
+        
+        data = (unsigned char*)malloc(datasize);
+        if (data == NULL) {
+            StdFail_NotDone::Raise("failed allocate font data");
+        }
+        
+        fread(data, 1, datasize, fp);
+        fclose(fp);
+        fp = 0;
+        
+        // Init stb_truetype
+        if (!stbtt_InitFont(&font, data, 0)) {
+            StdFail_NotDone::Raise("failed parse font data");
+        }
+        
+        // Find scale factor
+        scale = (double)stbtt_ScaleForPixelHeight(&font, (float)height);
+        
+        // Find basline
+        stbtt_GetFontVMetrics(&font, &ascent,0,0);
+        y0 = (ascent*scale);
+        
+        // Loop chars
+        lastcp = 255; // Mark with invalid value
+        x0 = x = y = 0.f;
+        for (; *text; ++text)
+        {
+            stbtt_vertex *vertices = 0;
+            // decode UTF-8 codepoint, ignore invalid
+            if (decutf8(&state, &codepoint, *(unsigned char*)text)) continue;
+            
+            // kerning
+            if (lastcp != 255) {
+                x0 += scale*stbtt_GetCodepointKernAdvance(&font, lastcp, codepoint);
+            }
+            
+            // get shape metric
+            g = stbtt_FindGlyphIndex(&font, codepoint);
+            stbtt_GetGlyphHMetrics(&font, g, &advance, 0);
+            
+            // get shape vertices
+            int num_verts = stbtt_GetGlyphShape(&font, g, &vertices);
+            //printf("num_verts = %d\n\n", num_verts);
+            
+            wires->Clear();
+            edges->Clear();
+            
+            for (i=0; i < num_verts; ++i) {
+                switch (vertices[i].type) {
+                    case STBTT_vmove:
+                    {
+                        // start the next contour
+                        if (edges->Length() > 0) {
+                            Handle(TopTools_HSequenceOfShape) res = new TopTools_HSequenceOfShape;
+                            
+                            ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges,1e-3,Standard_False,res);
+                            if (res->Length() != 1)
+                                StdFail_NotDone::Raise("Multiple wires created");
+                            
+                            wires->Append(res->Value(1));
+                            edges->Clear();
+                        }
+                        x = x0 + vertices[i].x*scale;
+                        y = y0 + vertices[i].y*scale;
+                        //printf("%d STBTT_vmove x: %f, y: %f\n", i, x, y);
+                        break;
+                    }
+                    case STBTT_vline:
+                    {
+                        newx = x0 + vertices[i].x*scale;
+                        newy = y0 + vertices[i].y*scale;
+                        //printf("%d STBTT_vline (x1: %f, y1: %f), (x2: %f, y2: %f)\n", i, x, y, newx, newy);
+                        
+                        gp_Pnt aP1(x, y, 0.);
+                        BRepBuilderAPI_MakeVertex aV1(aP1);
+                        
+                        gp_Pnt aP2(newx, newy, 0.);
+                        BRepBuilderAPI_MakeVertex aV2(aP2);
+                        
+                        GC_MakeLine line(aP1, aP2);
+                        BRepBuilderAPI_MakeEdge ME(line, aV1.Vertex(), aV2.Vertex());
+                        
+                        edges->Append(ME.Edge());
+                        
+                        x = newx;
+                        y = newy;
+                        break;
+                    }
+                    case STBTT_vcurve:
+                    {                        
+                        TColgp_Array1OfPnt ctrlPoints(1, 3);
+                        ctrlPoints.SetValue(1, gp_Pnt(x, y, 0.));
+                        
+                        cx = x0 + vertices[i].cx*scale;
+                        cy = y0 + vertices[i].cy*scale;
+                        ctrlPoints.SetValue(2, gp_Pnt(cx, cy, 0.));
+                        
+                        newx = x0 + vertices[i].x*scale;
+                        newy = y0 + vertices[i].y*scale;
+                        ctrlPoints.SetValue(3, gp_Pnt(newx, newy, 0.));
+                        
+                        //printf("%d STBTT_vcurve (x1: %f, y1: %f), (cx: %f, cy: %f), (x2: %f, y2: %f)\n", i, x, y, cx, cy, newx, newy);
+                        
+                        Handle(Geom_BezierCurve) bezier = new Geom_BezierCurve(ctrlPoints);
+                        
+                        gp_Pnt aP1(x, y, 0.);
+                        BRepBuilderAPI_MakeVertex aV1(aP1);
+                        
+                        gp_Pnt aP2(newx, newy, 0.);
+                        BRepBuilderAPI_MakeVertex aV2(aP2);
+                        
+                        BRepBuilderAPI_MakeEdge ME(bezier, aV1, aV2);
+                        
+                        GProp_GProps prop;
+                        BRepGProp::LinearProperties(ME.Edge(), prop);
+                        if (prop.Mass() <= Precision::Confusion()) {
+                            StdFail_NotDone::Raise("bezier not valid");
+                        }
+        
+                        edges->Append(ME.Edge());
+                        
+                        x = newx;
+                        y = newy;
+                        break;
+                    }
+                }
+            }
+            
+            if (vertices) free(vertices);
+            
+            // add last contour
+            if (edges->Length() > 0) {
+                Handle(TopTools_HSequenceOfShape) res = new TopTools_HSequenceOfShape;
+                
+                ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges,1e-3,Standard_False,res);
+                if (res->Length() != 1)
+                    StdFail_NotDone::Raise("Multiple wires created");
+                
+                wires->Append(res->Value(1));
+                edges->Clear();
+            }
+            
+            if (wires->Length() == 0) {
+                StdFail_NotDone::Raise("failed to create edges");
+            }
+            
+            // build face
+            gp_Pln pln(gp_Pnt(0.,0.,0.), gp_Dir(0.,0.,1.));
+            const TopoDS_Wire& wire = TopoDS::Wire(wires->Value(1));
+            BRepBuilderAPI_MakeFace MF(pln, wire, Standard_True);
+            
+            // add possible additional wires
+            for (unsigned i=2; i< wires->Length() + 1; i++) {
+                TopoDS_Wire hole = TopoDS::Wire(wires->Value(i));
+                if (hole.Orientation() == wire.Orientation()) {
+                    MF.Add(TopoDS::Wire(hole.Reversed()));
+                } else {
+                    MF.Add(hole);
+                }
+            }
+            
+            MF.Build();
+            if (!MF.IsDone())
+                StdFail_NotDone::Raise("Could not create face");
+            
+            // extrude face to solid
+            const TopoDS_Face& face = MF.Face();
+            gp_Vec direction(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., depth));
+            BRepPrimAPI_MakePrism MP(face, direction, Standard_False);
+            Builder.Add(Compound, MP.Shape());
+            
+            // advance to next
+            x0 += (advance*scale);
+            
+            lastcp = codepoint;
+        }
+        
+        this->setShape(Compound);
+        
+    } catch(Standard_Failure &err) {
+        if (data) free(data);
+        if (fp) fclose(fp);
+        
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create solids from font data");
         }
         return 1;
     }
