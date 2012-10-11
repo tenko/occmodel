@@ -4,6 +4,18 @@
 // bugs and problems to <gmsh@geuz.org>.
 #include "OCCModel.h"
 
+bool OCCEdge::isSeam(OCCBase *face) {
+    if (this->getShape().IsNull())
+        return false;
+    return BRep_Tool::IsClosed (this->getEdge(), TopoDS::Face(face->getShape()));
+}
+
+bool OCCEdge::isDegenerated() {
+    if (this->getShape().IsNull())
+        return true;
+    return BRep_Tool::Degenerated(this->getEdge());
+}
+
 OCCEdge *OCCEdge::copy(bool deepCopy = false)
 {
     OCCEdge *ret = new OCCEdge();

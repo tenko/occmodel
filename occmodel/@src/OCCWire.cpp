@@ -51,6 +51,11 @@ int OCCWire::createWire(std::vector<OCCEdge *> edges)
             wm.Add(edge->getEdge());
         }
         this->setShape(wm.Wire());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -87,6 +92,10 @@ int OCCWire::project(OCCBase *face) {
         
         this->setShape(wires->Value(1));
         
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -114,6 +123,11 @@ int OCCWire::offset(double distance, int joinType = 0) {
         BRepOffsetAPI_MakeOffset MO(this->getWire(), join);
         MO.Perform(distance);
         this->setShape(MO.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -168,6 +182,10 @@ int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radiu
         }
           
         this->setShape(wire);
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
         
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -256,6 +274,10 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
         }
           
         this->setShape(wire.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
         
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

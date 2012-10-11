@@ -486,13 +486,17 @@ int OCCSolid::createText(double height, double depth, const char *text, const ch
             BRepPrimAPI_MakePrism MP(face, direction, Standard_False);
             Builder.Add(Compound, MP.Shape());
             
-            // advance to next
+            // advance to next glyph
             x0 += (advance*scale);
             
             lastcp = codepoint;
         }
         
         this->setShape(Compound);
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
         
     } catch(Standard_Failure &err) {
         if (data) free(data);
@@ -578,7 +582,13 @@ int OCCSolid::extrude(OCCFace *face, DVec p1, DVec p2)
 
         BRepPrimAPI_MakePrism MP(face->getShape(), direction,
                                  Standard_False);
+        
         this->setShape(MP.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -599,6 +609,11 @@ int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
         BRepPrimAPI_MakeRevol MR(face->getShape(), axisOfRevolution, angle, Standard_False);
         this->setShape(MR.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -617,6 +632,11 @@ int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
     try {
         BRepOffsetAPI_MakePipe MP(wire->wire, face->getShape());
         this->setShape(MP.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -655,6 +675,11 @@ int OCCSolid::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerM
             StdFail_NotDone::Raise("Failed to create a solid object from sweep");
         }
         this->setShape(PS.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -688,6 +713,11 @@ int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance
         //TS.CheckCompatibility(Standard_False);  
         TS.Build();
         this->setShape(TS.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -744,6 +774,11 @@ int OCCSolid::boolean(OCCSolid *tool, BoolOpType op) {
         }
         
         this->setShape(shape);
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -804,12 +839,12 @@ int OCCSolid::chamfer(std::vector<OCCEdge *> edges, std::vector<double> distance
         if (tmp.IsNull())
             StdFail_NotDone::Raise("Chamfer operaton return Null shape");
         
-        // Check shape validity
-        BRepCheck_Analyzer ana (tmp, false);
-        if (!ana.IsValid()) {
-            StdFail_NotDone::Raise("Chamfer operation created invalid shape");
-        }
         this->setShape(tmp);
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -871,13 +906,11 @@ int OCCSolid::fillet(std::vector<OCCEdge *> edges, std::vector<double> radius) {
         if (tmp.IsNull())
             StdFail_NotDone::Raise("Fillet operation resulted in Null shape");
         
-        // Check shape validity
-        BRepCheck_Analyzer ana (tmp, false);
-        if (!ana.IsValid()) {
-            StdFail_NotDone::Raise("Fillet operation resulted in invalid shape");
-        }
-        
         this->setShape(tmp);
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
         
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -912,13 +945,11 @@ int OCCSolid::shell(std::vector<OCCFace *> faces, double offset, double toleranc
         if (tmp.IsNull())
             StdFail_NotDone::Raise("Shell operation resulted in Null shape");
         
-        // Check shape validity
-        BRepCheck_Analyzer ana (tmp, false);
-        if (!ana.IsValid()) {
-            StdFail_NotDone::Raise("Shell operation resulted in invalid shape");
-        }
-      
         this->setShape(tmp);
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
     
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -939,6 +970,11 @@ int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
                                  Standard_False, Standard_False, GeomAbs_Arc, Standard_True);
         
         this->setShape(MO.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();

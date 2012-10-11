@@ -154,6 +154,34 @@ int OCCBase::mirror(DVec pnt, DVec nor, OCCBase *target)
     return 0;
 }
 
+DVec OCCBase::boundingBox(double tolerance = 1e-12)
+{
+    DVec ret;
+    try {
+        const TopoDS_Shape& shape = this->getShape();
+        Bnd_Box aBox;
+        BRepBndLib::Add(shape, aBox);
+        aBox.SetGap(tolerance);
+        Standard_Real aXmin, aYmin, aZmin;
+        Standard_Real aXmax, aYmax, aZmax;
+        aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+        ret.push_back(aXmin);
+        ret.push_back(aYmin);
+        ret.push_back(aZmin);
+        ret.push_back(aXmax);
+        ret.push_back(aYmax);
+        ret.push_back(aZmax);
+    } catch(Standard_Failure &err) {
+        ret.push_back(0.0);
+        ret.push_back(0.0);
+        ret.push_back(0.0);
+        ret.push_back(0.0);
+        ret.push_back(0.0);
+        ret.push_back(0.0);
+    }
+    return ret;
+}
+
 int OCCBase::findPlane(double *origin, double *normal, double tolerance = 1e-6)
 {
     try {
@@ -186,30 +214,70 @@ int OCCBase::findPlane(double *origin, double *normal, double tolerance = 1e-6)
     }
     return 0;   
 }
-DVec OCCBase::boundingBox(double tolerance = 1e-12)
-{
-    DVec ret;
-    try {
-        const TopoDS_Shape& shape = this->getShape();
-        Bnd_Box aBox;
-        BRepBndLib::Add(shape, aBox);
-        aBox.SetGap(tolerance);
-        Standard_Real aXmin, aYmin, aZmin;
-        Standard_Real aXmax, aYmax, aZmax;
-        aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-        ret.push_back(aXmin);
-        ret.push_back(aYmin);
-        ret.push_back(aZmin);
-        ret.push_back(aXmax);
-        ret.push_back(aYmax);
-        ret.push_back(aZmax);
-    } catch(Standard_Failure &err) {
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
-        ret.push_back(0.0);
+
+TopAbs_ShapeEnum OCCBase::shapeType() {
+        return this->getShape().ShapeType();
+}
+
+int OCCBase::hashCode() {
+    return this->getShape().HashCode(std::numeric_limits<int>::max());
+}
+
+bool OCCBase::isEqual(OCCBase *other) {
+    if (this->getShape().IsEqual(other->getShape()))
+        return true;
+    return false;
+}
+
+bool OCCBase::isNull() {
+    return this->getShape().IsNull() ? true : false;
+}
+
+bool OCCBase::isValid() {
+    if (this->getShape().IsNull())
+        return false;
+    BRepCheck_Analyzer aChecker(this->getShape());
+    return aChecker.IsValid() ? true : false;
+}
+
+bool OCCBase::fixShape() {
+    if (this->getShape().IsNull())
+        return false;
+    
+    BRepCheck_Analyzer aChecker(this->getShape());
+    if (!aChecker.IsValid()) {
+        ShapeFix_ShapeTolerance aSFT;
+        aSFT.LimitTolerance(this->getShape(),Precision::Confusion(),Precision::Confusion());
+        
+        Handle(ShapeFix_Shape) aSfs = new ShapeFix_Shape(this->getShape());
+        aSfs->SetPrecision(Precision::Confusion());
+        aSfs->Perform();
+        
+        const TopoDS_Shape aShape = aSfs->Shape();
+        aChecker.Init(aShape, Standard_False);
+        
+        if (aChecker.IsValid() && this->canSetShape(aShape)) {
+            this->setShape(aShape);
+        }
+    }
+    return aChecker.IsValid();
+}
+
+int OCCBase::toString(std::string *output) {
+    std::stringstream str;
+    OCCTools::writeBREP(str, this->getShape());
+    output->assign(str.str());
+    return 0;
+}
+
+int OCCBase::fromString(std::string input) {
+    std::stringstream str(input);
+    TopoDS_Shape shape = TopoDS_Shape();
+    
+    int ret = OCCTools::readBREP(str, shape);
+    if (ret == 0) {
+        if (this->canSetShape(shape))
+            this->setShape(shape);
     }
     return ret;
 }

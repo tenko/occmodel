@@ -58,43 +58,14 @@ class OCCBase {
         int mirror(DVec pnt, DVec nor, OCCBase *target);
         DVec boundingBox(double tolerance);
         int findPlane(double *origin, double *normal, double tolerance);
-        TopAbs_ShapeEnum shapeType() {
-                return this->getShape().ShapeType();
-        }
-        int hashCode() {
-            return this->getShape().HashCode(std::numeric_limits<int>::max());
-        }
-        bool isEqual(OCCBase *other) {
-            if (this->getShape().IsEqual(other->getShape()))
-                return true;
-            return false;
-        }
-        bool isNull() {
-            return this->getShape().IsNull() ? true : false;
-        }
-        bool isValid() {
-            if (this->getShape().IsNull())
-                return false;
-            BRepCheck_Analyzer aChecker(this->getShape());
-            return aChecker.IsValid() ? true : false;
-        }
-        int toString(std::string *output) {
-            std::stringstream str;
-            OCCTools::writeBREP(str, this->getShape());
-            output->assign(str.str());
-            return 0;
-        }
-        int fromString(std::string input) {
-            std::stringstream str(input);
-            TopoDS_Shape shape = TopoDS_Shape();
-            
-            int ret = OCCTools::readBREP(str, shape);
-            if (ret == 0) {
-                if (this->canSetShape(shape))
-                    this->setShape(shape);
-            }
-            return ret;
-        }
+        TopAbs_ShapeEnum shapeType();
+        int hashCode();
+        bool isEqual(OCCBase *other);
+        bool isNull();
+        bool isValid();
+        bool fixShape();
+        int toString(std::string *output);
+        int fromString(std::string input);
         virtual bool canSetShape(const TopoDS_Shape&) { return true; }
         virtual const TopoDS_Shape& getShape() { return TopoDS_Shape(); }
         virtual void setShape(TopoDS_Shape shape) { ; }
@@ -156,16 +127,8 @@ class OCCEdge : public OCCBase {
     public:
         TopoDS_Edge edge;
         OCCEdge() { ; }
-        bool isSeam(OCCBase *face) {
-            if (this->getShape().IsNull())
-                return false;
-            return BRep_Tool::IsClosed (this->getEdge(), TopoDS::Face(face->getShape()));
-        }
-        bool isDegenerated() {
-            if (this->getShape().IsNull())
-                return true;
-            return BRep_Tool::Degenerated(this->getEdge());
-        }
+        bool isSeam(OCCBase *face);
+        bool isDegenerated();
         OCCEdge *copy(bool deepCopy);
         int numVertices();
         std::vector<DVec> tesselate(double factor, double angle);

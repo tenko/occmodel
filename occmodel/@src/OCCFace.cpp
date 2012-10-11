@@ -64,6 +64,10 @@ int OCCFace::createFace(std::vector<OCCWire *> wires) {
         }
         this->setShape(MF.Shape());
         
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -90,6 +94,10 @@ int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> p
         }
         aGenerator.Build();
         this->setShape(aGenerator.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
         
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
@@ -153,6 +161,10 @@ int OCCFace::offset(double offset, double tolerance = 1e-6) {
         
         this->setShape(tmp);
         
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -179,6 +191,11 @@ int OCCFace::createPolygonal(std::vector<DVec> points)
         }
         BRepBuilderAPI_MakeFace MF(MP.Wire(), false);
         this->setShape(MF.Face());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -200,11 +217,18 @@ int OCCFace::extrude(OCCBase *shape, DVec p1, DVec p2) {
         if (type != TopAbs_EDGE && type != TopAbs_WIRE) {
             StdFail_NotDone::Raise("expected Edge or Wire");
         }
+        
         gp_Vec direction(gp_Pnt(p1[0], p1[1], p1[2]),
                          gp_Pnt(p2[0], p2[1], p2[2]));
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
+        
         BRepPrimAPI_MakePrism MP(shp, direction, Standard_False);
         this->setShape(MP.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -227,13 +251,20 @@ int OCCFace::revolve(OCCBase *shape, DVec p1, DVec p2, double angle)
         if (type != TopAbs_EDGE && type != TopAbs_WIRE) {
             StdFail_NotDone::Raise("Expected Edge or Wire");
         }
+        
         gp_Dir direction(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
         gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
+        
         BRepPrimAPI_MakeRevol MR(shp, axisOfRevolution, angle, Standard_False);
         if (!MR.IsDone()) {
             StdFail_NotDone::Raise("Failed in revolve operation");;
         }
         this->setShape(MR.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -270,6 +301,11 @@ int OCCFace::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMo
         PS.Build();
         
         this->setShape(PS.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -306,6 +342,11 @@ int OCCFace::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
             StdFail_NotDone::Raise("Failed in loft operation");;
         }
         this->setShape(TS.Shape());
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
@@ -368,6 +409,11 @@ int OCCFace::boolean(OCCSolid *tool, BoolOpType op) {
         if (idx == 0)
             StdFail_NotDone::Raise("no results from boolean operation");;
         this->setShape(shape);
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("Shapes not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();

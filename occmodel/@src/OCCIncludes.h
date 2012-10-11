@@ -96,6 +96,7 @@ using std::iostream;
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <ShapeUpgrade_ShellSewing.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <ShapeFix_Wireframe.hxx>
 #include <BRepMesh.hxx>
