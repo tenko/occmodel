@@ -54,6 +54,26 @@ cdef class Wire(Base):
             
         return ret
     
+    cpdef Wire copyFrom(self, Wire wire, bint deepCopy = False):
+        '''
+        Set self from copy of wire
+        
+        :param wire: Wire to copy
+        :param deepCopy: If true a full copy of the underlying geometry
+                         is done. Defaults to False.
+        '''
+        cdef c_OCCWire *tmp
+        
+        # remove object
+        tmp = <c_OCCWire *>self.thisptr
+        del tmp
+        
+        # set to copy
+        tmp = <c_OCCWire *>wire.thisptr
+        self.thisptr = tmp.copy(deepCopy)
+        
+        return self
+        
     cpdef int numVertices(self):
         '''
         Return number of vertices
@@ -436,15 +456,7 @@ cdef class Wire(Base):
         else:
             raise OCCError('multiple wires created')
         
-        # remove object
-        tmp = <c_OCCWire *>self.thisptr
-        del tmp
-        
-        # set to copy
-        tmp = <c_OCCWire *>wire.thisptr
-        self.thisptr = tmp.copy(False)
-        
-        return self
+        return self.copyFrom(wire, False)
     
     cpdef common(self, arg):
         '''
@@ -472,15 +484,7 @@ cdef class Wire(Base):
         else:
             raise OCCError('multiple wires created')
         
-        # remove object
-        tmp = <c_OCCWire *>self.thisptr
-        del tmp
-        
-        # set to copy
-        tmp = <c_OCCWire *>wire.thisptr
-        self.thisptr = tmp.copy(False)
-        
-        return self
+        return self.copyFrom(wire, False)
         
     cpdef double length(self):
         '''

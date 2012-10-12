@@ -49,6 +49,26 @@ cdef class Solid(Base):
             
         return ret
     
+    cpdef Solid copyFrom(self, Solid solid, bint deepCopy = False):
+        '''
+        Set self from copy of solid
+        
+        :param solid: Solid to copy
+        :param deepCopy: If true a full copy of the underlying geometry
+                         is done. Defaults to False.
+        '''
+        cdef c_OCCSolid *tmp
+        
+        # remove object
+        tmp = <c_OCCSolid *>self.thisptr
+        del tmp
+        
+        # set to copy
+        tmp = <c_OCCSolid *>solid.thisptr
+        self.thisptr = tmp.copy(deepCopy)
+        
+        return self
+        
     cpdef int numSolids(self):
         '''
         Return number of solids

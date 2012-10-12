@@ -66,6 +66,26 @@ cdef class Edge(Base):
             
         return ret
     
+    cpdef Edge copyFrom(self, Edge edge, bint deepCopy = False):
+        '''
+        Set self from copy of edge
+        
+        :param edge: Edge to copy
+        :param deepCopy: If true a full copy of the underlying geometry
+                         is done. Defaults to False.
+        '''
+        cdef c_OCCEdge *tmp
+        
+        # remove object
+        tmp = <c_OCCEdge *>self.thisptr
+        del tmp
+        
+        # set to copy
+        tmp = <c_OCCEdge *>edge.thisptr
+        self.thisptr = tmp.copy(deepCopy)
+        
+        return self
+        
     cpdef int numVertices(self):
         '''
         Return number of vertices
