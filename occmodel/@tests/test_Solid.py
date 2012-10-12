@@ -57,8 +57,18 @@ class test_Solid(unittest.TestCase):
         s2 = Solid().createSphere((2.,0.,0.),1.)
         s3 = Solid().addSolids((s1,s2))
         
+        self.assertEqual(s3.numSolids(), 2)
         eq(s3.area(), 2.*4.*pi, places = 3)
         eq(s3.volume(), 2.*4./3.*pi, places = 3)
+        
+        s1 = Solid().createSphere((0.,0.,0.),.5)
+        self.assertEqual(s1.numSolids(), 1)
+        s2 = Solid().createSphere((2.,0.,0.),.5)
+        s1.addSolids(s2)
+        self.assertEqual(s1.numSolids(), 2)
+        s3 = Solid().createSphere((4.,0.,0.),.5)
+        s1.addSolids(s3)
+        self.assertEqual(s1.numSolids(), 3)
     
     def test_createSphere(self):
         eq = self.assertAlmostEqual

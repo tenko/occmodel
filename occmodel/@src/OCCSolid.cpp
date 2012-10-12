@@ -61,14 +61,18 @@ OCCSolid *OCCSolid::copy(bool deepCopy = false)
 
 int OCCSolid::numSolids()
 {
-    TopTools_IndexedMapOfShape anIndices;
     const TopoDS_Shape& shp = this->getShape();
     if (shp.ShapeType() == TopAbs_SOLID) {
         return 1;
     } else {
         // CompSolid or Compound
-        TopExp::MapShapes(shp, TopAbs_SOLID, anIndices);
-        return anIndices.Extent();
+        TopTools_IndexedMapOfShape compsolids;
+        TopExp::MapShapes(shp, TopAbs_COMPSOLID, compsolids);
+        
+        TopTools_IndexedMapOfShape solids;
+        TopExp::MapShapes(shp, TopAbs_SOLID, solids);
+        
+        return solids.Extent() + compsolids.Extent();
     }
 }
 
