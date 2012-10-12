@@ -43,12 +43,33 @@ int OCCWire::numEdges()
 int OCCWire::createWire(std::vector<OCCEdge *> edges)
 {
     try {
-        BRepBuilderAPI_MakeWire wm;
+        BRepBuilderAPI_MakeWire MW;
         for (unsigned i=0; i<edges.size(); i++) {
             OCCEdge *edge = edges[i];
-            wm.Add(edge->getEdge());
+            MW.Add(edge->getEdge());
         }
-        this->setShape(wm.Wire());
+        
+        BRepBuilderAPI_WireError error = MW.Error();
+        switch (error)
+        {
+            case BRepBuilderAPI_EmptyWire:
+            {
+                StdFail_NotDone::Raise("Wire empty");
+                break;
+            }
+            case BRepBuilderAPI_DisconnectedWire:
+            {
+                StdFail_NotDone::Raise("Disconnected wire");
+                break;
+            }
+            case BRepBuilderAPI_NonManifoldWire :
+            {
+                StdFail_NotDone::Raise("non-manifold wire");
+                break;
+            }
+        }
+        
+        this->setShape(MW.Wire());
         
         // possible fix shape
         if (!this->fixShape())
