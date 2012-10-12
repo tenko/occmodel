@@ -6,15 +6,22 @@ Simplified python wrapper to OpenCASCADE.
 Copyright (C) 2012  Runar Tenfjord
 
 Code based on freecad :
-    
     http://sourceforge.net/projects/free-cad/
     License - GPL v2, several authors (Check site)
 
-Code based on gmsh :
+Truetype code:
+    stb_truetype.h - v0.6c - public domain
+    authored from 2009-2012 by Sean Barrett / RAD Game Tools
     
-    http://geuz.org/gmsh
-    License - GPL v2, several authors (Check site)
+UTF-8 decoder:
+    http://bjoern.hoehrmann.de/utf-8/decoder/dfa/
+    Copyright (c) 2008-2009 Bjoern Hoehrmann <bjoern@hoehrmann.de>
+    
+TTF font DroidSans:
+    http://www.droidfonts.com/
+    License - Apache License, Version 2.0
 
+    
                     GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
 

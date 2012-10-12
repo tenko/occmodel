@@ -1,5 +1,8 @@
 #!/usr/bin/python2
 # -*- coding: utf-8 -*-
+#
+# This file is part of occmodel - See LICENSE.txt
+#
 from math import pi, sin, cos, copysign
 
 from occmodel import *

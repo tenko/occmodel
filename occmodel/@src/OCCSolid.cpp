@@ -1,7 +1,5 @@
-// Gmsh - Copyright (C) 1997-2011 C. Geuzaine, J.-F. Remacle
-//
-// See the LICENSE.txt file for license information. Please report all
-// bugs and problems to <gmsh@geuz.org>.
+// Copyright 2012 by Runar Tenfjord, Tenko as.
+// See LICENSE.txt for details on conditions.
 #include "OCCModel.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION

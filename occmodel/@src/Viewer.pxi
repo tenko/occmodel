@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#
+# This file is part of occmodel - See LICENSE.txt
+#
+
 ESCAPE = 27
 MIN_NEAR_DIST = 0.0001
 MIN_NEAR_OVER_FAR = 0.0001

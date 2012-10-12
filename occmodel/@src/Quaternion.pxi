@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-    
+#
+# This file is part of occmodel - See LICENSE.txt
+#
+
 cdef class Quaternion:
     '''
     Class representing a quaternion usefull for rotation

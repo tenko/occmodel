@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-
+#
+# This file is part of occmodel - See LICENSE.txt
+#
 # GLUT api & typedefs
 from GLUT cimport *
 

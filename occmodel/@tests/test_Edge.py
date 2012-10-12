@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+#
+# This file is part of occmodel - See LICENSE.txt
+#
 import sys
 import unittest
 

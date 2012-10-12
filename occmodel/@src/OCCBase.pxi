@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+#
+# This file is part of occmodel - See LICENSE.txt
+#
 
 JOINTYPE_ARC = 0
 JOINTYPE_TANGENT = 1

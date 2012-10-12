@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #cython: embedsignature=True
+# Copyright 2012 by Runar Tenfjord, Tenko as.
+# See LICENSE.txt for details on conditions.
 from libc.stdlib cimport malloc, free
 from libc.math cimport fmin, fmax, fabs, copysign
 from libc.math cimport M_PI, sqrt, sin, cos, tan

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+#
+# This file is part of occmodel - See LICENSE.txt
+#
 
 cdef inline double fmax3(double a, double b, double c):
     if a < b:
