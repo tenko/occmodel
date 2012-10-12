@@ -135,9 +135,28 @@ OCCMesh *OCCSolid::createMesh(double factor, double angle, bool qualityNormals =
 int OCCSolid::addSolids(std::vector<OCCSolid *> solids)
 {
     try {
+        bool isCompound = false;
+        const TopoDS_Shape& shape = this->getShape();
+        if (!shape.IsNull()) {
+            if (shape.ShapeType() == TopAbs_COMPOUND)
+                isCompound = true;
+        }
+        
         BRep_Builder B;
         TopoDS_Compound C;
         B.MakeCompound(C);
+        
+        // include self
+        if (isCompound) {
+            TopExp_Explorer ex;
+            for (ex.Init(shape, TopAbs_COMPSOLID); ex.More(); ex.Next())
+                B.Add(C, ex.Current());
+            for (ex.Init(shape, TopAbs_SOLID); ex.More(); ex.Next())
+                B.Add(C, ex.Current());
+        } else {
+            if (!shape.IsNull())
+                B.Add(C, shape);
+        }
         for (unsigned i = 0; i < solids.size(); i++) {
             B.Add(C, solids[i]->getShape());
         }
