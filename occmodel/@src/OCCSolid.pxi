@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
-cdef int py_filter_func(void *data, double *near, double *far):
-    return (<object>data)((near[0], near[1], near[2]),
-                          (far[0], far[1], far[2]))
-
 # sweep corner modes
 SWEEP_TRANSFORMED = 0
 SWEEP_RIGHT_CORNER = 1
@@ -275,7 +271,7 @@ cdef class Solid(Base):
             
         return self
     
-    cpdef createText(self, double height, double depth, text, char *fontpath):
+    cpdef createText(self, double height, double depth, text, fontpath = None):
         '''
         Extrude TTF font data to solids
         
@@ -290,7 +286,11 @@ cdef class Solid(Base):
         bytetext = unicode(text).encode('UTF-8','ignore')
         c_str = bytetext
         
-        ret = occ.createText(height, depth, c_str, fontpath)
+        if fontpath is None:
+            ret = occ.createText(height, depth, c_str, NULL)
+        else:
+            ret = occ.createText(height, depth, c_str, fontpath)
+            
         if ret != 0:
             raise OCCError(errorMessage)
             

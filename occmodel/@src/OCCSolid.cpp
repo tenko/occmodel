@@ -8,6 +8,7 @@
 #define STBTT_malloc(x,u)    malloc(x)
 #define STBTT_free(x,u)      free(x)
 #include "stb_truetype.h"
+#include "droidsans_ttf.h"
 
 int OCCSolid::createSolid(std::vector<OCCFace *> faces, double tolerance)
 {
@@ -289,7 +290,7 @@ int OCCSolid::createBox(DVec p1, DVec p2) {
     return 0;
 }
 
-int OCCSolid::createText(double height, double depth, const char *text, const char *fontpath)
+int OCCSolid::createText(double height, double depth, const char *text, const char *fontpath = NULL)
 {
     Handle(TopTools_HSequenceOfShape) wires = new TopTools_HSequenceOfShape;
     Handle(TopTools_HSequenceOfShape) edges = new TopTools_HSequenceOfShape;
@@ -307,24 +308,29 @@ int OCCSolid::createText(double height, double depth, const char *text, const ch
         TopoDS_Compound Compound;
         Builder.MakeCompound(Compound);
         
-        // Read in the font data.
-        fp = fopen(fontpath, "rb");
-        if (!fp) {
-            StdFail_NotDone::Raise("failed to open font");
+        if (!fontpath)
+        {
+            // default font
+            data = &droidsans_ttf[0];
+        } else {
+            // Read in the font data.
+            fp = fopen(fontpath, "rb");
+            if (!fp) {
+                StdFail_NotDone::Raise("failed to open font");
+            }
+            fseek(fp,0,SEEK_END);
+            datasize = (int)ftell(fp);
+            fseek(fp,0,SEEK_SET);
+            
+            data = (unsigned char*)malloc(datasize);
+            if (data == NULL) {
+                StdFail_NotDone::Raise("failed allocate font data");
+            }
+            
+            fread(data, 1, datasize, fp);
+            fclose(fp);
+            fp = 0;
         }
-        fseek(fp,0,SEEK_END);
-        datasize = (int)ftell(fp);
-        fseek(fp,0,SEEK_SET);
-        
-        data = (unsigned char*)malloc(datasize);
-        if (data == NULL) {
-            StdFail_NotDone::Raise("failed allocate font data");
-        }
-        
-        fread(data, 1, datasize, fp);
-        fclose(fp);
-        fp = 0;
-        
         // Init stb_truetype
         if (!stbtt_InitFont(&font, data, 0)) {
             StdFail_NotDone::Raise("failed parse font data");
@@ -492,6 +498,9 @@ int OCCSolid::createText(double height, double depth, const char *text, const ch
             lastcp = codepoint;
         }
         
+        // free data
+        if (fontpath && data) free(data);
+        
         this->setShape(Compound);
         
         // possible fix shape
@@ -499,7 +508,7 @@ int OCCSolid::createText(double height, double depth, const char *text, const ch
             StdFail_NotDone::Raise("Shapes not valid");
         
     } catch(Standard_Failure &err) {
-        if (data) free(data);
+        if (fontpath && data) free(data);
         if (fp) fclose(fp);
         
         Handle_Standard_Failure e = Standard_Failure::Caught();
