@@ -40,6 +40,15 @@ int OCCWire::numEdges()
     return anIndices.Extent();
 }
 
+bool OCCWire::isClosed()
+{
+    TopoDS_Vertex aV1, aV2;
+    TopExp::Vertices(this->getWire(), aV1, aV2);
+    if (!aV1.IsNull() && !aV2.IsNull() && aV1.IsSame(aV2))
+        return true;
+    return false;
+}
+
 int OCCWire::createWire(std::vector<OCCEdge *> edges)
 {
     try {

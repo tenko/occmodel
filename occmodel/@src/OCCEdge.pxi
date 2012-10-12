@@ -51,6 +51,12 @@ cdef class Edge(Base):
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         return occ.isDegenerated()
         
+    cpdef bint isClosed(self):
+        '''
+        Check if edge is closed
+        '''
+        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        return occ.isClosed()
         
     cpdef Edge copy(self, bint deepCopy = False):
         '''

@@ -156,7 +156,16 @@ class test_Edge(unittest.TestCase):
         pnts = ((0.,0.,0.),(0.,2.,0.), (5.,1.5,0.),(1.,0.,0.))
         e2 = Edge().createSpline(points = pnts)
         self.assertAlmostEqual(e1.length(), e2.length())
+    
+    def test_isClosed(self):
+        eq = self.assertEqual
         
+        e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = 1.)
+        eq(e1.isClosed(), True)
+        
+        e1 = Edge().createArc((0.,0.,0.),(1.,0.,1.),(1.,0.,0.))
+        eq(e1.isClosed(), False)
+
 if __name__ == "__main__":
     sys.dont_write_bytecode = True
     unittest.main()

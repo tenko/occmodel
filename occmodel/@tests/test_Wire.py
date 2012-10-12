@@ -124,6 +124,18 @@ class test_Wire(unittest.TestCase):
         w2.chamfer(0.1,(p2,p3,p4))
         
         aeq(w1.length(),  w2.length())
+    
+    def test_isClosed(self):
+        eq = self.assertEqual
+        
+        for val in (True, False):
+            w1 = Wire().createPolygon((
+                (0.,0.,0.),
+                (0.,0.,5.),
+                (5.,0.,5.)),
+                close = val
+            )
+            eq(w1.isClosed(), val)
         
 if __name__ == "__main__":
     sys.dont_write_bytecode = True

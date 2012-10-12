@@ -14,6 +14,15 @@ bool OCCEdge::isDegenerated() {
     return BRep_Tool::Degenerated(this->getEdge());
 }
 
+bool OCCEdge::isClosed()
+{
+    TopoDS_Vertex aV1, aV2;
+    TopExp::Vertices(this->getEdge(), aV1, aV2);
+    if (!aV1.IsNull() && !aV2.IsNull() && aV1.IsSame(aV2))
+        return true;
+    return false;
+}
+
 OCCEdge *OCCEdge::copy(bool deepCopy = false)
 {
     OCCEdge *ret = new OCCEdge();

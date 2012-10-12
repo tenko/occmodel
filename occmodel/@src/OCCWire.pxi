@@ -87,6 +87,13 @@ cdef class Wire(Base):
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
         return occ.numEdges()
+    
+    cpdef bint isClosed(self):
+        '''
+        Check if wire is closed
+        '''
+        cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
+        return occ.isClosed()
         
     cpdef createWire(self, edges):
         '''

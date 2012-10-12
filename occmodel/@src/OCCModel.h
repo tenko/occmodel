@@ -127,6 +127,7 @@ class OCCEdge : public OCCBase {
         OCCEdge() { ; }
         bool isSeam(OCCBase *face);
         bool isDegenerated();
+        bool isClosed();
         OCCEdge *copy(bool deepCopy);
         int numVertices();
         std::vector<DVec> tesselate(double factor, double angle);
@@ -179,6 +180,7 @@ class OCCWire : public OCCBase {
         OCCWire *copy(bool deepCopy);
         int numVertices();
         int numEdges();
+        bool isClosed();
         int createWire(std::vector<OCCEdge *> edges);
         int project(OCCBase *face);
         int offset(double distance, int joinType);
