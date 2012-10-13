@@ -742,6 +742,7 @@ FACE_CREATE_3 = 6
 SOLID_PRIMITIVES = 7
 SOLID_CREATE_1 = 8
 SOLID_CREATE_2 = 9
+SOLID_CREATE_3 = 10
 
 class DemoViewer(GLUTViewer):
     def __init__(self, width, height):
@@ -759,9 +760,10 @@ class DemoViewer(GLUTViewer):
         glutAddMenuEntry("Solid - Primitives", SOLID_PRIMITIVES)
         glutAddMenuEntry("Solid - Create 1", SOLID_CREATE_1)
         glutAddMenuEntry("Solid - Create 2", SOLID_CREATE_2)
+        glutAddMenuEntry("Solid - Create 3", SOLID_CREATE_3)
         glutAttachMenu(GLUT_RIGHT_BUTTON)
         
-        self.OnMenu(SOLID_CREATE_2)
+        self.OnMenu(SOLID_CREATE_1)
         
     def OnMenu(self, value):
         self.Clear()
@@ -1236,6 +1238,42 @@ s9 = Solid().offset(f2, 0.2)
             for w in objects:
                 w.translate((x,y,0))
                 x += 1.5
+        
+        elif value == SOLID_CREATE_3:
+            SRC = \
+"""
+# create solid by sewing together faces
+e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,-1.),radius = .5)
+f1 = Face().createConstrained(e1, ((0.,.0,-.5),))
+
+e2 = Edge().createCircle(center=(0.,0.,1.),normal=(0.,0.,1.),radius = .5)
+f2 = Face().createConstrained(e2, ((0.,.0,1.5),))
+
+f3 = Face().loft((e1,e2))
+
+s1 = Solid().createSolid((f1,f3,f2))
+
+# create solid from TrueType font
+s2 = Solid().createText(1., .25, 'Tenko')
+"""
+            e1 = Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,-1.),radius = .5)
+            f1 = Face().createConstrained(e1, ((0.,.0,-.5),))
+
+            e2 = Edge().createCircle(center=(0.,0.,1.),normal=(0.,0.,1.),radius = .5)
+            f2 = Face().createConstrained(e2, ((0.,.0,1.5),))
+
+            f3 = Face().loft((e1,e2))
+
+            s1 = Solid().createSolid((f1,f3,f2))
+            add(s1)
+            
+            s2 = Solid().createText(1., .25, 'Tenko')
+            add(s2)
+            
+            x,y = 0.,0.
+            for w in objects:
+                w.translate((x,y,0))
+                x += 1.5
                 
         # show source
         print >>sys.stdout, SRC
@@ -1280,8 +1318,8 @@ def viewer(objs, colors = None, bint qualityNormals = False):
         colors = COLORS
         
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
-        # skip non-valid or Null objects.
-        if not obj.isValid() or obj.isNull():
+        # skip Null objects.
+        if obj.isNull():
             print("skipped object: '%s'" % str(obj))
             continue
         

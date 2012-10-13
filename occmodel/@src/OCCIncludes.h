@@ -115,6 +115,7 @@ using std::iostream;
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepLib.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeFix.hxx>
 #include <ShapeFix_FixSmallFace.hxx>

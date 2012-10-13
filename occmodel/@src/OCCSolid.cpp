@@ -10,17 +10,56 @@
 
 int OCCSolid::createSolid(std::vector<OCCFace *> faces, double tolerance)
 {
+    // algorithm from salomegeometry : GEOMImpl_ShapeDriver.cpp
     try {
+        BRep_Builder B;
+        TopoDS_Shape aShape, sh;
+        
+        tolerance = std::max(Precision::Confusion()*10.0, tolerance);
+        
         BRepOffsetAPI_Sewing SW(tolerance);
-        for (unsigned i=0; i<faces.size(); i++) {
+        unsigned i = 0;
+        for (; i<faces.size(); i++) {
             SW.Add(faces[i]->face);
         }
         SW.Perform();
         
-        if (SW.SewedShape().IsNull())
-          return 1;
+        sh = SW.SewedShape();
+        if( sh.ShapeType() == TopAbs_FACE && i == 1 ) {
+            // case for creation of shell from one face - PAL12722 (skl 26.06.2006)
+            TopoDS_Shell ss;
+            B.MakeShell(ss);
+            B.Add(ss,sh);
+            aShape = ss;
+        } else {
+            TopExp_Explorer exp (sh, TopAbs_SHELL);
+            Standard_Integer ish = 0;
+            for (; exp.More(); exp.Next()) {
+                aShape = exp.Current();
+                ish++;
+            }
         
-        this->setShape(SW.SewedShape());
+            if (ish != 1)
+                aShape = SW.SewedShape();
+        }
+        
+        TopoDS_Solid sol;
+        B.MakeSolid(sol);
+        B.Add(sol, aShape);
+        
+        BRepClass3d_SolidClassifier SC (sol);
+        SC.PerformInfinitePoint(Precision::Confusion());
+        if (SC.State() == TopAbs_IN) {
+            B.MakeSolid(sol);
+            B.Add(sol, aShape.Reversed());
+        }
+
+        this->setShape(sol);
+        
+        // possible fix shape
+        if (!this->fixShape())
+            StdFail_NotDone::Raise("solid not valid");
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();

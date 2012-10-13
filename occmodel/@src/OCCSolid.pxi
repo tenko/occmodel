@@ -102,7 +102,7 @@ cdef class Solid(Base):
         ret.thisptr = mesh
         return ret
         
-    cpdef createSolid(self, faces, double tolerance = 1e-6):
+    cpdef createSolid(self, faces, double tolerance = 0.):
         '''
         Create general solid by sewing together faces
         with the given tolerance.
