@@ -49,11 +49,18 @@ int OCCFace::numWires()
 int OCCFace::createFace(std::vector<OCCWire *> wires) {
     try {
         const TopoDS_Wire& outerwire = wires[0]->getWire();
+        
+        if (!wires[0]->isClosed())
+            StdFail_NotDone::Raise("Outer wire not closed");
+        
         BRepBuilderAPI_MakeFace MF(outerwire);
         
         // add optional holes
         for (unsigned i = 1; i < wires.size(); i++) {
             const TopoDS_Wire& wire = wires[i]->getWire();
+            if (!wires[i]->isClosed())
+                StdFail_NotDone::Raise("Outer wire not closed");
+        
             if (wire.Orientation() != outerwire.Orientation()) {
                 MF.Add(TopoDS::Wire(wire.Reversed()));
             } else {
