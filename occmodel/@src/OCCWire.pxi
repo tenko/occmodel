@@ -123,7 +123,7 @@ cdef class Wire(Base):
         max angle or distance factor.
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
-        cdef vector[vector[double]] pnts
+        cdef vector[c_OCCStruct3d] pnts
         cdef size_t i, size
         
         pnts = occ.tesselate(factor, angle)
@@ -132,7 +132,7 @@ cdef class Wire(Base):
         if size < 2:
             raise OCCError('Failed to tesselate wire')
         
-        ret = [(pnts[i][0], pnts[i][1], pnts[i][2]) for i in range(size)]
+        ret = [(pnts[i].x, pnts[i].y, pnts[i].z) for i in range(size)]
         
         return tuple(ret)
     

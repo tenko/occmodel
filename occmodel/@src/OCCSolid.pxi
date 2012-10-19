@@ -163,12 +163,12 @@ cdef class Solid(Base):
             s1 = Solid().createSphere((0.,0.,0.),.5)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[double] cen
+        cdef c_OCCStruct3d cen
         cdef int ret
         
-        cen.push_back(center[0])
-        cen.push_back(center[1])
-        cen.push_back(center[2])
+        cen.x = center[0]
+        cen.y = center[1]
+        cen.z = center[2]
         
         ret = occ.createSphere(cen, radius)
         if ret != 0:
@@ -189,16 +189,16 @@ cdef class Solid(Base):
             s1 = Solid().createCylinder((0.,0.,0.),(0.,0.,1.), .25)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
+        cp1.x = p1[0]
+        cp1.y = p1[1]
+        cp1.z = p1[2]
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        cp2.x = p2[0]
+        cp2.y = p2[1]
+        cp2.z = p2[2]
         
         ret = occ.createCylinder(cp1, cp2, radius)
         if ret != 0:
@@ -220,16 +220,16 @@ cdef class Solid(Base):
             s1 = Solid().createTorus((0.,0.,0.),(0.,0.,.1), .5, .1)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
+        cp1.x = p1[0]
+        cp1.y = p1[1]
+        cp1.z = p1[2]
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        cp2.x = p2[0]
+        cp2.y = p2[1]
+        cp2.z = p2[2]
         
         ret = occ.createTorus(cp1, cp2, ringRadius, radius)
         if ret != 0:
@@ -251,16 +251,16 @@ cdef class Solid(Base):
             s1 = Solid().createCone((0.,0.,0.),(0.,0.,1.), .2, .5)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
+        cp1.x = p1[0]
+        cp1.y = p1[1]
+        cp1.z = p1[2]
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        cp2.x = p2[0]
+        cp2.y = p2[1]
+        cp2.z = p2[2]
         
         ret = occ.createCone(cp1, cp2, radius1, radius2)
         if ret != 0:
@@ -277,16 +277,16 @@ cdef class Solid(Base):
             s1 = Solid().createBox((-.5,-.5,-.5),(.5,.5,.5))
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
+        cp1.x = p1[0]
+        cp1.y = p1[1]
+        cp1.z = p1[2]
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        cp2.x = p2[0]
+        cp2.y = p2[1]
+        cp2.z = p2[2]
         
         ret = occ.createBox(cp1, cp2)
         if ret != 0:
@@ -328,7 +328,7 @@ cdef class Solid(Base):
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Face face
-        cdef vector[double] cnormal
+        cdef c_OCCStruct3d cnormal
         cdef int ret
         
         if isinstance(obj, (Edge,Wire)):
@@ -338,9 +338,9 @@ cdef class Solid(Base):
         else:
             raise OCCError('Expected edge, wire or face')
             
-        cnormal.push_back(normal[0])
-        cnormal.push_back(normal[1])
-        cnormal.push_back(normal[2])
+        cnormal.x = normal[0]
+        cnormal.y = normal[1]
+        cnormal.z = normal[2]
         
         ret = occ.createPrism(<c_OCCFace *>face.thisptr, cnormal, isInfinite)
         if ret != 0:
@@ -378,8 +378,8 @@ cdef class Solid(Base):
         return center of mass of solid.
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[double] cg = occ.centreOfMass()
-        return cg[0],cg[1],cg[2]
+        cdef c_OCCStruct3d cg = occ.centreOfMass()
+        return cg.x,cg.y,cg.z
         
     cpdef extrude(self, obj, p1, p2):
         '''
@@ -399,7 +399,7 @@ cdef class Solid(Base):
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
         cdef Face face
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
         if isinstance(obj, (Edge,Wire)):
@@ -409,13 +409,13 @@ cdef class Solid(Base):
         else:
             raise OCCError('Expected edge, wire or face')
             
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
+        cp1.x = p1[0]
+        cp1.y = p1[1]
+        cp1.z = p1[2]
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        cp2.x = p2[0]
+        cp2.y = p2[1]
+        cp2.z = p2[2]
         
         ret = occ.extrude(<c_OCCFace *>face.thisptr, cp1, cp2)
         if ret != 0:
@@ -438,16 +438,16 @@ cdef class Solid(Base):
             s1 = Solid().revolve(f1, (1.,0.,0.), (1.,1.,0.), pi/2.)
         '''
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
+        cp1.x = p1[0]
+        cp1.y = p1[1]
+        cp1.z = p1[2]
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        cp2.x = p2[0]
+        cp2.y = p2[1]
+        cp2.z = p2[2]
         
         ret = occ.revolve(<c_OCCFace *>face.thisptr, cp1, cp2, angle)
         if ret != 0:
@@ -810,15 +810,15 @@ cdef class Solid(Base):
         '''
         cdef Face ret = Face.__new__(Face, None)
         cdef c_OCCSolid *occ = <c_OCCSolid *>self.thisptr
-        cdef vector[double] cpnt, cnor
+        cdef c_OCCStruct3d cpnt, cnor
         
-        cpnt.push_back(plane.origin.x)
-        cpnt.push_back(plane.origin.y)
-        cpnt.push_back(plane.origin.z)
+        cpnt.x = plane.origin.x
+        cpnt.y = plane.origin.y
+        cpnt.z = plane.origin.z
         
-        cnor.push_back(plane.zaxis.x)
-        cnor.push_back(plane.zaxis.y)
-        cnor.push_back(plane.zaxis.z)
+        cnor.x = plane.zaxis.x
+        cnor.y = plane.zaxis.y
+        cnor.z = plane.zaxis.z
         
         ret.thisptr = occ.section(cpnt, cnor)
         if ret.thisptr == NULL:

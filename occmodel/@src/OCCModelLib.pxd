@@ -18,10 +18,20 @@ cdef extern from "<vector>" namespace "std":
 cdef extern from "OCCModel.h":
     char errorMessage[256]
     
+    cdef struct c_OCCStruct3d "OCCStruct3d":
+        double x
+        double y
+        double z
+    
+    cdef struct c_OCCStruct3I "OCCStruct3I":
+        unsigned int i
+        unsigned int j
+        unsigned int k
+    
     cdef cppclass c_OCCMesh "OCCMesh":
-        vector[vector[double]] vertices
-        vector[vector[double]] normals
-        vector[vector[int]] triangles
+        vector[c_OCCStruct3d] vertices
+        vector[c_OCCStruct3d] normals
+        vector[c_OCCStruct3I] triangles
         c_OCCMesh()
     
     cdef enum c_BoolOpType "BoolOpType":
@@ -46,12 +56,12 @@ cdef extern from "OCCModel.h":
         bint isNull()
         bint isValid()
         int transform(vector[double] mat, c_OCCBase *target)
-        int translate(vector[double] delta, c_OCCBase *target)
-        int rotate(double angle, vector[double] p1, vector[double] p2, c_OCCBase *target)
-        int scale(vector[double] pnt, double scale, c_OCCBase *target)
-        int mirror(vector[double] pnt, vector[double] nor, c_OCCBase *target)
+        int translate(c_OCCStruct3d delta, c_OCCBase *target)
+        int rotate(double angle, c_OCCStruct3d p1, c_OCCStruct3d p2, c_OCCBase *target)
+        int scale(c_OCCStruct3d pnt, double scale, c_OCCBase *target)
+        int mirror(c_OCCStruct3d pnt, c_OCCStruct3d nor, c_OCCBase *target)
         vector[double] boundingBox(double tolerance)
-        int findPlane(double *origin, double *normal, double tolerance)
+        int findPlane(c_OCCStruct3d *origin, c_OCCStruct3d *normal, double tolerance)
         int toString(string *output)
         int fromString(string input)
         
@@ -73,16 +83,16 @@ cdef extern from "OCCModel.h":
         bint isClosed()
         c_OCCEdge *copy(bint deepCopy)
         int numVertices()
-        vector[vector[double]] tesselate(double factor, double angle)
+        vector[c_OCCStruct3d] tesselate(double factor, double angle)
         int createLine(c_OCCVertex *v1, c_OCCVertex *v2)
-        int createArc(c_OCCVertex *start, c_OCCVertex *end, vector[double] center)
-        int createArc3P(c_OCCVertex *start, c_OCCVertex *end, vector[double] pnt)
-        int createCircle(vector[double] center, vector[double] normal, double radius)
-        int createEllipse(vector[double] pnt, vector[double] nor, double rMajor, double rMinor)
+        int createArc(c_OCCVertex *start, c_OCCVertex *end, c_OCCStruct3d center)
+        int createArc3P(c_OCCVertex *start, c_OCCVertex *end, c_OCCStruct3d pnt)
+        int createCircle(c_OCCStruct3d center, c_OCCStruct3d normal, double radius)
+        int createEllipse(c_OCCStruct3d pnt, c_OCCStruct3d nor, double rMajor, double rMinor)
         int createHelix(double pitch, double height, double radius, double angle, bint leftHanded)
-        int createBezier(c_OCCVertex *start, c_OCCVertex *end, vector[vector[double]] points)
-        int createSpline(c_OCCVertex *start, c_OCCVertex *end, vector[vector[double]] points, double tolerance)
-        int createNURBS(c_OCCVertex *start, c_OCCVertex *end, vector[vector[double]] points,
+        int createBezier(c_OCCVertex *start, c_OCCVertex *end, vector[c_OCCStruct3d] points)
+        int createSpline(c_OCCVertex *start, c_OCCVertex *end, vector[c_OCCStruct3d] points, double tolerance)
+        int createNURBS(c_OCCVertex *start, c_OCCVertex *end, vector[c_OCCStruct3d] points,
                         vector[double] knots, vector[double] weights, vector[int] mult)
         double length()
     
@@ -97,7 +107,7 @@ cdef extern from "OCCModel.h":
         int numVertices()
         int numEdges()
         bint isClosed()
-        vector[vector[double]] tesselate(double factor, double angle)
+        vector[c_OCCStruct3d] tesselate(double factor, double angle)
         int createWire(vector[c_OCCEdge *] edges)
         int project(c_OCCBase *face)
         int offset(double distance, int joinType)
@@ -116,14 +126,14 @@ cdef extern from "OCCModel.h":
         int numWires()
         int numFaces()
         int createFace(vector[c_OCCWire *] wires)
-        int createConstrained(vector[c_OCCEdge *] edges, vector[vector[double]] points)
+        int createConstrained(vector[c_OCCEdge *] edges, vector[c_OCCStruct3d] points)
         double area()
         vector[double] inertia()
-        vector[double] centreOfMass()
+        c_OCCStruct3d centreOfMass()
         int offset(double offset, double tolerance)
-        int createPolygonal(vector[vector[double]] points)
-        int extrude(c_OCCBase *shape, vector[double] p1, vector[double] p2)
-        int revolve(c_OCCBase *shape, vector[double] p1, vector[double] p2, double angle)
+        int createPolygonal(vector[c_OCCStruct3d] points)
+        int extrude(c_OCCBase *shape, c_OCCStruct3d p1, c_OCCStruct3d p2)
+        int revolve(c_OCCBase *shape, c_OCCStruct3d p1, c_OCCStruct3d p2, double angle)
         int sweep(c_OCCWire *spine, vector[c_OCCBase *] profiles, int cornerMode)
         int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
         int boolean(c_OCCSolid *tool, c_BoolOpType op)
@@ -143,18 +153,18 @@ cdef extern from "OCCModel.h":
         double area()
         double volume()
         vector[double] inertia()
-        vector[double] centreOfMass()
+        c_OCCStruct3d centreOfMass()
         c_OCCMesh *createMesh(double factor, double angle, bint qualityNormals)
         int addSolids(vector[c_OCCSolid *] solids)
-        int createSphere(vector[double] center, double radius)
-        int createCylinder(vector[double] p1, vector[double] p2, double radius)
-        int createTorus(vector[double] p1, vector[double] p2, double ringRadius, double radius)
-        int createCone(vector[double] p1, vector[double] p2, double radius1, double radius2)
-        int createBox(vector[double] p1, vector[double] p2)
-        int createPrism(c_OCCFace *face, vector[double] normal, bint isInfinite)
+        int createSphere(c_OCCStruct3d center, double radius)
+        int createCylinder(c_OCCStruct3d p1, c_OCCStruct3d p2, double radius)
+        int createTorus(c_OCCStruct3d p1, c_OCCStruct3d p2, double ringRadius, double radius)
+        int createCone(c_OCCStruct3d p1, c_OCCStruct3d p2, double radius1, double radius2)
+        int createBox(c_OCCStruct3d p1, c_OCCStruct3d p2)
+        int createPrism(c_OCCFace *face, c_OCCStruct3d normal, bint isInfinite)
         int createText(double height, double depth, char *text, char *fontpath)
-        int extrude(c_OCCFace *face, vector[double] p1, vector[double] p2)
-        int revolve(c_OCCFace *face, vector[double] p1, vector[double] p2, double angle)
+        int extrude(c_OCCFace *face, c_OCCStruct3d p1, c_OCCStruct3d p2)
+        int revolve(c_OCCFace *face, c_OCCStruct3d p1, c_OCCStruct3d p2, double angle)
         int loft(vector[c_OCCBase *] profiles, bint ruled, double tolerance)
         int sweep(c_OCCWire *spine, vector[c_OCCBase *] profiles, int cornerMode)
         int pipe(c_OCCFace *face, c_OCCWire *wire)
@@ -163,7 +173,7 @@ cdef extern from "OCCModel.h":
         int chamfer(vector[c_OCCEdge *] edges, vector[double] distances)
         int shell(vector[c_OCCFace *] faces, double offset, double tolerance)
         int offset(c_OCCFace *face, double offset, double tolerance)
-        c_OCCFace *section(vector[double] pnt, vector[double] nor)        
+        c_OCCFace *section(c_OCCStruct3d pnt, c_OCCStruct3d nor)        
     
     cdef cppclass c_OCCSolidIterator "OCCSolidIterator":
         c_OCCSolidIterator(c_OCCBase *arg)

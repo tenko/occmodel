@@ -217,10 +217,10 @@ int OCCSolid::addSolids(std::vector<OCCSolid *> solids)
     return 0;
 }
 
-int OCCSolid::createSphere(DVec center, double radius)
+int OCCSolid::createSphere(OCCStruct3d center, double radius)
 {
     try {
-        gp_Pnt aP(center[0], center[1], center[2]);
+        gp_Pnt aP(center.x, center.y, center.z);
         
         if (radius <= Precision::Confusion()) {
             StdFail_NotDone::Raise("radius to small");
@@ -240,19 +240,19 @@ int OCCSolid::createSphere(DVec center, double radius)
     return 0;
 }
 
-int OCCSolid::createCylinder(DVec p1, DVec p2, double radius)
+int OCCSolid::createCylinder(OCCStruct3d p1, OCCStruct3d p2, double radius)
 {
     try {
-        const double dx = p2[0] - p1[0];
-        const double dy = p2[1] - p1[1];
-        const double dz = p2[2] - p1[2];
+        const double dx = p2.x - p1.x;
+        const double dy = p2.y - p1.y;
+        const double dz = p2.z - p1.z;
         const double H = sqrt(dx*dx + dy*dy + dz*dz);
         
         if (radius <= Precision::Confusion()) {
             StdFail_NotDone::Raise("radius to small");
         }
         
-        gp_Pnt aP(p1[0], p1[1], p1[2]);
+        gp_Pnt aP(p1.x, p1.y, p1.z);
         gp_Vec aV(dx / H, dy / H, dz / H);
         gp_Ax2 anAxes(aP, aV);
         BRepPrimAPI_MakeCylinder MC(anAxes, radius, H);
@@ -271,13 +271,13 @@ int OCCSolid::createCylinder(DVec p1, DVec p2, double radius)
     return 0;
 }
 
-int OCCSolid::createTorus(DVec p1, DVec p2, double ringRadius, double radius) {
+int OCCSolid::createTorus(OCCStruct3d p1, OCCStruct3d p2, double ringRadius, double radius) {
     try {
-        const double dx = p2[0] - p1[0];
-        const double dy = p2[1] - p1[1];
-        const double dz = p2[2] - p1[2];
+        const double dx = p2.x - p1.x;
+        const double dy = p2.y - p1.y;
+        const double dz = p2.z - p1.z;
         const double H = sqrt(dx*dx + dy*dy + dz*dz);
-        gp_Pnt aP(p1[0], p1[1], p1[2]);
+        gp_Pnt aP(p1.x, p1.y, p1.z);
         gp_Vec aV(dx / H, dy / H, dz / H);
         gp_Ax2 anAxes(aP, aV);
         
@@ -305,13 +305,13 @@ int OCCSolid::createTorus(DVec p1, DVec p2, double ringRadius, double radius) {
     return 0;
 }
 
-int OCCSolid::createCone(DVec p1, DVec p2, double radius1, double radius2) {
+int OCCSolid::createCone(OCCStruct3d p1, OCCStruct3d p2, double radius1, double radius2) {
     try {
-        const double dx = p2[0] - p1[0];
-        const double dy = p2[1] - p1[1];
-        const double dz = p2[2] - p1[2];
+        const double dx = p2.x - p1.x;
+        const double dy = p2.y - p1.y;
+        const double dz = p2.z - p1.z;
         const double H = sqrt(dx*dx + dy*dy + dz*dz);
-        gp_Pnt aP(p1[0], p1[1], p1[2]);
+        gp_Pnt aP(p1.x, p1.y, p1.z);
         gp_Vec aV(dx / H, dy / H, dz / H);
         gp_Ax2 anAxes(aP, aV);
         BRepPrimAPI_MakeCone MC(anAxes, radius1, radius2, H);
@@ -330,10 +330,10 @@ int OCCSolid::createCone(DVec p1, DVec p2, double radius1, double radius2) {
     return 0;
 }
 
-int OCCSolid::createBox(DVec p1, DVec p2) {
+int OCCSolid::createBox(OCCStruct3d p1, OCCStruct3d p2) {
     try {
-        gp_Pnt aP1(p1[0], p1[1], p1[2]);
-        gp_Pnt aP2(p2[0], p2[1], p2[2]);
+        gp_Pnt aP1(p1.x, p1.y, p1.z);
+        gp_Pnt aP2(p2.x, p2.y, p2.z);
         BRepPrimAPI_MakeBox MB(aP1, aP2);
         MB.Build();
         this->setShape(MB.Shape());
@@ -583,9 +583,9 @@ int OCCSolid::createText(double height, double depth, const char *text, const ch
     return 0;
 }
 
-int OCCSolid::createPrism(OCCFace *face, DVec normal, bool isInfinite) {
+int OCCSolid::createPrism(OCCFace *face, OCCStruct3d normal, bool isInfinite) {
     try {
-        gp_Dir direction(normal[0], normal[1], normal[2]);
+        gp_Dir direction(normal.x, normal.y, normal.z);
         
         Standard_Boolean inf = Standard_True;
         if (!isInfinite) inf = Standard_False;
@@ -631,23 +631,23 @@ DVec OCCSolid::inertia() {
     return ret;
 }
 
-DVec OCCSolid::centreOfMass() {
-    DVec ret;
+OCCStruct3d OCCSolid::centreOfMass() {
+    OCCStruct3d ret;
     GProp_GProps prop;
     BRepGProp::VolumeProperties(this->getSolid(), prop);
     gp_Pnt cg = prop.CentreOfMass();
-    ret.push_back(cg.X());
-    ret.push_back(cg.Y());
-    ret.push_back(cg.Z());
+    ret.x = cg.X();
+    ret.y = cg.Y();
+    ret.z = cg.Z();
     return ret;
 }
 
-int OCCSolid::extrude(OCCFace *face, DVec p1, DVec p2)
+int OCCSolid::extrude(OCCFace *face, OCCStruct3d p1, OCCStruct3d p2)
 {
     try {
-        gp_Vec direction(gp_Pnt(p1[0], p1[1], p1[2]),
-                         gp_Pnt(p2[0], p2[1], p2[2]));
-        gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
+        gp_Vec direction(gp_Pnt(p1.x, p1.y, p1.z),
+                         gp_Pnt(p2.x, p2.y, p2.z));
+        gp_Ax1 axisOfRevolution(gp_Pnt(p1.x, p1.y, p1.z), direction);
 
         BRepPrimAPI_MakePrism MP(face->getShape(), direction,
                                  Standard_False);
@@ -671,11 +671,11 @@ int OCCSolid::extrude(OCCFace *face, DVec p1, DVec p2)
     return 0;
 }
 
-int OCCSolid::revolve(OCCFace *face, DVec p1, DVec p2, double angle)
+int OCCSolid::revolve(OCCFace *face, OCCStruct3d p1, OCCStruct3d p2, double angle)
 {
     try {
-        gp_Dir direction(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
-        gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
+        gp_Dir direction(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+        gp_Ax1 axisOfRevolution(gp_Pnt(p1.x, p1.y, p1.z), direction);
         BRepPrimAPI_MakeRevol MR(face->getShape(), axisOfRevolution, angle, Standard_False);
         this->setShape(MR.Shape());
         
@@ -1060,14 +1060,14 @@ int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
 // FIXME!: Return vector of faces
 // See FreeCad/CrossSection.cpp
 //
-OCCFace *OCCSolid::section(DVec pnt, DVec nor)
+OCCFace *OCCSolid::section(OCCStruct3d pnt, OCCStruct3d nor)
 {
     Handle(TopTools_HSequenceOfShape) wires = new TopTools_HSequenceOfShape;
     Handle(TopTools_HSequenceOfShape) edges = new TopTools_HSequenceOfShape;
     TopExp_Explorer ex;
     OCCFace *ret = new OCCFace();
     try {
-        gp_Pln pln(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
+        gp_Pln pln(gp_Pnt(pnt.x,pnt.y,pnt.z), gp_Dir(nor.x,nor.y,nor.z));
         
         BRepAlgoAPI_Section mkSection(getShape(), pln);
         if (!mkSection.IsDone())

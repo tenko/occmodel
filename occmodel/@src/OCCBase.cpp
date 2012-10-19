@@ -43,7 +43,7 @@ int OCCBase::transform(DVec mat, OCCBase *target)
     return 0;
 }
 
-int OCCBase::translate(DVec delta, OCCBase *target)
+int OCCBase::translate(OCCStruct3d delta, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -52,7 +52,7 @@ int OCCBase::translate(DVec delta, OCCBase *target)
             StdFail_NotDone::Raise("Null shape");
         
         gp_Trsf trans;
-        trans.SetTranslation(gp_Pnt(0,0,0), gp_Pnt(delta[0],delta[1],delta[2]));
+        trans.SetTranslation(gp_Pnt(0,0,0), gp_Pnt(delta.x,delta.y,delta.z));
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_True);
         aTrans.Build();
         aTrans.Check();
@@ -70,7 +70,7 @@ int OCCBase::translate(DVec delta, OCCBase *target)
     return 0;
 }
 
-int OCCBase::rotate( double angle, DVec p1, DVec p2, OCCBase *target)
+int OCCBase::rotate(double angle, OCCStruct3d p1, OCCStruct3d p2, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -79,8 +79,8 @@ int OCCBase::rotate( double angle, DVec p1, DVec p2, OCCBase *target)
             StdFail_NotDone::Raise("Null shape");
         
         gp_Trsf trans;
-        gp_Vec dir(gp_Pnt(p1[0], p1[1], p1[2]), gp_Pnt(p2[0], p2[1], p2[2]));
-        gp_Ax1 axis(gp_Pnt(p1[0], p1[1], p1[2]), dir);
+        gp_Vec dir(gp_Pnt(p1.x, p1.y, p1.z), gp_Pnt(p2.x, p2.y, p2.z));
+        gp_Ax1 axis(gp_Pnt(p1.x, p1.y, p1.z), dir);
         trans.SetRotation(axis, angle);
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_True);
         aTrans.Build();
@@ -99,7 +99,7 @@ int OCCBase::rotate( double angle, DVec p1, DVec p2, OCCBase *target)
     return 0;
 }
 
-int OCCBase::scale(DVec pnt, double scale, OCCBase *target)
+int OCCBase::scale(OCCStruct3d pnt, double scale, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -108,7 +108,7 @@ int OCCBase::scale(DVec pnt, double scale, OCCBase *target)
             StdFail_NotDone::Raise("Null shape");
         
         gp_Trsf trans;
-        trans.SetScale(gp_Pnt(pnt[0],pnt[1],pnt[2]), scale);
+        trans.SetScale(gp_Pnt(pnt.x,pnt.y,pnt.z), scale);
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_True);
         aTrans.Build();
         aTrans.Check();
@@ -126,7 +126,7 @@ int OCCBase::scale(DVec pnt, double scale, OCCBase *target)
     return 0;
 }
 
-int OCCBase::mirror(DVec pnt, DVec nor, OCCBase *target)
+int OCCBase::mirror(OCCStruct3d pnt, OCCStruct3d nor, OCCBase *target)
 {
     try {
         TopoDS_Shape shape = this->getShape();
@@ -134,7 +134,7 @@ int OCCBase::mirror(DVec pnt, DVec nor, OCCBase *target)
         if (shape.IsNull())
             StdFail_NotDone::Raise("Null shape");
         
-        gp_Ax2 ax2(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
+        gp_Ax2 ax2(gp_Pnt(pnt.x,pnt.y,pnt.z), gp_Dir(nor.x,nor.y,nor.z));
         gp_Trsf trans;
         trans.SetMirror(ax2);
         BRepBuilderAPI_Transform aTrans(shape, trans, Standard_False);
@@ -180,7 +180,7 @@ DVec OCCBase::boundingBox(double tolerance = 1e-12)
     return ret;
 }
 
-int OCCBase::findPlane(double *origin, double *normal, double tolerance = 1e-6)
+int OCCBase::findPlane(OCCStruct3d *origin, OCCStruct3d *normal, double tolerance = 1e-6)
 {
     try {
         const TopoDS_Shape& shape = this->getShape();
@@ -191,14 +191,14 @@ int OCCBase::findPlane(double *origin, double *normal, double tolerance = 1e-6)
         const gp_Ax1 axis = plane->Axis();
         
         const gp_Pnt loc = axis.Location();
-        origin[0] = loc.X();
-        origin[1] = loc.Y();
-        origin[2] = loc.Z();
+        origin->x = loc.X();
+        origin->y = loc.Y();
+        origin->z = loc.Z();
         
         const gp_Dir dir = axis.Direction();
-        normal[0] = dir.X();
-        normal[1] = dir.Y();
-        normal[2] = dir.Z();
+        normal->x = dir.X();
+        normal->y = dir.Y();
+        normal->z = dir.Z();
         
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();

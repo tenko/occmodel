@@ -86,7 +86,7 @@ int OCCFace::createFace(std::vector<OCCWire *> wires) {
     return 0;
 }
 
-int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> points) {
+int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<OCCStruct3d> points) {
     try {
         BRepOffsetAPI_MakeFilling aGenerator;
         for (unsigned i = 0; i < edges.size(); i++) {
@@ -94,7 +94,7 @@ int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> p
             aGenerator.Add(edge->edge, GeomAbs_C0);
         }
         for (unsigned i = 0; i < points.size(); i++) {
-            gp_Pnt aPnt(points[i][0], points[i][1], points[i][2]);
+            gp_Pnt aPnt(points[i].x, points[i].y, points[i].z);
             aGenerator.Add(aPnt);
         }
         aGenerator.Build();
@@ -137,14 +137,14 @@ DVec OCCFace::inertia() {
     return ret;
 }
 
-DVec OCCFace::centreOfMass() {
-    DVec ret;
+OCCStruct3d OCCFace::centreOfMass() {
+    OCCStruct3d ret;
     GProp_GProps prop;
     BRepGProp::SurfaceProperties(this->getShape(), prop);
     gp_Pnt cg = prop.CentreOfMass();
-    ret.push_back(cg.X());
-    ret.push_back(cg.Y());
-    ret.push_back(cg.Z());
+    ret.x = cg.X();
+    ret.y = cg.Y();
+    ret.z = cg.Z();
     return ret;
 }
 
@@ -183,12 +183,12 @@ int OCCFace::offset(double offset, double tolerance = 1e-6) {
     return 0;
 }
 
-int OCCFace::createPolygonal(std::vector<DVec> points)
+int OCCFace::createPolygonal(std::vector<OCCStruct3d> points)
 {
     try {
         BRepBuilderAPI_MakePolygon MP;
         for (unsigned i=0; i<points.size(); i++) {
-            MP.Add(gp_Pnt(points[i][0], points[i][1], points[i][2]));
+            MP.Add(gp_Pnt(points[i].x, points[i].y, points[i].z));
         }
         MP.Close();
         if (!MP.IsDone()) {
@@ -214,7 +214,7 @@ int OCCFace::createPolygonal(std::vector<DVec> points)
     return 0;
 }
 
-int OCCFace::extrude(OCCBase *shape, DVec p1, DVec p2) {
+int OCCFace::extrude(OCCBase *shape, OCCStruct3d p1, OCCStruct3d p2) {
     try {
         const TopoDS_Shape& shp = shape->getShape();
         // Only accept Edge or Wire
@@ -223,9 +223,9 @@ int OCCFace::extrude(OCCBase *shape, DVec p1, DVec p2) {
             StdFail_NotDone::Raise("expected Edge or Wire");
         }
         
-        gp_Vec direction(gp_Pnt(p1[0], p1[1], p1[2]),
-                         gp_Pnt(p2[0], p2[1], p2[2]));
-        gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
+        gp_Vec direction(gp_Pnt(p1.x, p1.y, p1.z),
+                         gp_Pnt(p2.x, p2.y, p2.z));
+        gp_Ax1 axisOfRevolution(gp_Pnt(p1.x, p1.y, p1.z), direction);
         
         BRepPrimAPI_MakePrism MP(shp, direction, Standard_False);
         this->setShape(MP.Shape());
@@ -247,7 +247,7 @@ int OCCFace::extrude(OCCBase *shape, DVec p1, DVec p2) {
     return 0;
 }
 
-int OCCFace::revolve(OCCBase *shape, DVec p1, DVec p2, double angle)
+int OCCFace::revolve(OCCBase *shape, OCCStruct3d p1, OCCStruct3d p2, double angle)
 {
     try {
         const TopoDS_Shape& shp = shape->getShape();
@@ -257,8 +257,8 @@ int OCCFace::revolve(OCCBase *shape, DVec p1, DVec p2, double angle)
             StdFail_NotDone::Raise("Expected Edge or Wire");
         }
         
-        gp_Dir direction(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
-        gp_Ax1 axisOfRevolution(gp_Pnt(p1[0], p1[1], p1[2]), direction);
+        gp_Dir direction(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+        gp_Ax1 axisOfRevolution(gp_Pnt(p1.x, p1.y, p1.z), direction);
         
         BRepPrimAPI_MakeRevol MR(shp, axisOfRevolution, angle, Standard_False);
         if (!MR.IsDone()) {

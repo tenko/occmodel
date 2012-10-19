@@ -86,24 +86,24 @@ cdef class Mesh:
         Return vertex at given index
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef vector[double] v = occ.vertices[index]
-        return v[0], v[1], v[2]
+        cdef c_OCCStruct3d v = occ.vertices[index]
+        return v.x, v.y, v.z
     
     cpdef normal(self, size_t index):
         '''
         Return normal at given vertex index
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef vector[double] n = occ.normals[index]
-        return n[0], n[1], n[2]
+        cdef c_OCCStruct3d n = occ.normals[index]
+        return n.x, n.y, n.z
         
     cpdef triangle(self, size_t index):
         '''
         Return triangle indices at given index
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef vector[int] t = occ.triangles[index]
-        return t[0], t[1], t[2]
+        cdef c_OCCStruct3I t = occ.triangles[index]
+        return t.i, t.j, t.k
     
     cpdef GLVertices(self):
         '''
@@ -111,12 +111,12 @@ cdef class Mesh:
         all vertices in mesh.
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef vector[double] v
+        cdef c_OCCStruct3d v
         cdef size_t i
         
         for i in range(occ.vertices.size()):
             v = occ.vertices[i]
-            glVertex3d(v[0], v[1], v[2])
+            glVertex3d(v.x, v.y, v.z)
     
     cpdef GLTriangles(self):
         '''
@@ -124,30 +124,30 @@ cdef class Mesh:
         'glNormal3d' to all triangles in mesh.
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef vector[int] triangle
-        cdef vector[double] a, b, c
-        cdef vector[double] na, nb, nc
+        cdef c_OCCStruct3I triangle
+        cdef c_OCCStruct3d a, b, c
+        cdef c_OCCStruct3d na, nb, nc
         cdef double nx, ny, nz, ll
         cdef size_t i
         
         for i in range(occ.triangles.size()):
             triangle = occ.triangles[i]
-            a = occ.vertices[triangle[0]]
-            b = occ.vertices[triangle[1]]
-            c = occ.vertices[triangle[2]]
+            a = occ.vertices[triangle.i]
+            b = occ.vertices[triangle.j]
+            c = occ.vertices[triangle.k]
             
-            na = occ.normals[triangle[0]]
-            nb = occ.normals[triangle[1]]
-            nc = occ.normals[triangle[2]]
+            na = occ.normals[triangle.i]
+            nb = occ.normals[triangle.j]
+            nc = occ.normals[triangle.k]
             
-            glNormal3d(na[0],na[1],na[2])
-            glVertex3d(a[0],a[1],a[2])
+            glNormal3d(na.x,na.y,na.z)
+            glVertex3d(a.x,a.y,a.z)
             
-            glNormal3d(nb[0],nb[1],nb[2])
-            glVertex3d(b[0],b[1],b[2])
+            glNormal3d(nb.x,nb.y,nb.z)
+            glVertex3d(b.x,b.y,b.z)
             
-            glNormal3d(nc[0],nc[1],nc[2])
-            glVertex3d(c[0],c[1],c[2])        
+            glNormal3d(nc.x,nc.y,nc.z)
+            glVertex3d(c.x,c.y,c.z)        
             
 include "OCCTools.pxi"
 include "OCCBase.pxi"

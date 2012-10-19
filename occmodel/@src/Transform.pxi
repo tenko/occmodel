@@ -10,6 +10,11 @@ cdef class Row:
     cdef double *m
     cdef object parent
     
+    # buffer interface
+    cdef Py_ssize_t __shape[1]
+    cdef Py_ssize_t __strides[1]
+    cdef __cythonbufferdefaults__ = {"ndim": 1, "mode": "c"}
+    
     def __init__(self, parent):
         """We must keep reference to parent Matrix to
            avoid memory to be reclaimed by system.
@@ -60,12 +65,36 @@ cdef class Row:
         """We have 4 rows/cols"""
         return 4
     
+    def __getbuffer__(self, Py_buffer* buffer, int flags):
+        self.__shape[0] = 4
+        self.__strides[0] = sizeof(double)
+        
+        buffer.buf = <void *>self.m
+        buffer.obj = self
+        buffer.len =  4*sizeof(double)
+        buffer.readonly = 0
+        buffer.format = <char*>"d"
+        buffer.ndim = 1
+        buffer.shape = <Py_ssize_t *>&self.__shape[0]
+        buffer.strides = <Py_ssize_t *>&self.__strides[0]
+        buffer.suboffsets = NULL
+        buffer.itemsize = sizeof(double)
+        buffer.internal = NULL
+        
+    def __releasebuffer__(self, Py_buffer* buffer):
+        pass
+    
 cdef class Transform:
     """
     Matrix of 4x4 size. Typical 3D
     transformation matrix.
     """
     cdef double m[4][4]
+    
+    # buffer interface
+    cdef Py_ssize_t __shape[2]
+    cdef Py_ssize_t __strides[2]
+    cdef __cythonbufferdefaults__ = {"ndim": 2, "mode": "c"}
     
     def __init__(self, *args):
         """
@@ -129,6 +158,24 @@ cdef class Transform:
         """We have 4 rows"""
         return 4
     
+    def __getbuffer__(self, Py_buffer* buffer, int flags):
+        self.__shape[0] = 4
+        self.__shape[1] = 4
+        self.__strides[0] = 4*sizeof(double)
+        self.__strides[1] = sizeof(double)
+        
+        buffer.buf = self.m
+        buffer.obj = self
+        buffer.len = 16*sizeof(double)
+        buffer.readonly = 0
+        buffer.format = <char*>"d"
+        buffer.ndim = 2
+        buffer.shape = <Py_ssize_t *>&self.__shape[0]
+        buffer.strides = <Py_ssize_t *>&self.__strides[0]
+        buffer.suboffsets = NULL
+        buffer.itemsize = sizeof(double)
+        buffer.internal = NULL
+        
     def __abs__(self):
         """Return absolute value of matrix: abs(m)
         """

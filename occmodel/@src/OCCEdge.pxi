@@ -105,7 +105,7 @@ cdef class Edge(Base):
         max angle or distance factor
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[vector[double]] pnts
+        cdef vector[c_OCCStruct3d] pnts
         cdef size_t i, size
         
         if occ.numVertices() == 0:
@@ -117,7 +117,7 @@ cdef class Edge(Base):
         if size < 2:
             raise OCCError('Failed to tesselate edge')
         
-        ret = [(pnts[i][0], pnts[i][1], pnts[i][2]) for i in range(size)]
+        ret = [(pnts[i].x, pnts[i].y, pnts[i].z) for i in range(size)]
         
         return tuple(ret)
         
@@ -161,7 +161,7 @@ cdef class Edge(Base):
         '''
         cdef Vertex vstart, vend
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] cpnt
+        cdef c_OCCStruct3d cpnt
         cdef int ret
         
         if isinstance(start, Vertex):
@@ -174,9 +174,9 @@ cdef class Edge(Base):
         else:
             vend = Vertex(*end)
             
-        cpnt.push_back(center[0])
-        cpnt.push_back(center[1])
-        cpnt.push_back(center[2])
+        cpnt.x = center[0]
+        cpnt.y = center[1]
+        cpnt.z = center[2]
         
         ret = occ.createArc(<c_OCCVertex *>vstart.thisptr,
                             <c_OCCVertex *>vend.thisptr, cpnt)
@@ -197,7 +197,7 @@ cdef class Edge(Base):
         '''
         cdef Vertex vstart, vend
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] cpnt
+        cdef c_OCCStruct3d cpnt
         cdef int ret
         
         if isinstance(start, Vertex):
@@ -210,9 +210,9 @@ cdef class Edge(Base):
         else:
             vend = Vertex(*end)
             
-        cpnt.push_back(pnt[0])
-        cpnt.push_back(pnt[1])
-        cpnt.push_back(pnt[2])
+        cpnt.x = pnt[0]
+        cpnt.y = pnt[1]
+        cpnt.z = pnt[2]
         
         ret = occ.createArc3P(<c_OCCVertex *>vstart.thisptr,
                               <c_OCCVertex *>vend.thisptr, cpnt)
@@ -231,16 +231,16 @@ cdef class Edge(Base):
             e1 = Edge().createCircle(center = (0.,.0,0.), normal = (0.,0.,1.), radius = 1.)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] ccen, cnor
+        cdef c_OCCStruct3d ccen, cnor
         cdef int ret
         
-        ccen.push_back(center[0])
-        ccen.push_back(center[1])
-        ccen.push_back(center[2])
+        ccen.x = center[0]
+        ccen.y = center[1]
+        ccen.z = center[2]
         
-        cnor.push_back(normal[0])
-        cnor.push_back(normal[1])
-        cnor.push_back(normal[2])
+        cnor.x = normal[0]
+        cnor.y = normal[1]
+        cnor.z = normal[2]
         
         ret = occ.createCircle(ccen, cnor, radius)
         
@@ -259,16 +259,16 @@ cdef class Edge(Base):
             e1 = Edge().createEllipse(center=(0.,0.,0.),normal=(0.,0.,1.), rMajor = .5, rMinor=.2)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[double] ccen, cnor
+        cdef c_OCCStruct3d ccen, cnor
         cdef int ret
         
-        ccen.push_back(center[0])
-        ccen.push_back(center[1])
-        ccen.push_back(center[2])
+        ccen.x = center[0]
+        ccen.y = center[1]
+        ccen.z = center[2]
         
-        cnor.push_back(normal[0])
-        cnor.push_back(normal[1])
-        cnor.push_back(normal[2])
+        cnor.x = normal[0]
+        cnor.y = normal[1]
+        cnor.z = normal[2]
         
         ret = occ.createEllipse(ccen, cnor, rMajor, rMinor)
         
@@ -308,18 +308,17 @@ cdef class Edge(Base):
             e1 = Edge().createBezier(points = pnts)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[vector[double]] cpoints
-        cdef vector[double] tmp
+        cdef vector[c_OCCStruct3d] cpoints
+        cdef c_OCCStruct3d tmp
         cdef int ret
         
         if not points:
             raise OCCError("Argument 'points' missing")
         
         for point in points:
-            tmp.clear()
-            tmp.push_back(point[0])
-            tmp.push_back(point[1])
-            tmp.push_back(point[2])
+            tmp.x = point[0]
+            tmp.y = point[1]
+            tmp.z = point[2]
             cpoints.push_back(tmp)
         
         if start is None and end is None:
@@ -348,18 +347,17 @@ cdef class Edge(Base):
             e1 = Edge().createSpline(points = pnts)
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[vector[double]] cpoints
-        cdef vector[double] tmp
+        cdef vector[c_OCCStruct3d] cpoints
+        cdef c_OCCStruct3d tmp
         cdef int ret
         
         if not points:
             raise OCCError("Argument 'points' missing")
         
         for point in points:
-            tmp.clear()
-            tmp.push_back(point[0])
-            tmp.push_back(point[1])
-            tmp.push_back(point[2])
+            tmp.x = point[0]
+            tmp.y = point[1]
+            tmp.z = point[2]
             cpoints.push_back(tmp)
         
         if start is None and end is None:
@@ -390,8 +388,9 @@ cdef class Edge(Base):
         sequence.
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[vector[double]] cpoints
-        cdef vector[double] tmp, cknots, cweights
+        cdef vector[c_OCCStruct3d] cpoints
+        cdef c_OCCStruct3d tmp
+        cdef vector[double] cknots, cweights
         cdef vector[int] cmults
         cdef int ret
         
@@ -399,10 +398,9 @@ cdef class Edge(Base):
             raise OCCError("Arguments missing")
         
         for point in points:
-            tmp.clear()
-            tmp.push_back(point[0])
-            tmp.push_back(point[1])
-            tmp.push_back(point[2])
+            tmp.x = point[0]
+            tmp.y = point[1]
+            tmp.z = point[2]
             cpoints.push_back(tmp)
         
         for knot in knots:

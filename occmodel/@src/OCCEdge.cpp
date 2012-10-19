@@ -54,12 +54,12 @@ int OCCEdge::numVertices()
     return anIndices.Extent();
 }
 
-std::vector<DVec> OCCEdge::tesselate(double angular, double curvature)
+std::vector<OCCStruct3d> OCCEdge::tesselate(double angular, double curvature)
 {
-    std::vector<DVec> ret;
+    std::vector<OCCStruct3d> ret;
     try {
         Standard_Real start, end;
-        DVec dtmp;
+        OCCStruct3d vert;
         
         TopLoc_Location loc = this->getEdge().Location();
         gp_Trsf location = loc.Transformation();
@@ -72,11 +72,10 @@ std::vector<DVec> OCCEdge::tesselate(double angular, double curvature)
         for (Standard_Integer i = 1; i <= TD.NbPoints(); i++)
         {
             gp_Pnt pnt = TD.Value(i).Transformed(location);
-            dtmp.clear();
-            dtmp.push_back(pnt.X());
-            dtmp.push_back(pnt.Y());
-            dtmp.push_back(pnt.Z());
-            ret.push_back(dtmp);
+            vert.x = pnt.X();
+            vert.y = pnt.Y();
+            vert.z = pnt.Z();
+            ret.push_back(vert);
         }
     } catch(Standard_Failure &err) {
         return ret;
@@ -103,10 +102,10 @@ int OCCEdge::createLine(OCCVertex *start, OCCVertex *end) {
     return 0;
 }
 
-int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, DVec center) {
+int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, OCCStruct3d center) {
     try {
         gp_Pnt aP1(start->X(), start->Y(), start->Z());
-        gp_Pnt aP2(center[0], center[1], center[2]);
+        gp_Pnt aP2(center.x, center.y, center.z);
         gp_Pnt aP3(end->X(), end->Y(), end->Z());
         
         Standard_Real Radius = aP1.Distance(aP2);
@@ -132,10 +131,10 @@ int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, DVec center) {
     return 0;
 }
 
-int OCCEdge::createArc3P(OCCVertex *start, OCCVertex *end, DVec aPoint) {
+int OCCEdge::createArc3P(OCCVertex *start, OCCVertex *end, OCCStruct3d aPoint) {
     try {
         gp_Pnt aP1(start->X(), start->Y(), start->Z());
-        gp_Pnt aP2(aPoint[0], aPoint[1], aPoint[2]);
+        gp_Pnt aP2(aPoint.x, aPoint.y, aPoint.z);
         gp_Pnt aP3(end->X(), end->Y(), end->Z());
         GC_MakeArcOfCircle arc(aP1, aP2, aP3);
         this->setShape(BRepBuilderAPI_MakeEdge(arc, start->vertex, end->vertex));
@@ -152,11 +151,11 @@ int OCCEdge::createArc3P(OCCVertex *start, OCCVertex *end, DVec aPoint) {
     return 0;
 }
 
-int OCCEdge::createCircle(DVec center, DVec normal, double radius)
+int OCCEdge::createCircle(OCCStruct3d center, OCCStruct3d normal, double radius)
 {
     try {
-        gp_Pnt aP1(center[0], center[1], center[2]);
-        gp_Dir aD1(normal[0], normal[1], normal[2]);
+        gp_Pnt aP1(center.x, center.y, center.z);
+        gp_Dir aD1(normal.x, normal.y, normal.z);
         
         if (radius <= Precision::Confusion()) {
             StdFail_NotDone::Raise("radius to small");
@@ -177,10 +176,10 @@ int OCCEdge::createCircle(DVec center, DVec normal, double radius)
     return 0;
 }
 
-int OCCEdge::createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor)
+int OCCEdge::createEllipse(OCCStruct3d pnt, OCCStruct3d nor, double rMajor, double rMinor)
 {
     try {
-        gp_Ax2 ax2(gp_Pnt(pnt[0],pnt[1],pnt[2]), gp_Dir(nor[0],nor[1],nor[2]));
+        gp_Ax2 ax2(gp_Pnt(pnt.x,pnt.y,pnt.z), gp_Dir(nor.x,nor.y,nor.z));
         
         if (rMajor <= Precision::Confusion() || rMinor <= Precision::Confusion()) {
             StdFail_NotDone::Raise("radius to small");
@@ -246,7 +245,7 @@ int OCCEdge::createHelix(double pitch, double height, double radius, double angl
     return 0;
 }
 
-int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> points)
+int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points)
 {
     try {
         int nbControlPoints = points.size();
@@ -263,7 +262,7 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         }
         
         for (int i = 0; i < nbControlPoints; i++) {
-            gp_Pnt aP(points[i][0],points[i][1],points[i][2]);
+            gp_Pnt aP(points[i].x,points[i].y,points[i].z);
             ctrlPoints.SetValue(index++, aP);
         }
         
@@ -295,7 +294,7 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
     return 0;
 }
 
-int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
+int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points,
                            double tolerance)
 {
     try {
@@ -318,7 +317,7 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
         }
         
         for (int i = 0; i < nbControlPoints; i++) {
-            gp_Pnt aP(points[i][0],points[i][1],points[i][2]);
+            gp_Pnt aP(points[i].x,points[i].y,points[i].z);
             ctrlPoints->SetValue(index++, aP);
         }
         
@@ -348,7 +347,7 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> po
     return 0;
 }
 
-int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
+int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points,
                           DVec knots, DVec weights, IVec mult)
 {
     try {
@@ -390,7 +389,7 @@ int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> poi
         }
         
         for (unsigned i = 0; i < points.size(); i++) {
-            gp_Pnt aP(points[i][0],points[i][1],points[i][2]);
+            gp_Pnt aP(points[i].x,points[i].y,points[i].z);
             ctrlPoints.SetValue(index++, aP);
         }
         

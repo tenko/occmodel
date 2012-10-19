@@ -8,6 +8,18 @@
 #include <sstream>
 #include <limits>
 
+struct OCCStruct3d {
+    double x;
+    double y;
+    double z;
+};
+
+struct OCCStruct3I {
+    unsigned int i;
+    unsigned int j;
+    unsigned int k;
+};
+
 typedef std::vector<float> FVec;
 typedef std::vector<double> DVec;
 typedef std::vector<int> IVec;
@@ -22,9 +34,9 @@ void setErrorMessage(const char *err);
 
 class OCCMesh {
     public:
-        std::vector<DVec> normals;
-        std::vector<DVec> vertices;
-        std::vector<IVec> triangles;
+        std::vector<OCCStruct3d> normals;
+        std::vector<OCCStruct3d> vertices;
+        std::vector<OCCStruct3I> triangles;
         OCCMesh() { ; }
         int extractFaceMesh(const TopoDS_Face& face, bool qualityNormals);
 };
@@ -50,12 +62,12 @@ public:
 class OCCBase {
     public:
         int transform(DVec mat, OCCBase *target);
-        int translate(DVec delta, OCCBase *target);
-        int rotate( double angle, DVec p1, DVec p2, OCCBase *target);
-        int scale(DVec pnt, double scale, OCCBase *target);
-        int mirror(DVec pnt, DVec nor, OCCBase *target);
+        int translate(OCCStruct3d delta, OCCBase *target);
+        int rotate(double angle, OCCStruct3d p1, OCCStruct3d p2, OCCBase *target);
+        int scale(OCCStruct3d pnt, double scale, OCCBase *target);
+        int mirror(OCCStruct3d pnt, OCCStruct3d nor, OCCBase *target);
         DVec boundingBox(double tolerance);
-        int findPlane(double *origin, double *normal, double tolerance);
+        int findPlane(OCCStruct3d *origin, OCCStruct3d *normal, double tolerance);
         TopAbs_ShapeEnum shapeType();
         int hashCode();
         bool isEqual(OCCBase *other);
@@ -130,18 +142,18 @@ class OCCEdge : public OCCBase {
         bool isClosed();
         OCCEdge *copy(bool deepCopy);
         int numVertices();
-        std::vector<DVec> tesselate(double factor, double angle);
+        std::vector<OCCStruct3d> tesselate(double factor, double angle);
         int createLine(OCCVertex *start, OCCVertex *end);
-        int createArc(OCCVertex *start, OCCVertex *end, DVec center);
-        int createArc3P(OCCVertex *start, OCCVertex *end, DVec pnt);
-        int createCircle(DVec center, DVec normal, double radius);
-        int createEllipse(DVec pnt, DVec nor, double rMajor, double rMinor);
+        int createArc(OCCVertex *start, OCCVertex *end, OCCStruct3d center);
+        int createArc3P(OCCVertex *start, OCCVertex *end, OCCStruct3d pnt);
+        int createCircle(OCCStruct3d center, OCCStruct3d normal, double radius);
+        int createEllipse(OCCStruct3d pnt, OCCStruct3d nor, double rMajor, double rMinor);
         int createHelix(double pitch, double height, double radius, double angle,
                         bool leftHanded);
-        int createBezier(OCCVertex *start, OCCVertex *end, std::vector<DVec> points);
-        int createSpline(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
+        int createBezier(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points);
+        int createSpline(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points,
                          double tolerance);
-        int createNURBS(OCCVertex *start, OCCVertex *end, std::vector<DVec> points,
+        int createNURBS(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points,
                         DVec knots, DVec weights, IVec mult);
         double length();
         bool canSetShape(const TopoDS_Shape& shape) {
@@ -186,7 +198,7 @@ class OCCWire : public OCCBase {
         int offset(double distance, int joinType);
         int fillet(std::vector<OCCVertex *> vertices, std::vector<double> radius);
         int chamfer(std::vector<OCCVertex *> vertices, std::vector<double> distances);
-        std::vector<DVec> tesselate(double factor, double angle);
+        std::vector<OCCStruct3d> tesselate(double factor, double angle);
         double length();
         bool canSetShape(const TopoDS_Shape& shape) {
             return shape.ShapeType() == TopAbs_WIRE;
@@ -225,15 +237,14 @@ class OCCFace : public OCCBase {
         int numWires();
         int numFaces();
         int createFace(std::vector<OCCWire *> wires);
-        int createConstrained(std::vector<OCCEdge *> edges, std::vector<DVec> points);
+        int createConstrained(std::vector<OCCEdge *> edges, std::vector<OCCStruct3d> points);
         double area();
         DVec inertia();
-        DVec centreOfMass();
-        std::vector<DVec> tesselate(double factor, double angle);
-        int createPolygonal(std::vector<DVec> points);
+        OCCStruct3d centreOfMass();
+        int createPolygonal(std::vector<OCCStruct3d> points);
         int offset(double offset, double tolerance);
-        int extrude(OCCBase *shape, DVec p1, DVec p2);
-        int revolve(OCCBase *shape, DVec p1, DVec p2, double angle);
+        int extrude(OCCBase *shape, OCCStruct3d p1, OCCStruct3d p2);
+        int revolve(OCCBase *shape, OCCStruct3d p1, OCCStruct3d p2, double angle);
         int sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode);
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
         int boolean(OCCSolid *tool, BoolOpType op);
@@ -279,18 +290,18 @@ class OCCSolid : public OCCBase {
         double area() ;
         double volume();
         DVec inertia();
-        DVec centreOfMass();
+        OCCStruct3d centreOfMass();
         OCCMesh *createMesh(double defle, double angle, bool qualityNormals);
         int addSolids(std::vector<OCCSolid *> solids);
-        int createSphere(DVec center, double radius);
-        int createCylinder(DVec p1, DVec p2, double radius);
-        int createTorus(DVec p1, DVec p2, double ringRadius, double radius);
-        int createCone(DVec p1, DVec p2, double radius1, double radius2);
-        int createBox(DVec p1, DVec p2);
-        int createPrism(OCCFace *face, DVec normal, bool isInfinite);
+        int createSphere(OCCStruct3d center, double radius);
+        int createCylinder(OCCStruct3d p1, OCCStruct3d p2, double radius);
+        int createTorus(OCCStruct3d p1, OCCStruct3d p2, double ringRadius, double radius);
+        int createCone(OCCStruct3d p1, OCCStruct3d p2, double radius1, double radius2);
+        int createBox(OCCStruct3d p1, OCCStruct3d p2);
+        int createPrism(OCCFace *face, OCCStruct3d normal, bool isInfinite);
         int createText(double height, double depth, const char *text, const char *fontpath);
-        int extrude(OCCFace *face, DVec p1, DVec p2);
-        int revolve(OCCFace *face, DVec p1, DVec p2, double angle);
+        int extrude(OCCFace *face, OCCStruct3d p1, OCCStruct3d p2);
+        int revolve(OCCFace *face, OCCStruct3d p1, OCCStruct3d p2, double angle);
         int loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance);
         int pipe(OCCFace *face, OCCWire *wire);
         int sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode);
@@ -299,7 +310,7 @@ class OCCSolid : public OCCBase {
         int chamfer(std::vector<OCCEdge *> edges, std::vector<double> distances);
         int shell(std::vector<OCCFace *> faces, double offset, double tolerance);
         int offset(OCCFace *face, double offset, double tolerance);
-        OCCFace *section(DVec pnt, DVec nor);
+        OCCFace *section(OCCStruct3d pnt, OCCStruct3d nor);
         bool canSetShape(const TopoDS_Shape& shape) {
             TopAbs_ShapeEnum type = shape.ShapeType();
             return type == TopAbs_SOLID || type == TopAbs_COMPSOLID || type == TopAbs_COMPOUND;

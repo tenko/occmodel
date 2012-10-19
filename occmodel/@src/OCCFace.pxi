@@ -141,8 +141,8 @@ cdef class Face(Base):
         cdef Edge edge
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[c_OCCEdge *] cedges
-        cdef vector[vector[double]] cpoints
-        cdef vector[double] tmp
+        cdef vector[c_OCCStruct3d] cpoints
+        cdef c_OCCStruct3d tmp
         cdef int ret
         
         if isinstance(edges, Edge):
@@ -154,10 +154,9 @@ cdef class Face(Base):
         
         if points:
             for point in points:
-                tmp.clear()
-                tmp.push_back(point[0])
-                tmp.push_back(point[1])
-                tmp.push_back(point[2])
+                tmp.x = point[0]
+                tmp.y = point[1]
+                tmp.z = point[2]
                 cpoints.push_back(tmp)
             
         ret = occ.createConstrained(cedges, cpoints)
@@ -182,15 +181,14 @@ cdef class Face(Base):
             f1 = Face().createPolygonal(pnts)
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
-        cdef vector[vector[double]] cpoints
-        cdef vector[double] tmp
+        cdef vector[c_OCCStruct3d] cpoints
+        cdef c_OCCStruct3d tmp
         cdef int ret
         
         for point in points:
-            tmp.clear()
-            tmp.push_back(point[0])
-            tmp.push_back(point[1])
-            tmp.push_back(point[2])
+            tmp.x = point[0]
+            tmp.y = point[1]
+            tmp.z = point[2]
             cpoints.push_back(tmp)
         
         ret = occ.createPolygonal(cpoints)
@@ -226,8 +224,8 @@ cdef class Face(Base):
         Return center of face
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
-        cdef vector[double] cg = occ.centreOfMass()
-        return cg[0],cg[1],cg[2]
+        cdef c_OCCStruct3d cg = occ.centreOfMass()
+        return cg.x,cg.y,cg.z
         
     
     cpdef offset(self, double offset, double tolerance = 1e-6):
@@ -260,16 +258,16 @@ cdef class Face(Base):
             f1 = Face().extrude(e1, (0.,0.,0.), (0.,0.,1.))
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
+        cp1.x = p1[0]
+        cp1.y = p1[1]
+        cp1.z = p1[2]
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        cp2.x = p2[0]
+        cp2.y = p2[1]
+        cp2.z = p2[2]
         
         ret = occ.extrude(<c_OCCBase *>shape.thisptr, cp1, cp2)
         if ret != 0:
@@ -293,16 +291,16 @@ cdef class Face(Base):
             f1 = Face().revolve(e1, (0.,-1.,0.), (1.,-1.,0.), pi/2.)
         '''
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
-        cp1.push_back(p1[0])
-        cp1.push_back(p1[1])
-        cp1.push_back(p1[2])
+        cp1.x = p1[0]
+        cp1.y = p1[1]
+        cp1.z = p1[2]
         
-        cp2.push_back(p2[0])
-        cp2.push_back(p2[1])
-        cp2.push_back(p2[2])
+        cp2.x = p2[0]
+        cp2.y = p2[1]
+        cp2.z = p2[2]
         
         ret = occ.revolve(<c_OCCBase *>shape.thisptr, cp1, cp2, angle)
         if ret != 0:

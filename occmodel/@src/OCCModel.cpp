@@ -47,22 +47,23 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
     int vsize = this->vertices.size();
     std::vector<gp_Vec> normals;
     bool reversed = false;
-    DVec dtmp;
-    IVec itmp;
+    OCCStruct3d vert;
+    OCCStruct3d norm;
+    OCCStruct3I tri;
     
     try {
         if(face.IsNull())
             StdFail_NotDone::Raise("Face is Null");
     
         TopLoc_Location loc;
-        Handle(Poly_Triangulation) tri = BRep_Tool::Triangulation(face, loc);
+        Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, loc);
         
-        if(tri.IsNull())
+        if(triangulation.IsNull())
             StdFail_NotDone::Raise("No triangulation created");
         
         gp_Trsf tr = loc;
-        const TColgp_Array1OfPnt& narr = tri->Nodes();
-        for (int i = 1; i <= tri->NbNodes(); i++)
+        const TColgp_Array1OfPnt& narr = triangulation->Nodes();
+        for (int i = 1; i <= triangulation->NbNodes(); i++)
         {
             Standard_Real x,y,z;
             const gp_Pnt& pnt = narr(i);
@@ -71,18 +72,16 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
             z = pnt.Z();
             tr.Transforms(x,y,z);
             
-            dtmp.clear();
-            dtmp.push_back(x);
-            dtmp.push_back(y);
-            dtmp.push_back(z);
-            this->vertices.push_back(dtmp);
+            vert.x = x;
+            vert.y = y;
+            vert.z = z;
+            this->vertices.push_back(vert);
             
             // ensure we have normals for all vertices
-            dtmp.clear();
-            dtmp.push_back(0.);
-            dtmp.push_back(0.);
-            dtmp.push_back(0.);
-            this->normals.push_back(dtmp);
+            norm.x = 0.;
+            norm.y = 0.;
+            norm.z = 0.;
+            this->normals.push_back(norm);
             
             if (!qualityNormals)
                 normals.push_back(gp_Vec(0.0,0.0,0.0));
@@ -91,16 +90,16 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
         if (face.Orientation() == TopAbs_REVERSED)
             reversed = true;
         
-        const Poly_Array1OfTriangle& triarr = tri->Triangles();
-        for (int i = 1; i <= tri->NbTriangles(); i++)
+        const Poly_Array1OfTriangle& triarr = triangulation->Triangles();
+        for (int i = 1; i <= triangulation->NbTriangles(); i++)
         {
-            Poly_Triangle tri = triarr(i);
+            Poly_Triangle pt = triarr(i);
             Standard_Integer n1,n2,n3;
             
             if(reversed)
-                tri.Get(n2,n1,n3);
+                pt.Get(n2,n1,n3);
             else
-                tri.Get(n1,n2,n3);
+                pt.Get(n1,n2,n3);
             
             // make sure that we don't process invalid triangle
             if (n1 == n2 or n2 == n3 or n3 == n1)
@@ -119,11 +118,10 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
             if (normal.SquareMagnitude() < 1.0e-10)
                 continue;
             
-            itmp.clear();
-            itmp.push_back(vsize + n1 - 1);
-            itmp.push_back(vsize + n2 - 1);
-            itmp.push_back(vsize + n3 - 1);
-            this->triangles.push_back(itmp);
+            tri.i = vsize + n1 - 1;
+            tri.j = vsize + n2 - 1;
+            tri.k = vsize + n3 - 1;
+            this->triangles.push_back(tri);
             
             if (!qualityNormals) {
                 normals[n1 - 1] = normals[n1 - 1] - normal;
@@ -134,13 +132,12 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
         
         if (qualityNormals) {
             gp_Vec normal;
-            for (int i = 0; i < tri->NbNodes(); i++)
+            for (int i = 0; i < triangulation->NbNodes(); i++)
             {
                 Handle_Geom_Surface surface = BRep_Tool::Surface(face);
                 
-                gp_Pnt vertex(this->vertices[vsize + i][0],
-                              this->vertices[vsize + i][1],
-                              this->vertices[vsize + i][2]);
+                vert = this->vertices[vsize + i];
+                gp_Pnt vertex(vert.x, vert.y, vert.z);
                 GeomAPI_ProjectPointOnSurf SrfProp(vertex, surface);
                 Standard_Real fU, fV; SrfProp.Parameters(1, fU, fV);
 
@@ -150,30 +147,29 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
                 if (normal.SquareMagnitude() > 1.0e-10)
                     normal.Normalize();
                 
-                dtmp.clear();
                 if (reversed) {
-                    dtmp.push_back(-normal.X());
-                    dtmp.push_back(-normal.Y());
-                    dtmp.push_back(-normal.Z());
+                    norm.x = -normal.X();
+                    norm.y = -normal.Y();
+                    norm.z = -normal.Z();
                 } else {
-                    dtmp.push_back(normal.X());
-                    dtmp.push_back(normal.Y());
-                    dtmp.push_back(normal.Z());
+                    norm.x = normal.X();
+                    norm.y = normal.Y();
+                    norm.z = normal.Z();
                 }
-                this->normals[vsize + i] = dtmp;
+                this->normals[vsize + i] = norm;
             }
         } else {
             // Normalize vertex normals
-            for (int i = 0; i < tri->NbNodes(); i++)
+            for (int i = 0; i < triangulation->NbNodes(); i++)
             {
                 gp_Vec normal = normals[i];
                 if (normal.SquareMagnitude() > 1.0e-10)
                     normal.Normalize();
-                dtmp.clear();
-                dtmp.push_back(normal.X());
-                dtmp.push_back(normal.Y());
-                dtmp.push_back(normal.Z());
-                this->normals[vsize + i] = dtmp;
+                
+                norm.x = normal.X();
+                norm.y = normal.Y();
+                norm.z = normal.Z();
+                this->normals[vsize + i] = norm;
             }
         }
         

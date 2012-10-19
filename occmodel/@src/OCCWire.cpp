@@ -320,12 +320,12 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
     return 0;
 }
 
-std::vector<DVec> OCCWire::tesselate(double angular, double curvature)
+std::vector<OCCStruct3d> OCCWire::tesselate(double angular, double curvature)
 {
-    std::vector<DVec> ret;
+    std::vector<OCCStruct3d> ret;
     try {
         Standard_Real start, end;
-        DVec dtmp;
+        OCCStruct3d dtmp;
         
         // explore wire edges in connected order
         int idx = 1;
@@ -345,20 +345,17 @@ std::vector<DVec> OCCWire::tesselate(double angular, double curvature)
                 if (idx == 1)
                     idx = 2;
                 gp_Pnt pnt = TD.Value(i).Transformed(location);
-                dtmp.clear();
-                dtmp.push_back(pnt.X());
-                dtmp.push_back(pnt.Y());
-                dtmp.push_back(pnt.Z());
+                dtmp.x = pnt.X();
+                dtmp.y = pnt.Y();
+                dtmp.z = pnt.Z();
                 ret.push_back(dtmp);
             }
             
             if (exWire.More()) {
                 // mark new segment as wires
-                // can be disconnected.
-                dtmp.clear();
-                dtmp.push_back(NAN);
-                dtmp.push_back(NAN);
-                dtmp.push_back(NAN);
+                dtmp.x = NAN;
+                dtmp.y = NAN;
+                dtmp.z = NAN;
                 ret.push_back(dtmp);
             }
         }

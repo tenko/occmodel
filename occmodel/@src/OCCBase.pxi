@@ -58,7 +58,7 @@ cdef class Base:
         else:
             return None
             
-    cpdef hashCode(self):
+    cpdef int hashCode(self):
         '''
         Shape hash code.
         
@@ -108,16 +108,16 @@ cdef class Base:
         self.CheckPtr()
         
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
-        cdef double corigin[3], cnormal[3]
+        cdef c_OCCStruct3d corigin, cnormal
         
-        if occ.findPlane(corigin, cnormal, tolerance) == 1:
+        if occ.findPlane(&corigin, &cnormal, tolerance) == 1:
             return False
         
         if not normal is None:
-            normal.set(cnormal[0], cnormal[1], cnormal[2])
+            normal.set(cnormal.x, cnormal.y, cnormal.z)
         
         if not origin is None:
-            origin.set(corigin[0], corigin[1], corigin[2])
+            origin.set(corigin.x, corigin.y, corigin.z)
             
         return True
         
@@ -190,17 +190,17 @@ cdef class Base:
         
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef Base target
-        cdef vector[double] cdelta
+        cdef c_OCCStruct3d cdelta
         cdef int ret
         
         if copy:
             target = self.__class__()
         else:
             target = self
-            
-        cdelta.push_back(delta[0])
-        cdelta.push_back(delta[1])
-        cdelta.push_back(delta[2])
+        
+        cdelta.x = delta[0]
+        cdelta.y = delta[1]
+        cdelta.z = delta[2]
         
         ret = occ.translate(cdelta, <c_OCCBase *>target.thisptr)
         if ret != 0:
@@ -222,7 +222,7 @@ cdef class Base:
         
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef Base target
-        cdef vector[double] cp1, cp2
+        cdef c_OCCStruct3d cp1, cp2
         cdef int ret
         
         if copy:
@@ -234,14 +234,13 @@ cdef class Base:
         p1 = Point(center)
         p2 = p1 + axis
         
+        cp1.x = p1.x
+        cp1.y = p1.y
+        cp1.z = p1.z
         
-        cp1.push_back(p1.x)
-        cp1.push_back(p1.y)
-        cp1.push_back(p1.z)
-        
-        cp2.push_back(p2.x)
-        cp2.push_back(p2.y)
-        cp2.push_back(p2.z)
+        cp2.x = p2.x
+        cp2.y = p2.y
+        cp2.z = p2.z
         
         ret = occ.rotate(angle, cp1, cp2, <c_OCCBase *>target.thisptr)
         if ret != 0:
@@ -262,7 +261,7 @@ cdef class Base:
         
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef Base target
-        cdef vector[double] cpnt
+        cdef c_OCCStruct3d cpnt
         cdef int ret
         
         if copy:
@@ -270,9 +269,9 @@ cdef class Base:
         else:
             target = self
             
-        cpnt.push_back(pnt[0])
-        cpnt.push_back(pnt[1])
-        cpnt.push_back(pnt[2])
+        cpnt.x = pnt[0]
+        cpnt.y = pnt[1]
+        cpnt.z = pnt[2]
         
         ret = occ.scale(cpnt, scale, <c_OCCBase *>target.thisptr)
         if ret != 0:
@@ -292,7 +291,7 @@ cdef class Base:
         
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef Base target
-        cdef vector[double] cpnt, cnor
+        cdef c_OCCStruct3d cpnt, cnor
         cdef int ret
         
         if copy:
@@ -300,13 +299,13 @@ cdef class Base:
         else:
             target = self
             
-        cpnt.push_back(plane.origin.x)
-        cpnt.push_back(plane.origin.y)
-        cpnt.push_back(plane.origin.z)
+        cpnt.x = plane.origin.x
+        cpnt.y = plane.origin.y
+        cpnt.z = plane.origin.z
         
-        cnor.push_back(plane.zaxis.x)
-        cnor.push_back(plane.zaxis.y)
-        cnor.push_back(plane.zaxis.z)
+        cnor.x = plane.zaxis.x
+        cnor.y = plane.zaxis.y
+        cnor.z = plane.zaxis.z
         
         ret = occ.mirror(cpnt, cnor, <c_OCCBase *>target.thisptr)
         if ret != 0:
