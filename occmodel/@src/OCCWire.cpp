@@ -256,13 +256,13 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
             vertMap.Add(vertices[i]->getShape());
         
         bool first = true;
-        TopoDS_Edge firstEdge, nextEdge;
+        TopoDS_Edge startEdge, firstEdge, nextEdge;
         TopoDS_Vertex vertex;
         
         BRepTools_WireExplorer Ex1;
         for (Ex1.Init(this->getWire()); Ex1.More(); ) {
             if(first == true) {
-                firstEdge = Ex1.Current();
+                startEdge = firstEdge = Ex1.Current();
                 first = false;                                                    
             }
 
@@ -299,6 +299,11 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
             firstEdge = nextEdge;
         }
         
+        //get the common vertex start and end vertex
+        if (TopExp::CommonVertex(startEdge, firstEdge, vertex)) {
+            printf("closed wire vertex found\n");
+        }
+            
         if(MF.Status() != ChFi2d_IsDone)
             StdFail_NotDone::Raise("chamfer operation failed");
         
