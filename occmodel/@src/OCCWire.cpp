@@ -256,13 +256,13 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
             vertMap.Add(vertices[i]->getShape());
         
         bool first = true;
-        TopoDS_Edge startEdge, firstEdge, nextEdge;
+        TopoDS_Edge firstEdge, nextEdge;
         TopoDS_Vertex vertex;
         
         BRepTools_WireExplorer Ex1;
         for (Ex1.Init(this->getWire()); Ex1.More(); ) {
             if(first == true) {
-                startEdge = firstEdge = Ex1.Current();
+                firstEdge = Ex1.Current();
                 first = false;                                                    
             }
 
@@ -299,11 +299,36 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
             firstEdge = nextEdge;
         }
         
-        //get the common vertex start and end vertex
-        if (TopExp::CommonVertex(startEdge, firstEdge, vertex)) {
-            printf("closed wire vertex found\n");
-        }
+        // special case for closed wire
+        if (isClosed()) {
+            // find seam vertex
+            TopoDS_Vertex aV1;
+            TopExp::Vertices(this->getWire(), vertex, aV1);
             
+            // check if seam vertex has chamfer value
+            if (vertMap.Contains(vertex)) {
+                int i = vertMap.FindIndex(vertex) - 1;
+                
+                // map vertices to edges to find edge pair
+                TopTools_IndexedDataMapOfShapeListOfShape mapVertexEdge;
+                TopExp::MapShapesAndAncestors(this->getWire(), TopAbs_VERTEX, TopAbs_EDGE, mapVertexEdge);
+                
+                const TopTools_ListOfShape& edges = mapVertexEdge.FindFromKey(vertex);
+                firstEdge = TopoDS::Edge(edges.First());
+                nextEdge = TopoDS::Edge(edges.Last());
+                
+                if (distances_size == 1) {
+                    // single distance
+                    MF.AddChamfer(firstEdge, nextEdge, distances[0], distances[0]);
+                } else if (distances_size == vertices_size) {
+                    // distance given for each vertex
+                    MF.AddChamfer(firstEdge, nextEdge, distances[i], distances[i]);
+                } else {
+                    StdFail_NotDone::Raise("distances argument has wrong size");
+                }
+            }
+        }
+        
         if(MF.Status() != ChFi2d_IsDone)
             StdFail_NotDone::Raise("chamfer operation failed");
         
