@@ -138,6 +138,10 @@ int OCCWire::project(OCCBase *face) {
 }
 
 int OCCWire::offset(double distance, int joinType = 0) {
+    Handle(TopTools_HSequenceOfShape) wires = new TopTools_HSequenceOfShape;
+    Handle(TopTools_HSequenceOfShape) edges = new TopTools_HSequenceOfShape;
+    TopExp_Explorer ex;
+    
     try {
         GeomAbs_JoinType join = GeomAbs_Arc;
         switch (joinType) {
@@ -150,7 +154,17 @@ int OCCWire::offset(double distance, int joinType = 0) {
         }   
         BRepOffsetAPI_MakeOffset MO(this->getWire(), join);
         MO.Perform(distance);
-        this->setShape(MO.Shape());
+        
+        for (ex.Init(MO.Shape(), TopAbs_EDGE); ex.More(); ex.Next()) {
+            if (!ex.Current().IsNull()) {
+                edges->Append(TopoDS::Edge(ex.Current()));
+            }
+        }
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges,Precision::Confusion(),Standard_True,wires);
+        if (wires->Length() != 1)
+            StdFail_NotDone::Raise("offset operation created empty result");
+        
+        this->setShape(wires->Value(1));
         
         // possible fix shape
         if (!this->fixShape())

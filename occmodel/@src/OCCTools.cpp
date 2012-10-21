@@ -28,6 +28,7 @@ void printShapeType(const TopoDS_Shape& shape)
             break;
         case TopAbs_EDGE:
             printf("TopAbs_EDGE\n");
+            break;
         case TopAbs_VERTEX:
             printf("TopAbs_VERTEX\n");
             break;
