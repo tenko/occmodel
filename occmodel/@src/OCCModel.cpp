@@ -111,11 +111,18 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
             const gp_Pnt& P3 = narr(n3);
             
             gp_Vec V1(P3.X() - P1.X(), P3.Y() - P1.Y(), P3.Z() - P1.Z());
-            gp_Vec V2(P2.X() - P1.X(), P2.Y() - P1.Y(), P2.Z() - P1.Z());
-            gp_Vec normal = V1.Crossed(V2);
+            if (V1.SquareMagnitude() < 1.0e-10)
+                // Degenerated triangle
+                continue;
             
-            // Degenerated triangle
+            gp_Vec V2(P2.X() - P1.X(), P2.Y() - P1.Y(), P2.Z() - P1.Z());
+            if (V2.SquareMagnitude() < 1.0e-10)
+                // Degenerated triangle
+                continue;
+            
+            gp_Vec normal = V1.Crossed(V2);
             if (normal.SquareMagnitude() < 1.0e-10)
+                // Degenerated triangle
                 continue;
             
             tri.i = vsize + n1 - 1;
@@ -131,15 +138,15 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
         }
         
         if (qualityNormals) {
+            Handle_Geom_Surface surface = BRep_Tool::Surface(face);
             gp_Vec normal;
             for (int i = 0; i < triangulation->NbNodes(); i++)
             {
-                Handle_Geom_Surface surface = BRep_Tool::Surface(face);
-                
                 vert = this->vertices[vsize + i];
                 gp_Pnt vertex(vert.x, vert.y, vert.z);
                 GeomAPI_ProjectPointOnSurf SrfProp(vertex, surface);
-                Standard_Real fU, fV; SrfProp.Parameters(1, fU, fV);
+                Standard_Real fU, fV;
+                SrfProp.Parameters(1, fU, fV);
 
                 GeomLProp_SLProps faceprop(surface, fU, fV, 2, gp::Resolution());
                 normal = faceprop.Normal();
