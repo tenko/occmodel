@@ -38,9 +38,9 @@ int OCCBase::transform(DVec mat, OCCBase *target)
         } else {
             setErrorMessage("Failed to transform object");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCBase::translate(OCCStruct3d delta, OCCBase *target)
@@ -65,9 +65,9 @@ int OCCBase::translate(OCCStruct3d delta, OCCBase *target)
         } else {
             setErrorMessage("Failed to translate object");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCBase::rotate(double angle, OCCStruct3d p1, OCCStruct3d p2, OCCBase *target)
@@ -94,9 +94,9 @@ int OCCBase::rotate(double angle, OCCStruct3d p1, OCCStruct3d p2, OCCBase *targe
         } else {
             setErrorMessage("Failed to rotate object");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCBase::scale(OCCStruct3d pnt, double scale, OCCBase *target)
@@ -121,9 +121,9 @@ int OCCBase::scale(OCCStruct3d pnt, double scale, OCCBase *target)
         } else {
             setErrorMessage("Failed to scale object");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCBase::mirror(OCCStruct3d pnt, OCCStruct3d nor, OCCBase *target)
@@ -147,9 +147,9 @@ int OCCBase::mirror(OCCStruct3d pnt, OCCStruct3d nor, OCCBase *target)
         } else {
             setErrorMessage("Failed to mirror object");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 DVec OCCBase::boundingBox(double tolerance = 1e-12)
@@ -208,9 +208,9 @@ int OCCBase::findPlane(OCCStruct3d *origin, OCCStruct3d *normal, double toleranc
         } else {
             setErrorMessage("Failed to find plane");
         }
-        return 1;
+        return 0;
     }
-    return 0;   
+    return 1;   
 }
 
 TopAbs_ShapeEnum OCCBase::shapeType() {
@@ -273,7 +273,7 @@ int OCCBase::fromString(std::string input) {
     TopoDS_Shape shape = TopoDS_Shape();
     
     int ret = OCCTools::readBREP(str, shape);
-    if (ret == 0) {
+    if (ret) {
         if (this->canSetShape(shape))
             this->setShape(shape);
     }

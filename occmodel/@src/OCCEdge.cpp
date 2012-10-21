@@ -97,9 +97,9 @@ int OCCEdge::createLine(OCCVertex *start, OCCVertex *end) {
         } else {
             setErrorMessage("Failed to create line");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, OCCStruct3d center) {
@@ -126,9 +126,9 @@ int OCCEdge::createArc(OCCVertex *start, OCCVertex *end, OCCStruct3d center) {
         } else {
             setErrorMessage("Failed to create arc");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCEdge::createArc3P(OCCVertex *start, OCCVertex *end, OCCStruct3d aPoint) {
@@ -146,9 +146,9 @@ int OCCEdge::createArc3P(OCCVertex *start, OCCVertex *end, OCCStruct3d aPoint) {
         } else {
             setErrorMessage("Failed to create arc");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCEdge::createCircle(OCCStruct3d center, OCCStruct3d normal, double radius)
@@ -171,9 +171,9 @@ int OCCEdge::createCircle(OCCStruct3d center, OCCStruct3d normal, double radius)
         } else {
             setErrorMessage("Failed to create circle");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCEdge::createEllipse(OCCStruct3d pnt, OCCStruct3d nor, double rMajor, double rMinor)
@@ -195,9 +195,9 @@ int OCCEdge::createEllipse(OCCStruct3d pnt, OCCStruct3d nor, double rMajor, doub
         } else {
             setErrorMessage("Failed to create ellipse");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCEdge::createHelix(double pitch, double height, double radius, double angle, bool leftHanded)
@@ -240,9 +240,9 @@ int OCCEdge::createHelix(double pitch, double height, double radius, double angl
         } else {
             setErrorMessage("Failed to create helix");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points)
@@ -289,9 +289,9 @@ int OCCEdge::createBezier(OCCVertex *start, OCCVertex *end, std::vector<OCCStruc
         } else {
             setErrorMessage("Failed to create bezier");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points,
@@ -342,9 +342,9 @@ int OCCEdge::createSpline(OCCVertex *start, OCCVertex *end, std::vector<OCCStruc
         } else {
             setErrorMessage("Failed to create spline");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCEdge::createNURBS(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points,

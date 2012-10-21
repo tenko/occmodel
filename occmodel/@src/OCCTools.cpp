@@ -131,7 +131,7 @@ int extractShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes)
     for (ex.Init(shape, TopAbs_VERTEX, TopAbs_EDGE); ex.More(); ex.Next())
         ret += extractSubShape(ex.Current(), shapes);
     
-    return 0;
+    return ret;
 }
 
 int OCCTools::writeBREP(const char *filename, std::vector<OCCBase *> shapes)
@@ -153,15 +153,15 @@ int OCCTools::writeBREP(const char *filename, std::vector<OCCBase *> shapes)
         } else {
             setErrorMessage("Failed to write BREP file");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCTools::writeBREP(std::ostream& str, const TopoDS_Shape& shape)
 {
     BRepTools::Write(shape, str);
-    return 0;
+    return 1;
 }
 
 int OCCTools::writeSTEP(const char *filename, std::vector<OCCBase *> shapes)
@@ -189,9 +189,9 @@ int OCCTools::writeSTEP(const char *filename, std::vector<OCCBase *> shapes)
         } else {
             setErrorMessage("Failed to write STEP file");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCTools::writeSTL(const char *filename, std::vector<OCCBase *> shapes)
@@ -215,9 +215,9 @@ int OCCTools::writeSTL(const char *filename, std::vector<OCCBase *> shapes)
         } else {
             setErrorMessage("Failed to write STL file");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCTools::writeVRML(const char *filename, std::vector<OCCBase *> shapes)
@@ -241,9 +241,9 @@ int OCCTools::writeVRML(const char *filename, std::vector<OCCBase *> shapes)
         } else {
             setErrorMessage("Failed to write VRML file");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCTools::readBREP(const char *filename, std::vector<OCCBase *>& shapes)
@@ -265,9 +265,9 @@ int OCCTools::readBREP(const char *filename, std::vector<OCCBase *>& shapes)
         } else {
             setErrorMessage("Failed to read BREP file");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCTools::readBREP(std::istream& str, TopoDS_Shape& shape)
@@ -285,8 +285,9 @@ int OCCTools::readBREP(std::istream& str, TopoDS_Shape& shape)
         } else {
             setErrorMessage("Failed to read BREP file");
         }
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCTools::readSTEP(const char *filename, std::vector<OCCBase *>& shapes)
@@ -324,7 +325,7 @@ int OCCTools::readSTEP(const char *filename, std::vector<OCCBase *>& shapes)
         } else {
             setErrorMessage("Failed to read STEP file");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }

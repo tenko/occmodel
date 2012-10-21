@@ -92,9 +92,9 @@ int OCCWire::createWire(std::vector<OCCEdge *> edges)
         } else {
             setErrorMessage("Failed to create wire");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCWire::project(OCCBase *face) {
@@ -132,9 +132,9 @@ int OCCWire::project(OCCBase *face) {
         } else {
             setErrorMessage("Failed to project wire");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCWire::offset(double distance, int joinType = 0) {
@@ -164,9 +164,9 @@ int OCCWire::offset(double distance, int joinType = 0) {
         } else {
             setErrorMessage("Failed to offset wire");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radius) {
@@ -192,7 +192,7 @@ int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radiu
         }
         
         if(MF.Status() != ChFi2d_IsDone)
-            return 1;
+            StdFail_NotDone::Raise("fillet not completed");
         
         BRepBuilderAPI_MakeWire wire;
         TopTools_IndexedMapOfShape aMap;
@@ -223,9 +223,9 @@ int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radiu
         } else {
             setErrorMessage("Failed to fillet wire");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> distances) {
@@ -315,9 +315,9 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
         } else {
             setErrorMessage("Failed to chamfer wire");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 std::vector<OCCStruct3d> OCCWire::tesselate(double angular, double curvature)

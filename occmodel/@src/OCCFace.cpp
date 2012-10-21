@@ -81,9 +81,9 @@ int OCCFace::createFace(std::vector<OCCWire *> wires) {
         } else {
             setErrorMessage("Failed to create face");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<OCCStruct3d> points) {
@@ -112,9 +112,9 @@ int OCCFace::createConstrained(std::vector<OCCEdge *> edges, std::vector<OCCStru
         } else {
             setErrorMessage("Failed to create face");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 double OCCFace::area() {
@@ -178,9 +178,9 @@ int OCCFace::offset(double offset, double tolerance = 1e-6) {
         } else {
             setErrorMessage("Failed to offset face");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCFace::createPolygonal(std::vector<OCCStruct3d> points)
@@ -209,9 +209,9 @@ int OCCFace::createPolygonal(std::vector<OCCStruct3d> points)
         } else {
             setErrorMessage("Failed to create face");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCFace::extrude(OCCBase *shape, OCCStruct3d p1, OCCStruct3d p2) {
@@ -242,9 +242,9 @@ int OCCFace::extrude(OCCBase *shape, OCCStruct3d p1, OCCStruct3d p2) {
         } else {
             setErrorMessage("Failed to extrude");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCFace::revolve(OCCBase *shape, OCCStruct3d p1, OCCStruct3d p2, double angle)
@@ -278,9 +278,9 @@ int OCCFace::revolve(OCCBase *shape, OCCStruct3d p1, OCCStruct3d p2, double angl
         } else {
             setErrorMessage("Failed to revolve");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCFace::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode = 0)
@@ -319,9 +319,9 @@ int OCCFace::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMo
         } else {
             setErrorMessage("Failed to sweep");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCFace::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
@@ -360,9 +360,9 @@ int OCCFace::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
         } else {
             setErrorMessage("Failed to loft");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCFace::boolean(OCCSolid *tool, BoolOpType op) {
@@ -427,9 +427,9 @@ int OCCFace::boolean(OCCSolid *tool, BoolOpType op) {
         } else {
             setErrorMessage("Failed in boolean operation");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 OCCMesh *OCCFace::createMesh(double factor, double angle, bool qualityNormals = true)

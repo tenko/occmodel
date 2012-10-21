@@ -68,9 +68,9 @@ int OCCSolid::createSolid(std::vector<OCCFace *> faces, double tolerance)
         } else {
             setErrorMessage("Failed to create solid");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 
@@ -212,9 +212,9 @@ int OCCSolid::addSolids(std::vector<OCCSolid *> solids)
         } else {
             setErrorMessage("Failed to add solid");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::createSphere(OCCStruct3d center, double radius)
@@ -235,9 +235,9 @@ int OCCSolid::createSphere(OCCStruct3d center, double radius)
         } else {
             setErrorMessage("Failed to create sphere");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::createCylinder(OCCStruct3d p1, OCCStruct3d p2, double radius)
@@ -266,9 +266,9 @@ int OCCSolid::createCylinder(OCCStruct3d p1, OCCStruct3d p2, double radius)
         } else {
             setErrorMessage("Failed to create cylinder");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::createTorus(OCCStruct3d p1, OCCStruct3d p2, double ringRadius, double radius) {
@@ -300,9 +300,9 @@ int OCCSolid::createTorus(OCCStruct3d p1, OCCStruct3d p2, double ringRadius, dou
         } else {
             setErrorMessage("Failed to create torus");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::createCone(OCCStruct3d p1, OCCStruct3d p2, double radius1, double radius2) {
@@ -325,9 +325,9 @@ int OCCSolid::createCone(OCCStruct3d p1, OCCStruct3d p2, double radius1, double 
         } else {
             setErrorMessage("Failed to create cone");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::createBox(OCCStruct3d p1, OCCStruct3d p2) {
@@ -345,9 +345,9 @@ int OCCSolid::createBox(OCCStruct3d p1, OCCStruct3d p2) {
         } else {
             setErrorMessage("Failed to create box");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::createText(double height, double depth, const char *text, const char *fontpath = NULL)
@@ -578,9 +578,9 @@ int OCCSolid::createText(double height, double depth, const char *text, const ch
         } else {
             setErrorMessage("Failed to create solids from font data");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::createPrism(OCCFace *face, OCCStruct3d normal, bool isInfinite) {
@@ -600,9 +600,9 @@ int OCCSolid::createPrism(OCCFace *face, OCCStruct3d normal, bool isInfinite) {
         } else {
             setErrorMessage("Failed to create prism");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 double OCCSolid::area() {
@@ -666,9 +666,9 @@ int OCCSolid::extrude(OCCFace *face, OCCStruct3d p1, OCCStruct3d p2)
         } else {
             setErrorMessage("Failed to extrude");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::revolve(OCCFace *face, OCCStruct3d p1, OCCStruct3d p2, double angle)
@@ -691,9 +691,9 @@ int OCCSolid::revolve(OCCFace *face, OCCStruct3d p1, OCCStruct3d p2, double angl
         } else {
             setErrorMessage("Failed to revolve");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
@@ -714,9 +714,9 @@ int OCCSolid::pipe(OCCFace *face, OCCWire *wire)
         } else {
             setErrorMessage("Failed to create pipe");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerMode = 0)
@@ -757,9 +757,9 @@ int OCCSolid::sweep(OCCWire *spine, std::vector<OCCBase *> profiles, int cornerM
         } else {
             setErrorMessage("Failed to create sweep");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance)
@@ -795,9 +795,9 @@ int OCCSolid::loft(std::vector<OCCBase *> profiles, bool ruled, double tolerance
         } else {
             setErrorMessage("Failed to loft");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::boolean(OCCSolid *tool, BoolOpType op) {
@@ -856,9 +856,9 @@ int OCCSolid::boolean(OCCSolid *tool, BoolOpType op) {
         } else {
             setErrorMessage("Failed in boolean operation");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::chamfer(std::vector<OCCEdge *> edges, std::vector<double> distances) {
@@ -922,9 +922,9 @@ int OCCSolid::chamfer(std::vector<OCCEdge *> edges, std::vector<double> distance
         } else {
             setErrorMessage("Failed to chamfer solid");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::fillet(std::vector<OCCEdge *> edges, std::vector<double> radius) {
@@ -989,9 +989,9 @@ int OCCSolid::fillet(std::vector<OCCEdge *> edges, std::vector<double> radius) {
         } else {
             setErrorMessage("Failed to fillet solid");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
     
 }
 
@@ -1028,9 +1028,9 @@ int OCCSolid::shell(std::vector<OCCFace *> faces, double offset, double toleranc
         } else {
             setErrorMessage("Failed to shell solid");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
@@ -1052,9 +1052,9 @@ int OCCSolid::offset(OCCFace *face, double offset, double tolerance = 1e-6) {
         } else {
             setErrorMessage("Failed to offset face");
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 // FIXME!: Return vector of faces

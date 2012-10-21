@@ -111,8 +111,7 @@ cdef class Wire(Base):
             cedges.push_back((<c_OCCEdge *>edge.thisptr))
         
         ret = occ.createWire(cedges)
-            
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -343,8 +342,7 @@ cdef class Wire(Base):
         cdef int ret
         
         ret = occ.project(<c_OCCBase *>face.thisptr)
-            
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -357,8 +355,7 @@ cdef class Wire(Base):
         cdef int ret
         
         ret = occ.offset(distance, joinType)
-            
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -394,8 +391,7 @@ cdef class Wire(Base):
             cradius.push_back(r)
         
         ret = occ.fillet(cvertices, cradius)
-            
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
         
         return self
@@ -431,8 +427,7 @@ cdef class Wire(Base):
             cdistance.push_back(dist)
         
         ret = occ.chamfer(cvertices, cdistance)
-            
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
         
         return self

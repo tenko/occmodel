@@ -181,8 +181,8 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
         } else {
             setErrorMessage("Failed to mesh object");
         }
-        return 1;
+        return 0;
     }
     
-    return 0;
+    return 1;
 }

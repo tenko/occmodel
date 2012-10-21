@@ -110,7 +110,7 @@ cdef class Base:
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef c_OCCStruct3d corigin, cnormal
         
-        if occ.findPlane(&corigin, &cnormal, tolerance) == 1:
+        if occ.findPlane(&corigin, &cnormal, tolerance) == 0:
             return False
         
         if not normal is None:
@@ -173,7 +173,7 @@ cdef class Base:
         cmat.push_back(mat.m[2][3])
         
         ret = occ.transform(cmat, <c_OCCBase *>target.thisptr)
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return target
@@ -203,7 +203,7 @@ cdef class Base:
         cdelta.z = delta[2]
         
         ret = occ.translate(cdelta, <c_OCCBase *>target.thisptr)
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return target
@@ -243,7 +243,7 @@ cdef class Base:
         cp2.z = p2.z
         
         ret = occ.rotate(angle, cp1, cp2, <c_OCCBase *>target.thisptr)
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return target
@@ -274,7 +274,7 @@ cdef class Base:
         cpnt.z = pnt[2]
         
         ret = occ.scale(cpnt, scale, <c_OCCBase *>target.thisptr)
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return target
@@ -308,7 +308,7 @@ cdef class Base:
         cnor.z = plane.zaxis.z
         
         ret = occ.mirror(cpnt, cnor, <c_OCCBase *>target.thisptr)
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return target
@@ -340,7 +340,7 @@ cdef class Base:
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef string cst= string(st)
         
-        if occ.fromString(cst) != 0:
+        if not occ.fromString(cst):
             raise OCCError(errorMessage)
         
         return self

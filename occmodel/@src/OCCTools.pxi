@@ -24,8 +24,7 @@ cdef class Tools:
             cshapes.push_back((<c_OCCBase *>cobj.thisptr))
         
         ret = writeBREP(filename, cshapes)
-        
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return True
@@ -47,8 +46,7 @@ cdef class Tools:
             cshapes.push_back((<c_OCCBase *>cobj.thisptr))
         
         ret = writeSTEP(filename, cshapes)
-        
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return True
@@ -70,8 +68,7 @@ cdef class Tools:
             cshapes.push_back((<c_OCCBase *>cobj.thisptr))
         
         ret = writeSTL(filename, cshapes)
-        
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return True
@@ -93,8 +90,7 @@ cdef class Tools:
             cshapes.push_back((<c_OCCBase *>cobj.thisptr))
         
         ret = writeVRML(filename, cshapes)
-        
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return True
@@ -112,10 +108,10 @@ cdef class Tools:
         cdef Wire wire
         cdef Edge edge
         cdef Vertex vertex
-        cdef int i
+        cdef int i, ret
         
         ret = readBREP(filename, cshapes)
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         if cshapes.size() == 0:
@@ -167,10 +163,10 @@ cdef class Tools:
         cdef Wire wire
         cdef Edge edge
         cdef Vertex vertex
-        cdef int i
+        cdef int i, ret
         
         ret = readSTEP(filename, cshapes)
-        if ret != 0 or cshapes.size() == 0:
+        if not ret or cshapes.size() == 0:
             raise OCCError(errorMessage)
         
         res = []

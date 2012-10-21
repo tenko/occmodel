@@ -146,7 +146,7 @@ cdef class Edge(Base):
             
         ret = occ.createLine(<c_OCCVertex *>vstart.thisptr, <c_OCCVertex *>vend.thisptr)
         
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -181,7 +181,7 @@ cdef class Edge(Base):
         ret = occ.createArc(<c_OCCVertex *>vstart.thisptr,
                             <c_OCCVertex *>vend.thisptr, cpnt)
         
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -217,7 +217,7 @@ cdef class Edge(Base):
         ret = occ.createArc3P(<c_OCCVertex *>vstart.thisptr,
                               <c_OCCVertex *>vend.thisptr, cpnt)
         
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -244,7 +244,7 @@ cdef class Edge(Base):
         
         ret = occ.createCircle(ccen, cnor, radius)
         
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -272,7 +272,7 @@ cdef class Edge(Base):
         
         ret = occ.createEllipse(ccen, cnor, rMajor, rMinor)
         
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -290,7 +290,7 @@ cdef class Edge(Base):
         
         ret = occ.createHelix(pitch, height, radius, angle, leftHanded)
         
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -327,7 +327,7 @@ cdef class Edge(Base):
             ret = occ.createBezier(<c_OCCVertex *>start.thisptr,
                                    <c_OCCVertex *>end.thisptr, cpoints)
             
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -366,7 +366,7 @@ cdef class Edge(Base):
             ret = occ.createSpline(<c_OCCVertex *>start.thisptr,
                                    <c_OCCVertex *>end.thisptr, cpoints, tolerance)
             
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -419,7 +419,7 @@ cdef class Edge(Base):
                                    <c_OCCVertex *>end.thisptr, cpoints,
                                    cknots, cweights, cmults)
             
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self

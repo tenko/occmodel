@@ -122,7 +122,8 @@ cdef class Face(Base):
                         
             cwires.push_back(<c_OCCWire *>wire.thisptr)
             
-        occ.createFace(cwires)
+        if not occ.createFace(cwires):
+            raise OCCError(errorMessage)
         
         return self
         
@@ -161,8 +162,7 @@ cdef class Face(Base):
                 cpoints.push_back(tmp)
             
         ret = occ.createConstrained(cedges, cpoints)
-        
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         if not self.isValid() or self.isNull():
@@ -184,7 +184,6 @@ cdef class Face(Base):
         cdef c_OCCFace *occ = <c_OCCFace *>self.thisptr
         cdef vector[c_OCCStruct3d] cpoints
         cdef c_OCCStruct3d tmp
-        cdef int ret
         
         for point in points:
             tmp.x = point[0]
@@ -192,9 +191,7 @@ cdef class Face(Base):
             tmp.z = point[2]
             cpoints.push_back(tmp)
         
-        ret = occ.createPolygonal(cpoints)
-        
-        if ret != 0:
+        if not occ.createPolygonal(cpoints):
             raise OCCError(errorMessage)
             
         if not self.isValid() or self.isNull():
@@ -239,8 +236,7 @@ cdef class Face(Base):
         cdef int ret
         
         ret = occ.offset(offset, tolerance)
-            
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
         
         return self
@@ -271,7 +267,7 @@ cdef class Face(Base):
         cp2.z = p2[2]
         
         ret = occ.extrude(<c_OCCBase *>shape.thisptr, cp1, cp2)
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -304,7 +300,7 @@ cdef class Face(Base):
         cp2.z = p2[2]
         
         ret = occ.revolve(<c_OCCBase *>shape.thisptr, cp1, cp2, angle)
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -352,7 +348,7 @@ cdef class Face(Base):
         
         ret = occ.sweep(<c_OCCWire *>cspine.thisptr, cprofiles, cornerMode)
         
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -390,7 +386,7 @@ cdef class Face(Base):
         
         ret = occ.loft(cprofiles, ruled, tolerance)
         
-        if ret != 0:
+        if not ret:
             raise OCCError(errorMessage)
             
         return self
@@ -450,7 +446,7 @@ cdef class Face(Base):
         else:
             raise OCCError('uknown operation')
         
-        if ret != 0:
+        if not ret:
             raise OCCError('Failed to create boolean %s' % op)
         
         return self
