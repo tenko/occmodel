@@ -6,6 +6,8 @@ from libc.stdlib cimport malloc, free
 from libc.math cimport fmin, fmax, fabs, copysign
 from libc.math cimport M_PI, sqrt, sin, cos, tan
 
+from cython cimport view
+
 cdef extern from "math.h":
     bint isnan(double x)
     
@@ -42,10 +44,13 @@ cdef class Mesh:
     Mesh - Represent triangle mesh for viewing purpose
     '''
     cdef void *thisptr
+    cdef readonly view.array vertices
+    cdef readonly view.array normals
+    cdef readonly view.array triangles
     
     def __init__(self):
         self.thisptr = new c_OCCMesh()
-      
+        
     def __dealloc__(self):
         cdef c_OCCMesh *tmp
         
@@ -60,6 +65,33 @@ cdef class Mesh:
         args = self.nvertices(), self.ntriangles(), self.nnormals()
         return "(nvertices = %d, ntriangles = %d, nnormals = %d)" % args
     
+    cdef setArrays(self):
+        cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
+        
+        self.vertices = view.array(
+            shape=(3*occ.vertices.size(),),
+            itemsize=sizeof(double),
+            format="d",
+            allocate_buffer=False
+        )
+        self.vertices.data = <char *> &occ.vertices[0]
+        
+        self.normals = view.array(
+            shape=(3*occ.normals.size(),),
+            itemsize=sizeof(double),
+            format="d",
+            allocate_buffer=False
+        )
+        self.normals.data = <char *> &occ.normals[0]
+        
+        self.triangles = view.array(
+            shape=(3*occ.triangles.size(),),
+            itemsize=sizeof(unsigned int),
+            format="I",
+            allocate_buffer=False
+        )
+        self.triangles.data = <char *> &occ.triangles[0]
+      
     cpdef size_t nvertices(self):
         '''
         Return number of vertices

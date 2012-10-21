@@ -100,6 +100,7 @@ cdef class Solid(Base):
             raise OCCError(errorMessage)
         
         ret.thisptr = mesh
+        ret.setArrays()
         return ret
         
     cpdef createSolid(self, faces, double tolerance = 0.):

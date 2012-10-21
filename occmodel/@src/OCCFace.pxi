@@ -83,6 +83,7 @@ cdef class Face(Base):
             raise OCCError(errorMessage)
         
         ret.thisptr = mesh
+        ret.setArrays()
         return ret
     
     cpdef createFace(self, arg):
