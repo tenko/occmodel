@@ -10,21 +10,29 @@ int OCCBase::transform(DVec mat, OCCBase *target)
         if (shape.IsNull())
             StdFail_NotDone::Raise("Null shape");
         
-        gp_Trsf trans;
-        trans.SetValues(
-            mat[0], mat[1], mat[2], mat[3], 
-            mat[4], mat[5], mat[6], mat[7], 
-            mat[8], mat[9], mat[10], mat[11], 
-            0.00001,0.00001
-        );
         // Check if scaling is non-uniform
         double scaleTol = mat[0]*mat[5]*mat[10] - 1.0;
-        if (scaleTol > 1e-6) {
+        if (scaleTol > Precision::Confusion()) {
+            gp_GTrsf trans;
+            int k = 0;
+            for (int i = 1; i <= 3; i++) {
+                for (int j = 1; j <= 4; j++) {
+                    trans.SetValue(i,j,mat[k]);
+                    k += 1;
+                }
+            }
             BRepBuilderAPI_GTransform aTrans(shape, trans, Standard_True);
             aTrans.Build();
             aTrans.Check();
             target->setShape(aTrans.Shape());
         } else {
+            gp_Trsf trans;
+            trans.SetValues(
+                mat[0], mat[1], mat[2], mat[3], 
+                mat[4], mat[5], mat[6], mat[7], 
+                mat[8], mat[9], mat[10], mat[11], 
+                0.00001,0.00001
+            );
             BRepBuilderAPI_Transform aTrans(shape, trans, Standard_True);
             aTrans.Build();
             aTrans.Check();
