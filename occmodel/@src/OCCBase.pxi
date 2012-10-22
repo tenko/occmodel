@@ -121,7 +121,7 @@ cdef class Base:
             
         return True
         
-    cpdef Box boundingBox(self, double tolerance = 1e-12):
+    cpdef AABBox boundingBox(self, double tolerance = 1e-12):
         '''
         Return bounding box
         
@@ -131,10 +131,11 @@ cdef class Base:
             
         cdef c_OCCBase *occ = <c_OCCBase *>self.thisptr
         cdef vector[double] bbox = occ.boundingBox(tolerance)
-        cdef Box ret = Box.__new__(Box, None)
+        cdef AABBox ret = AABBox.__new__(AABBox, None)
         
-        ret.near = Point(bbox[0], bbox[4], bbox[2])
-        ret.far = Point(bbox[3], bbox[1], bbox[5])
+        ret.min = Point(bbox[0], bbox[1], bbox[2])
+        ret.max = Point(bbox[3], bbox[4], bbox[5])
+        
         return ret
     
     cpdef transform(self, Transform mat, bint copy = False):

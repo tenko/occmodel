@@ -2,39 +2,27 @@
 #cython: embedsignature=True
 # Copyright 2012 by Runar Tenfjord, Tenko as.
 # See LICENSE.txt for details on conditions.
+from cython cimport view
 from libc.stdlib cimport malloc, free
 from libc.math cimport fmin, fmax, fabs, copysign
 from libc.math cimport M_PI, sqrt, sin, cos, tan
 
-from cython cimport view
-
 cdef extern from "math.h":
     bint isnan(double x)
-    
+
 from OCCModelLib cimport *
 
 import sys
 import itertools
+
+from geotools cimport Transform, Plane, Point, Vector, AABBox
+from geotools import Transform, Plane, Point, Vector, AABBox
 
 # constants
 cdef double EPSILON = 2.2204460492503131e-16
 cdef double SQRT_EPSILON = 1.490116119385000000e-8
 cdef double ZERO_TOLERANCE = 1.0e-12
 cdef double DEFAULT_ANGLE_TOLERANCE = M_PI/180.
-
-# base classes
-include "Utilities.pxi"
-include "Point.pxi"
-include "Vector.pxi"
-include "Quaternion.pxi"
-include "Box.pxi"
-include "Plane.pxi"
-include "Transform.pxi"
-
-# visual classes
-include "GL.pxi"
-include "GLUT.pxi"
-include "Viewer.pxi"
 
 class OCCError(Exception):
     pass
@@ -213,50 +201,6 @@ cdef class Mesh:
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
         cdef c_OCCStruct3I t = occ.triangles[index]
         return t.i, t.j, t.k
-    
-    cpdef GLVertices(self):
-        '''
-        Apply function pointer 'glVertex3d' to
-        all vertices in mesh.
-        '''
-        cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef c_OCCStruct3f v
-        cdef size_t i
-        
-        for i in range(occ.vertices.size()):
-            v = occ.vertices[i]
-            glVertex3d(v.x, v.y, v.z)
-    
-    cpdef GLTriangles(self):
-        '''
-        Apply function pointer 'glVertex3d' and
-        'glNormal3d' to all triangles in mesh.
-        '''
-        cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef c_OCCStruct3I triangle
-        cdef c_OCCStruct3f a, b, c
-        cdef c_OCCStruct3f na, nb, nc
-        cdef double nx, ny, nz, ll
-        cdef size_t i
-        
-        for i in range(occ.triangles.size()):
-            triangle = occ.triangles[i]
-            a = occ.vertices[triangle.i]
-            b = occ.vertices[triangle.j]
-            c = occ.vertices[triangle.k]
-            
-            na = occ.normals[triangle.i]
-            nb = occ.normals[triangle.j]
-            nc = occ.normals[triangle.k]
-            
-            glNormal3d(na.x,na.y,na.z)
-            glVertex3d(a.x,a.y,a.z)
-            
-            glNormal3d(nb.x,nb.y,nb.z)
-            glVertex3d(b.x,b.y,b.z)
-            
-            glNormal3d(nc.x,nc.y,nc.z)
-            glVertex3d(c.x,c.y,c.z)        
             
 include "OCCTools.pxi"
 include "OCCBase.pxi"

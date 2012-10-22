@@ -28,7 +28,7 @@ cdef class Edge(Base):
     def __iter__(self):
         return VertexIterator(self)
     
-    cpdef Box boundingBox(self, double tolerance = 1e-12):
+    cpdef AABBox boundingBox(self, double tolerance = 1e-12):
         '''
         Return bounding box
         '''

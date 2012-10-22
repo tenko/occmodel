@@ -8,8 +8,8 @@ import unittest
 
 from math import pi, sin, cos, sqrt
 
-from occmodel import Point, Vector
-from occmodel import Edge, Vertex, Plane, Transform, OCCError
+from geotools import Point, Vector, Plane, Transform
+from occmodel import Edge, Vertex, OCCError
 
 class test_Base(unittest.TestCase):
     def almostEqual(self, a, b, places = 7):
@@ -101,8 +101,8 @@ class test_Base(unittest.TestCase):
         bbox = e1.boundingBox()
         
         eq(bbox.isValid(), True)
-        aeq(bbox.near, (-1.,2.,-3.))        
-        aeq(bbox.far, (1.,-2.,3.))
+        aeq(bbox.min, (-1.,-2.,-3.))        
+        aeq(bbox.max, (1.,2.,3.))
     
     def test_transform(self):
         eq = self.almostEqual

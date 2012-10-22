@@ -45,3 +45,4 @@ clean:
 	-rm $(LIB)
 	-rm -rf build
 	-rm occmodel.so
+	-rm occmodel.cpp

@@ -12,9 +12,6 @@ library.
 
 Most of the code have been adapted from the freecad project (GPL 2).
 
-Also some general geometry code have been apdapted from the
-openNURBS library (public domain code)
-
 The license is GPL v2.
 
 Examples

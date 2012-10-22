@@ -6,7 +6,7 @@ function.
 
 .. code-block:: python
 
-    from occmodel import demo
+    from occmodeldemo import demo
     demo()
 
 .. figure:: images/demo_window.jpg
@@ -18,7 +18,7 @@ object to the viewer function.
 
 .. code-block:: python
 
-    from occmodel import viewer
+    from occmodelviewer import viewer
     viewer(solid)
     viewer((solid,face,edge))
 
@@ -27,7 +27,8 @@ the imported geometry.
 
 .. code-block:: python
 
-    from occmodel import viewer, Tools
+    from occmodel import Tools
+    from occmodelviewer import viewer
     objects = Tools.readSTEP('example.stp')
     viewer(objects)
 
