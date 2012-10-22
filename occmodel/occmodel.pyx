@@ -38,15 +38,88 @@ include "Viewer.pxi"
 
 class OCCError(Exception):
     pass
+
+cdef class Tesselation:
+    '''
+    Tesselation - Representing Edge/Wire tesselation which result in
+                  possible multiple disconnected polylines.
+    '''
+    cdef void *thisptr
+    
+    cdef readonly view.array vertices
+    cdef readonly int verticesItemSize
+    
+    cdef readonly view.array ranges
+    cdef readonly int rangesItemSize
+    
+    def __init__(self):
+        self.thisptr = new c_OCCTesselation()
+        
+    def __dealloc__(self):
+        cdef c_OCCTesselation *tmp
+        
+        if self.thisptr != NULL:
+            tmp = <c_OCCTesselation *>self.thisptr
+            del tmp
+    
+    def __str__(self):
+        return "Tesselation%s" % repr(self)
+    
+    def __repr__(self):
+        args = self.nvertices(), self.nranges()
+        return "(nvertices = %d, ranges = %d)" % args
+    
+    cdef setArrays(self):
+        cdef c_OCCTesselation *occ = <c_OCCTesselation *>self.thisptr
+        
+        self.verticesItemSize = sizeof(float)
+        self.rangesItemSize = sizeof(unsigned int)
+        
+        self.vertices = view.array(
+            shape=(3*occ.vertices.size(),),
+            itemsize=sizeof(float),
+            format="f",
+            allocate_buffer=False
+        )
+        self.vertices.data = <char *> &occ.vertices[0]
+        
+        self.ranges = view.array(
+            shape=(occ.ranges.size(),),
+            itemsize=sizeof(unsigned int),
+            format="I",
+            allocate_buffer=False
+        )
+        self.ranges.data = <char *> &occ.ranges[0]
+      
+    cpdef size_t nvertices(self):
+        '''
+        Return number of vertices
+        '''
+        cdef c_OCCTesselation *occ = <c_OCCTesselation *>self.thisptr
+        return occ.vertices.size()
+        
+    cpdef size_t nranges(self):
+        '''
+        Return number of range values
+        '''
+        cdef c_OCCTesselation *occ = <c_OCCTesselation *>self.thisptr
+        return occ.ranges.size()
+        
     
 cdef class Mesh:
     '''
     Mesh - Represent triangle mesh for viewing purpose
     '''
     cdef void *thisptr
+    
     cdef readonly view.array vertices
+    cdef readonly int verticesItemSize
+    
     cdef readonly view.array normals
+    cdef readonly int normalsItemSize
+    
     cdef readonly view.array triangles
+    cdef readonly int trianglesItemSize
     
     def __init__(self):
         self.thisptr = new c_OCCMesh()
@@ -68,18 +141,22 @@ cdef class Mesh:
     cdef setArrays(self):
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
         
+        self.verticesItemSize = sizeof(float)
+        self.normalsItemSize = sizeof(float)
+        self.trianglesItemSize = sizeof(unsigned int)
+        
         self.vertices = view.array(
             shape=(3*occ.vertices.size(),),
-            itemsize=sizeof(double),
-            format="d",
+            itemsize=sizeof(float),
+            format="f",
             allocate_buffer=False
         )
         self.vertices.data = <char *> &occ.vertices[0]
         
         self.normals = view.array(
             shape=(3*occ.normals.size(),),
-            itemsize=sizeof(double),
-            format="d",
+            itemsize=sizeof(float),
+            format="f",
             allocate_buffer=False
         )
         self.normals.data = <char *> &occ.normals[0]
@@ -118,7 +195,7 @@ cdef class Mesh:
         Return vertex at given index
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef c_OCCStruct3d v = occ.vertices[index]
+        cdef c_OCCStruct3f v = occ.vertices[index]
         return v.x, v.y, v.z
     
     cpdef normal(self, size_t index):
@@ -126,7 +203,7 @@ cdef class Mesh:
         Return normal at given vertex index
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef c_OCCStruct3d n = occ.normals[index]
+        cdef c_OCCStruct3f n = occ.normals[index]
         return n.x, n.y, n.z
         
     cpdef triangle(self, size_t index):
@@ -143,7 +220,7 @@ cdef class Mesh:
         all vertices in mesh.
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
-        cdef c_OCCStruct3d v
+        cdef c_OCCStruct3f v
         cdef size_t i
         
         for i in range(occ.vertices.size()):
@@ -157,8 +234,8 @@ cdef class Mesh:
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
         cdef c_OCCStruct3I triangle
-        cdef c_OCCStruct3d a, b, c
-        cdef c_OCCStruct3d na, nb, nc
+        cdef c_OCCStruct3f a, b, c
+        cdef c_OCCStruct3f na, nb, nc
         cdef double nx, ny, nz, ll
         cdef size_t i
         

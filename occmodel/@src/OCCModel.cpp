@@ -47,8 +47,8 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
     int vsize = this->vertices.size();
     std::vector<gp_Vec> normals;
     bool reversed = false;
-    OCCStruct3d vert;
-    OCCStruct3d norm;
+    OCCStruct3f vert;
+    OCCStruct3f norm;
     OCCStruct3I tri;
     
     try {
@@ -72,15 +72,15 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
             z = pnt.Z();
             tr.Transforms(x,y,z);
             
-            vert.x = x;
-            vert.y = y;
-            vert.z = z;
+            vert.x = (float)x;
+            vert.y = (float)y;
+            vert.z = (float)z;
             this->vertices.push_back(vert);
             
             // ensure we have normals for all vertices
-            norm.x = 0.;
-            norm.y = 0.;
-            norm.z = 0.;
+            norm.x = 0.f;
+            norm.y = 0.f;
+            norm.z = 0.f;
             this->normals.push_back(norm);
             
             if (!qualityNormals)
@@ -155,13 +155,13 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
                     normal.Normalize();
                 
                 if (reversed) {
-                    norm.x = -normal.X();
-                    norm.y = -normal.Y();
-                    norm.z = -normal.Z();
+                    norm.x = (float)-normal.X();
+                    norm.y = (float)-normal.Y();
+                    norm.z = (float)-normal.Z();
                 } else {
-                    norm.x = normal.X();
-                    norm.y = normal.Y();
-                    norm.z = normal.Z();
+                    norm.x = (float)normal.X();
+                    norm.y = (float)normal.Y();
+                    norm.z = (float)normal.Z();
                 }
                 this->normals[vsize + i] = norm;
             }
@@ -173,9 +173,9 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
                 if (normal.SquareMagnitude() > 1.0e-10)
                     normal.Normalize();
                 
-                norm.x = normal.X();
-                norm.y = normal.Y();
-                norm.z = normal.Z();
+                norm.x = (float)normal.X();
+                norm.y = (float)normal.Y();
+                norm.z = (float)normal.Z();
                 this->normals[vsize + i] = norm;
             }
         }

@@ -14,7 +14,7 @@ class test_Wire(unittest.TestCase):
     def almostEqual(self, a, b, places = 7):
         for va,vb in zip(a,b):
             self.assertAlmostEqual(va, vb, places)
-            
+    
     def test_createWire(self):
         eq = self.assertEqual
         aeq = self.assertAlmostEqual
@@ -65,8 +65,7 @@ class test_Wire(unittest.TestCase):
         
         w1 = Wire().createPolygon(points, close = False)
         aeq(w1.length(), 3.)
-
-
+    
     def test_offset(self):
         w1 = Wire()
         self.assertRaises(OCCError,w1.offset, 1.)
@@ -121,7 +120,7 @@ class test_Wire(unittest.TestCase):
         e3 = Edge().createLine(p3,p4)
         e4 = Edge().createLine(p4,p1)
         w2 = Wire().createWire((e1,e2,e3,e4))
-        w2.chamfer(0.1,(p2,p3,p4))
+        w2.chamfer(0.1,(p1,p2,p3,p4))
         
         aeq(w1.length(),  w2.length())
     
@@ -136,7 +135,7 @@ class test_Wire(unittest.TestCase):
                 close = val
             )
             eq(w1.isClosed(), val)
-        
+    
 if __name__ == "__main__":
     sys.dont_write_bytecode = True
     unittest.main()

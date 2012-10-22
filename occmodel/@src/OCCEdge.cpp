@@ -54,12 +54,12 @@ int OCCEdge::numVertices()
     return anIndices.Extent();
 }
 
-std::vector<OCCStruct3d> OCCEdge::tesselate(double angular, double curvature)
+OCCTesselation *OCCEdge::tesselate(double angular, double curvature)
 {
-    std::vector<OCCStruct3d> ret;
+    OCCTesselation *ret = new OCCTesselation();
     try {
         Standard_Real start, end;
-        OCCStruct3d vert;
+        OCCStruct3f vert;
         
         TopLoc_Location loc = this->getEdge().Location();
         gp_Trsf location = loc.Transformation();
@@ -72,13 +72,17 @@ std::vector<OCCStruct3d> OCCEdge::tesselate(double angular, double curvature)
         for (Standard_Integer i = 1; i <= TD.NbPoints(); i++)
         {
             gp_Pnt pnt = TD.Value(i).Transformed(location);
-            vert.x = pnt.X();
-            vert.y = pnt.Y();
-            vert.z = pnt.Z();
-            ret.push_back(vert);
+            vert.x = (float)pnt.X();
+            vert.y = (float)pnt.Y();
+            vert.z = (float)pnt.Z();
+            ret->vertices.push_back(vert);
         }
+        
+        ret->ranges.push_back(0);
+        ret->ranges.push_back(ret->vertices.size());
+        
     } catch(Standard_Failure &err) {
-        return ret;
+        return NULL;
     }
     return ret;
 }

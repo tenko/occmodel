@@ -14,6 +14,12 @@ struct OCCStruct3d {
     double z;
 };
 
+struct OCCStruct3f {
+    float x;
+    float y;
+    float z;
+};
+
 struct OCCStruct3I {
     unsigned int i;
     unsigned int j;
@@ -32,10 +38,17 @@ class OCCSolid;
 extern char errorMessage[256];
 void setErrorMessage(const char *err);
 
+class OCCTesselation {
+    public:
+        std::vector<OCCStruct3f> vertices;
+        std::vector<unsigned int> ranges;
+        OCCTesselation() { ; }
+};
+
 class OCCMesh {
     public:
-        std::vector<OCCStruct3d> normals;
-        std::vector<OCCStruct3d> vertices;
+        std::vector<OCCStruct3f> normals;
+        std::vector<OCCStruct3f> vertices;
         std::vector<OCCStruct3I> triangles;
         OCCMesh() { ; }
         int extractFaceMesh(const TopoDS_Face& face, bool qualityNormals);
@@ -142,7 +155,7 @@ class OCCEdge : public OCCBase {
         bool isClosed();
         OCCEdge *copy(bool deepCopy);
         int numVertices();
-        std::vector<OCCStruct3d> tesselate(double factor, double angle);
+        OCCTesselation *tesselate(double factor, double angle);
         int createLine(OCCVertex *start, OCCVertex *end);
         int createArc(OCCVertex *start, OCCVertex *end, OCCStruct3d center);
         int createArc3P(OCCVertex *start, OCCVertex *end, OCCStruct3d pnt);
@@ -198,7 +211,7 @@ class OCCWire : public OCCBase {
         int offset(double distance, int joinType);
         int fillet(std::vector<OCCVertex *> vertices, std::vector<double> radius);
         int chamfer(std::vector<OCCVertex *> vertices, std::vector<double> distances);
-        std::vector<OCCStruct3d> tesselate(double factor, double angle);
+        OCCTesselation *tesselate(double factor, double angle);
         double length();
         bool canSetShape(const TopoDS_Shape& shape) {
             return shape.ShapeType() == TopAbs_WIRE;

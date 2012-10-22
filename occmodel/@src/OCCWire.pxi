@@ -116,24 +116,20 @@ cdef class Wire(Base):
             
         return self
     
-    cpdef tesselate(self, double factor = .1, double angle = .1):
+    cpdef Tesselation tesselate(self, double factor = .1, double angle = .1):
         '''
-        Tesselate wire to a tuple of points according to given
-        max angle or distance factor.
+        Tesselate wire to given max angle or distance factor
         '''
         cdef c_OCCWire *occ = <c_OCCWire *>self.thisptr
-        cdef vector[c_OCCStruct3d] pnts
-        cdef size_t i, size
+        cdef c_OCCTesselation *tess = occ.tesselate(factor, angle)
+        cdef Tesselation ret = Tesselation.__new__(Tesselation, None)
         
-        pnts = occ.tesselate(factor, angle)
+        if tess == NULL:
+            raise OCCError(errorMessage)
         
-        size = pnts.size()
-        if size < 2:
-            raise OCCError('Failed to tesselate wire')
-        
-        ret = [(pnts[i].x, pnts[i].y, pnts[i].z) for i in range(size)]
-        
-        return tuple(ret)
+        ret.thisptr = tess
+        ret.setArrays()
+        return ret
     
     cpdef createRectangle(self, double width = 1., double height = 1., double radius = 0.):
         '''

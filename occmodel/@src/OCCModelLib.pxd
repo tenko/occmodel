@@ -23,14 +23,24 @@ cdef extern from "OCCModel.h":
         double y
         double z
     
+    cdef struct c_OCCStruct3f "OCCStruct3f":
+        float x
+        float y
+        float z
+        
     cdef struct c_OCCStruct3I "OCCStruct3I":
         unsigned int i
         unsigned int j
         unsigned int k
     
+    cdef cppclass c_OCCTesselation "OCCTesselation":
+        vector[c_OCCStruct3f] vertices
+        vector[int] ranges
+        c_OCCTesselation()
+        
     cdef cppclass c_OCCMesh "OCCMesh":
-        vector[c_OCCStruct3d] vertices
-        vector[c_OCCStruct3d] normals
+        vector[c_OCCStruct3f] vertices
+        vector[c_OCCStruct3f] normals
         vector[c_OCCStruct3I] triangles
         c_OCCMesh()
     
@@ -83,7 +93,7 @@ cdef extern from "OCCModel.h":
         bint isClosed()
         c_OCCEdge *copy(bint deepCopy)
         int numVertices()
-        vector[c_OCCStruct3d] tesselate(double factor, double angle)
+        c_OCCTesselation *tesselate(double factor, double angle)
         int createLine(c_OCCVertex *v1, c_OCCVertex *v2)
         int createArc(c_OCCVertex *start, c_OCCVertex *end, c_OCCStruct3d center)
         int createArc3P(c_OCCVertex *start, c_OCCVertex *end, c_OCCStruct3d pnt)
@@ -107,7 +117,7 @@ cdef extern from "OCCModel.h":
         int numVertices()
         int numEdges()
         bint isClosed()
-        vector[c_OCCStruct3d] tesselate(double factor, double angle)
+        c_OCCTesselation *tesselate(double factor, double angle)
         int createWire(vector[c_OCCEdge *] edges)
         int project(c_OCCBase *face)
         int offset(double distance, int joinType)

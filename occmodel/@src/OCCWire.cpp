@@ -189,6 +189,10 @@ int OCCWire::fillet(std::vector<OCCVertex *> vertices, std::vector<double> radiu
     
     BRepFilletAPI_MakeFillet2d MF;
     try {
+        if (this->getShape().IsNull()) {
+            StdFail_NotDone::Raise("Shapes is Null");
+        }
+        
         MF.Init(BRepBuilderAPI_MakeFace(this->getWire()));
         
         for (unsigned i=0; i<vertices.size(); i++) {
@@ -248,6 +252,10 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
     
     BRepFilletAPI_MakeFillet2d MF;
     try {
+        if (this->getShape().IsNull()) {
+            StdFail_NotDone::Raise("Shapes is Null");
+        }
+        
         MF.Init(BRepBuilderAPI_MakeFace(this->getWire()));
         
         // creat map of vertices
@@ -364,16 +372,17 @@ int OCCWire::chamfer(std::vector<OCCVertex *> vertices, std::vector<double> dist
     return 1;
 }
 
-std::vector<OCCStruct3d> OCCWire::tesselate(double angular, double curvature)
+OCCTesselation *OCCWire::tesselate(double angular, double curvature)
 {
-    std::vector<OCCStruct3d> ret;
+    OCCTesselation *ret = new OCCTesselation();
     try {
         Standard_Real start, end;
-        OCCStruct3d dtmp;
+        OCCStruct3f dtmp;
         
         // explore wire edges in connected order
-        int idx = 1;
+        int lastSize = 0, idx = 1;
         BRepTools_WireExplorer exWire;
+        
         for (exWire.Init(this->getWire()); exWire.More(); exWire.Next()) {
             const TopoDS_Edge& edge = exWire.Current();
             TopLoc_Location loc = edge.Location();
@@ -384,27 +393,24 @@ std::vector<OCCStruct3d> OCCWire::tesselate(double angular, double curvature)
             
             GCPnts_TangentialDeflection TD(aCurve, start, end, angular, curvature);
             
+            ret->ranges.push_back(ret->vertices.size());
+            
             for (Standard_Integer i = 1; i <= TD.NbPoints(); i++)
             {
                 if (idx == 1)
                     idx = 2;
                 gp_Pnt pnt = TD.Value(i).Transformed(location);
-                dtmp.x = pnt.X();
-                dtmp.y = pnt.Y();
-                dtmp.z = pnt.Z();
-                ret.push_back(dtmp);
+                dtmp.x = (float)pnt.X();
+                dtmp.y = (float)pnt.Y();
+                dtmp.z = (float)pnt.Z();
+                ret->vertices.push_back(dtmp);
             }
             
-            if (exWire.More()) {
-                // mark new segment as wires
-                dtmp.x = NAN;
-                dtmp.y = NAN;
-                dtmp.z = NAN;
-                ret.push_back(dtmp);
-            }
+            ret->ranges.push_back(ret->vertices.size() - lastSize);
+            lastSize = ret->vertices.size();
         }
     } catch(Standard_Failure &err) {
-        return ret;
+        return NULL;
     }
     return ret;
 }

@@ -99,27 +99,20 @@ cdef class Edge(Base):
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
         return occ.numVertices()
         
-    cpdef tesselate(self, double factor = .1, double angle = .1):
+    cpdef Tesselation tesselate(self, double factor = .1, double angle = .1):
         '''
-        Tesselate edge to a tuple of points according to given
-        max angle or distance factor
+        Tesselate edge to given max angle or distance factor
         '''
         cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
-        cdef vector[c_OCCStruct3d] pnts
-        cdef size_t i, size
+        cdef c_OCCTesselation *tess = occ.tesselate(factor, angle)
+        cdef Tesselation ret = Tesselation.__new__(Tesselation, None)
         
-        if occ.numVertices() == 0:
-            raise OCCError('Failed to tesselate edge')
-                
-        pnts = occ.tesselate(factor, angle)
+        if tess == NULL:
+            raise OCCError(errorMessage)
         
-        size = pnts.size()
-        if size < 2:
-            raise OCCError('Failed to tesselate edge')
-        
-        ret = [(pnts[i].x, pnts[i].y, pnts[i].z) for i in range(size)]
-        
-        return tuple(ret)
+        ret.thisptr = tess
+        ret.setArrays()
+        return ret
         
     cpdef createLine(self, start, end):
         '''
