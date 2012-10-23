@@ -6,19 +6,19 @@ function.
 
 .. code-block:: python
 
-    from occmodel import demo
+    from occmodeldemo import demo
     demo()
 
 .. figure:: images/demo_window.jpg
     
-    Demo window.
+    Demo window including GUI elements.
     
 To view geometrical objects simply pass a sequece of object or a single
 object to the viewer function.
 
 .. code-block:: python
 
-    from occmodel import viewer
+    from occmodelviewer import viewer
     viewer(solid)
     viewer((solid,face,edge))
 
@@ -27,7 +27,8 @@ the imported geometry.
 
 .. code-block:: python
 
-    from occmodel import viewer, Tools
+    from occmodel import Tools
+    from occmodelviewer import viewer
     objects = Tools.readSTEP('example.stp')
     viewer(objects)
 
@@ -49,7 +50,7 @@ wires.
 combine and edit solid objects.
 
 Point and vectors passed to the geometry functions can be any valid
-python sequence of three numbers (Ref: Vector and Point classes)
+python sequence of three numbers.
 
 Edges
 =====

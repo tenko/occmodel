@@ -55,24 +55,25 @@
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <p>Examples are available by executing the demo
 function.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">occmodel</span> <span class="kn">import</span> <span class="n">demo</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">occmodeldemo</span> <span class="kn">import</span> <span class="n">demo</span>
 <span class="n">demo</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="figure">
 <img alt="_images/demo_window.jpg" src="_images/demo_window.jpg" />
-<p class="caption">Demo window.</p>
+<p class="caption">Demo window including GUI elements.</p>
 </div>
 <p>To view geometrical objects simply pass a sequece of object or a single
 object to the viewer function.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">occmodel</span> <span class="kn">import</span> <span class="n">viewer</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">occmodelviewer</span> <span class="kn">import</span> <span class="n">viewer</span>
 <span class="n">viewer</span><span class="p">(</span><span class="n">solid</span><span class="p">)</span>
 <span class="n">viewer</span><span class="p">((</span><span class="n">solid</span><span class="p">,</span><span class="n">face</span><span class="p">,</span><span class="n">edge</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>It is also possible to read objects from a STEP or BREP file and view
 the imported geometry.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">occmodel</span> <span class="kn">import</span> <span class="n">viewer</span><span class="p">,</span> <span class="n">Tools</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">occmodel</span> <span class="kn">import</span> <span class="n">Tools</span>
+<span class="kn">from</span> <span class="nn">occmodelviewer</span> <span class="kn">import</span> <span class="n">viewer</span>
 <span class="n">objects</span> <span class="o">=</span> <span class="n">Tools</span><span class="o">.</span><span class="n">readSTEP</span><span class="p">(</span><span class="s">&#39;example.stp&#39;</span><span class="p">)</span>
 <span class="n">viewer</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span>
 </pre></div>
@@ -90,7 +91,7 @@ wires.</p>
 <p><a class="reference internal" href="content.html#occmodel.Solid" title="occmodel.Solid"><tt class="xref py py-class docutils literal"><span class="pre">occmodel.Solid</span></tt></a> are the main object which contain rich functionalty to
 combine and edit solid objects.</p>
 <p>Point and vectors passed to the geometry functions can be any valid
-python sequence of three numbers (Ref: Vector and Point classes)</p>
+python sequence of three numbers.</p>
 </div>
 <div class="section" id="edges">
 <h1>Edges<a class="headerlink" href="#edges" title="Permalink to this headline">¶</a></h1>
