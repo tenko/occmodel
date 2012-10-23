@@ -12,6 +12,9 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
+CPPFLAGS = ["-fpermissive"]
+OCCINCLUDE = '/usr/include/oce'
+
 OCCLIBS = [
     'FWOSPlugin',
     'PTKernel',
@@ -75,11 +78,12 @@ try:
       ext_modules=[
         Extension("occmodel",
                     sources=["occmodel.pyx"],
-                    depends = ["liboccmodel.a", "@src/OCCModelLib.pxd"] + glob.glob("@src/*.pxi"),
-                    include_dirs = ['@src', '/usr/include/oce'],
+                    depends = ["liboccmodel.a",] + glob.glob("@src/*.pxd") + \
+                              glob.glob("@src/*.pxi"),
+                    include_dirs = ['@src', OCCINCLUDE],
                     library_dirs = ['.'],
-                    libraries = ["occmodel", "GL", "glut", "pthread"] + OCCLIBS,
-                    extra_compile_args = ["-fpermissive"],
+                    libraries = ["occmodel", "pthread"] + OCCLIBS,
+                    extra_compile_args = CPPFLAGS,
                     language="c++"),
         ],
         
