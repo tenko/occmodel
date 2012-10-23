@@ -11,7 +11,7 @@ function.
 
 .. figure:: images/demo_window.jpg
     
-    Demo window.
+    Demo window including GUI elements.
     
 To view geometrical objects simply pass a sequece of object or a single
 object to the viewer function.
@@ -50,7 +50,7 @@ wires.
 combine and edit solid objects.
 
 Point and vectors passed to the geometry functions can be any valid
-python sequence of three numbers (Ref: Vector and Point classes)
+python sequence of three numbers.
 
 Edges
 =====
