@@ -576,18 +576,11 @@ class Viewer(gl.Window):
             # rotate view
             dx = x - lastx
             dy = y - lasty
-            
-            if dx != 0:
-                cam.rotateCamera(0.001*dx, geo.Vector(0.,0.,1.), cam.target)
-            
-            if dy != 0:
-                cam.rotateCamera(0.001*dy, cam.X, cam.target)
+            cam.rotateDeltas(dx, dy)
         
         elif not ui and self.currentButton == gl.MOUSE.RIGHT:
             # pan view
-            d = geo.dot(geo.Vector(cam.Loc - cam.target), cam.Z)
-            dolly_vector = cam.getDollyCameraVector(lastx,lasty,x,y,d)
-            cam.Loc += dolly_vector
+            cam.pan(lastx,lasty,x,y)
             
         self.lastPos = x, y
         self.onRefresh()
@@ -630,59 +623,31 @@ class Viewer(gl.Window):
         self.cam.zoomExtents(self.bbox.min, self.bbox.max)
     
     def onTopView(self):
-        cam = self.cam
-        cam.Loc = geo.Point(0.,0.,100.)
-        cam.Dir = geo.Vector(0., 0., -1.)
-        cam.Up = geo.Vector(0., 1., 0.)
-        cam.updateCameraFrame()
+        self.cam.setTopView()
         self.onZoomExtents()
         
     def onBottomView(self):
-        cam = self.cam
-        cam.Loc = geo.Point(0.,0.,-100.)
-        cam.Dir = geo.Vector(0., 0., 1.)
-        cam.Up = geo.Vector(0., -1., 0.)
-        cam.updateCameraFrame()
+        self.cam.setBottomView()
         self.onZoomExtents()
     
     def onLeftView(self):
-        cam = self.cam
-        cam.Loc = geo.Point(100.,0.,0.)
-        cam.Dir = geo.Vector(-1., 0., 0.)
-        cam.Up = geo.Vector(0., 0., -1.)
-        cam.updateCameraFrame()
+        self.cam.setLeftView()
         self.onZoomExtents()
     
     def onRightView(self):
-        cam = self.cam
-        cam.Loc = geo.Point(-100.,0.,0.)
-        cam.Dir = geo.Vector(1., 0., 0.)
-        cam.Up = geo.Vector(0., 0., -1.)
-        cam.updateCameraFrame()
+        self.cam.setRightView()
         self.onZoomExtents()
     
     def onFrontView(self):
-        cam = self.cam
-        cam.Loc = geo.Point(0.,-100.,0.)
-        cam.Dir = geo.Vector(0., 1., 0.)
-        cam.Up = geo.Vector(0., 0., -1.)
-        cam.updateCameraFrame()
+        self.cam.setFrontView()
         self.onZoomExtents()
     
     def onBackView(self):
-        cam = self.cam
-        cam.Loc = geo.Point(0.,100.,0.)
-        cam.Dir = geo.Vector(0., -1., 0.)
-        cam.Up = geo.Vector(0., 0., -1.)
-        cam.updateCameraFrame()
+        self.cam.setBackView()
         self.onZoomExtents()
     
     def onIsoView(self):
-        cam = self.cam
-        cam.Loc = geo.Point(-57.7,-57.7,57.7)
-        cam.Dir = geo.Vector(.577,.577,-.577)
-        cam.Up = geo.Vector(0., 0., -1.)
-        cam.updateCameraFrame()
+        self.cam.setIsoView()
         self.onZoomExtents()
         
 
