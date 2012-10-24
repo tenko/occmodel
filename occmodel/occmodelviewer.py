@@ -116,12 +116,15 @@ class Viewer(gl.Window):
         
         self.lastPos = 0,0
         self.currentButton = -1
-        self.showUI = True
+        
+        self.uiGradient = True
+        self.screenShotCnt = 1
         
         self.projectionMatrix = geo.Transform()
         self.modelviewMatrix = geo.Transform()
         
-        self.clearColor = gl.ColorRGBA(90,90,90,255)
+        self.clearColor = gl.ColorRGBA(70,70,255,255)
+        self.defaultColor = gl.ColorRGBA(10,10,255,255)
         self.objects = set()
         
         gl.Window.__init__(self, width, height, title, fullscreen)
@@ -129,7 +132,7 @@ class Viewer(gl.Window):
     def addObject(self, obj, color = None):
         
         if color is None:
-            color = COLORS['grey']
+            color = self.defaultColor
             
         elif isinstance(color, basestring):
             if color.lower() in COLORS:
@@ -309,6 +312,42 @@ class Viewer(gl.Window):
         glsl = self.glslPong = gl.ShaderProgram()
         glsl.build(GLSL_VERTEX_PONG, GLSL_FRAG_PONG)
         
+        # Setup gradient background
+        start = .05*self.clearColor
+        end = self.clearColor
+        
+        vertices = array.array('f',(
+            0.,0.,0.,
+            1.,0.,0.,
+            1.,1.,0.,
+            0.,1.,0.
+        ))
+        
+        colors = array.array('f',(
+            start.red/255., start.green/255., start.blue/255.,
+            start.red/255., start.green/255., start.blue/255.,
+            end.red/255., end.green/255., end.blue/255.,
+            end.red/255., end.green/255., end.blue/255.,
+        ))
+        
+        self.gradientIndices = array.array('B',(
+            0, 1, 2,   2, 3, 0,
+        ))
+
+        fsize = vertices.itemsize
+        buffer = self.gradientBuffer = gl.ClientBuffer()
+        buffer.loadData(None, (len(vertices) + len(colors))*fsize)
+        
+        offset = 0
+        size = len(vertices)*fsize
+        buffer.setDataType(gl.VERTEX_ARRAY, gl.FLOAT, 3, 0, 0)
+        buffer.loadData(vertices, size, offset)
+        offset += size
+        
+        size = len(colors)*fsize
+        buffer.setDataType(gl.COLOR_ARRAY, gl.FLOAT, 3, 0, offset)
+        buffer.loadData(colors, size, offset)
+        
     def onSize(self, w, h):
         self.width, self.height = w - 1, h - 1
         
@@ -334,6 +373,23 @@ class Viewer(gl.Window):
         self.makeContextCurrent()
         gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
         
+        # draw gradient
+        if self.uiGradient:
+            self.onGradient()
+        
+        # draw 3d objects
+        self.onObjects()
+        
+        # draw user interface
+        update = self.onUI()
+        self.onFlushUI()
+        
+        self.swapBuffers()
+        
+        if update:
+            self.onRefresh()
+    
+    def onObjects(self):
         gl.Enable(gl.DEPTH_TEST)
         gl.Enable(gl.MULTISAMPLE)
         gl.Enable(gl.DITHER)
@@ -395,48 +451,26 @@ class Viewer(gl.Window):
                 obj.buffer.unBind()
                 
                 self.glslFlat.end()
-        
-        # draw user interface
+    
+    def onGradient(self):
         gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
         gl.Disable(gl.DEPTH_TEST)
         gl.Disable(gl.LIGHTING)
-        gl.Disable(gl.DITHER)
-        gl.Enable(gl.BLEND)
-        gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-        
+        gl.Enable(gl.DITHER)
         gl.MatrixMode(gl.PROJECTION)
         gl.LoadIdentity()
-        gl.Ortho(0,self.width,0,self.height,-1,1)
+        
+        gl.Ortho(0,1,0,1,-1,1)
         gl.MatrixMode(gl.MODELVIEW)
         gl.LoadIdentity()
         
-        update = self.onUI()
-        
-        self.swapBuffers()
-        
-        if update:
-            self.onRefresh()
-    
-    def activeUI(self, x, y):
-        w, h = self.width, self.height
-        y = h - y
-        
-        if not self.showUI:
-            return False
-        
-        if self.ui.anyActive():
-            return True
-            
-        if x >= 10 and x <= 200:
-            if y >= .4*h and y <= h - 10:
-                return True
-        
-        return False
+        self.gradientBuffer.bind()
+        self.glslFlat.begin()
+        gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, self.gradientIndices)
+        self.glslFlat.end()
+        self.gradientBuffer.unBind()
         
     def onUI(self):
-        if not self.showUI:
-            return False
-        
         ui = self.ui
         update = False
         w, h = self.width, self.height
@@ -449,6 +483,7 @@ class Viewer(gl.Window):
         
         ui.label("View presets")
         ui.indent()
+        
         if ui.item('Top', True):
             self.onTopView()
             update = True
@@ -480,11 +515,55 @@ class Viewer(gl.Window):
         ui.unindent()
         ui.separatorLine()
         
+        if ui.check('Gradient background', self.uiGradient, True):
+            self.uiGradient = not self.uiGradient
+            update = True
+            
+        if ui.button('Take screenshot', True):
+            self.onScreenShot()
+            
         ui.endScrollArea()
         ui.endFrame()
-        ui.flush()
         
         return update
+    
+    def onScreenShot(self, prefix = 'screenshot'):
+        img = gl.Image(self.width, self.height, gl.RGBA)
+        gl.ReadPixels(0, 0, img)
+        img.flipY()
+        args = prefix, self.screenShotCnt
+        img.writePNG('%s%2d.png' % args)
+        self.screenShotCnt += 1
+            
+    def onFlushUI(self):
+        # draw gui items
+        gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+        gl.Disable(gl.DEPTH_TEST)
+        gl.Disable(gl.LIGHTING)
+        gl.Disable(gl.DITHER)
+        gl.Enable(gl.BLEND)
+        gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+        
+        gl.MatrixMode(gl.PROJECTION)
+        gl.LoadIdentity()
+        gl.Ortho(0,self.width,0,self.height,-1,1)
+        gl.MatrixMode(gl.MODELVIEW)
+        gl.LoadIdentity()
+        
+        self.ui.flush()
+    
+    def activeUI(self, x, y):
+        w, h = self.width, self.height
+        y = h - y
+        
+        if self.ui.anyActive():
+            return True
+            
+        if x >= 10 and x <= 200:
+            if y >= .4*h and y <= h - 10:
+                return True
+        
+        return False
         
     def onCursorPos(self, x, y):
         width, height = self.width, self.height
@@ -529,10 +608,6 @@ class Viewer(gl.Window):
     def onChar(self, ch):
         if ch == 'f':
             self.onZoomExtents()
-            self.onRefresh()
-            
-        elif ch == 'm':
-            self.showUI = not self.showUI
             self.onRefresh()
     
     def onScroll(self, scx, scy):
@@ -622,7 +697,7 @@ def viewer(objs, colors = None):
         colors = COLORS
         
     mw = Viewer(
-        title = "Viewer ('m' - toggle Menu | 'f' - zoomFit | ESC - Quit | LMB - rotate | RMB - pan | scroll - zoom)"
+        title = "Viewer ('f' - zoomFit | ESC - Quit | LMB - rotate | RMB - pan | scroll - zoom)"
     )
     
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):

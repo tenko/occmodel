@@ -416,6 +416,9 @@ class DemoViewer(Viewer):
         title = "Demo ('m' - toggle Menu | 'f' - zoomFit | ESC - Quit | LMB - rotate | RMB - pan | scroll - zoom)"
         Viewer.__init__(self, -1, -1, title, fullscreen)
         
+        self.uiView = False
+        self.uiDemo = True
+        self.showUI = True
         self.source = ''
         
     def activeUI(self, x, y):
@@ -439,111 +442,131 @@ class DemoViewer(Viewer):
         return False
         
     def onUI(self):
-        if not self.showUI:
-            return False
-        
         ui = self.ui
         update = False
         w, h = self.width, self.height
         x, y = self.lastPos
+        
+        if not self.showUI:
+            # empty gui
+            ui.beginFrame(x,h - y,self.currentButton,0)
+            ui.endFrame()
+            return update
         
         ui.beginFrame(x,h - y,self.currentButton,0)
         
         ui.beginScrollArea("Menu", 10, .4*h, 200, .6*h - 10)
         ui.separatorLine()
         
-        ui.label("View presets")
-        ui.indent()
-        if ui.item('Top', True):
-            self.onTopView()
-            update = True
+        if ui.collapse("View settings", "", self.uiView, True):
+            self.uiView = not self.uiView
         
-        if ui.item('Bottom', True):
-            self.onBottomView()
-            update = True
-        
-        if ui.item('Front', True):
-            self.onFrontView()
-            update = True
-        
-        if ui.item('Back', True):
-            self.onBackView()
-            update = True
-        
-        if ui.item('Left', True):
-            self.onLeftView()
-            update = True
-        
-        if ui.item('Right', True):
-            self.onRightView()
-            update = True
-        
-        if ui.item('Iso', True):
-            self.onIsoView()
-            update = True
+        if self.uiView:
+            ui.indent()
             
-        ui.unindent()
-        ui.separatorLine()
-        
-        ui.label("Demos")
-        ui.indent()
-        
-        ui.label("Edges")
-        ui.indent()
-        if ui.item(Edge_1.NAME, True):
-            self.onSetDemo(Edge_1)
-            update = True
-        
-        ui.unindent()
-        
-        ui.label("Wires")
-        ui.indent()
-        if ui.item(Wire_1.NAME, True):
-            self.onSetDemo(Wire_1)
-            update = True
-        
-        if ui.item(Wire_2.NAME, True):
-            self.onSetDemo(Wire_2)
-            update = True
+            ui.label("View presets")
+            ui.indent()
+            if ui.item('Top', True):
+                self.onTopView()
+                update = True
             
-        ui.unindent()
-        
-        ui.label("Faces")
-        ui.indent()
-        if ui.item(Face_1.NAME, True):
-            self.onSetDemo(Face_1)
-            update = True
-        
-        if ui.item(Face_2.NAME, True):
-            self.onSetDemo(Face_2)
-            update = True
-        
-        if ui.item(Face_3.NAME, True):
-            self.onSetDemo(Face_3)
-            update = True
+            if ui.item('Bottom', True):
+                self.onBottomView()
+                update = True
             
-        ui.unindent()
+            if ui.item('Front', True):
+                self.onFrontView()
+                update = True
+            
+            if ui.item('Back', True):
+                self.onBackView()
+                update = True
+            
+            if ui.item('Left', True):
+                self.onLeftView()
+                update = True
+            
+            if ui.item('Right', True):
+                self.onRightView()
+                update = True
+            
+            if ui.item('Iso', True):
+                self.onIsoView()
+                update = True
+            
+            ui.unindent()
+            
+            if ui.check('Gradient background', self.uiGradient, True):
+                self.uiGradient = not self.uiGradient
+                update = True
+                
+            if ui.button('Take screenshot', True):
+                self.onScreenShot(prefix = 'demoShot')
+            
+            ui.unindent()
+            ui.separatorLine()
         
-        ui.label("Solids")
-        ui.indent()
-        if ui.item(Solid_1.NAME, True):
-            self.onSetDemo(Solid_1)
-            update = True
+        if ui.collapse("Demos", "", self.uiDemo, True):
+            self.uiDemo = not self.uiDemo
         
-        if ui.item(Solid_2.NAME, True):
-            self.onSetDemo(Solid_2)
-            update = True
-        
-        if ui.item(Solid_3.NAME, True):
-            self.onSetDemo(Solid_3)
-            update = True
-        
-        if ui.item(Solid_4.NAME, True):
-            self.onSetDemo(Solid_4)
-            update = True
-        
-        ui.indent()
-        ui.indent()
+        if self.uiDemo:
+            ui.indent()
+            
+            ui.label("Edges")
+            ui.indent()
+            if ui.item(Edge_1.NAME, True):
+                self.onSetDemo(Edge_1)
+                update = True
+            
+            ui.unindent()
+            
+            ui.label("Wires")
+            ui.indent()
+            if ui.item(Wire_1.NAME, True):
+                self.onSetDemo(Wire_1)
+                update = True
+            
+            if ui.item(Wire_2.NAME, True):
+                self.onSetDemo(Wire_2)
+                update = True
+                
+            ui.unindent()
+            
+            ui.label("Faces")
+            ui.indent()
+            if ui.item(Face_1.NAME, True):
+                self.onSetDemo(Face_1)
+                update = True
+            
+            if ui.item(Face_2.NAME, True):
+                self.onSetDemo(Face_2)
+                update = True
+            
+            if ui.item(Face_3.NAME, True):
+                self.onSetDemo(Face_3)
+                update = True
+                
+            ui.unindent()
+            
+            ui.label("Solids")
+            ui.indent()
+            if ui.item(Solid_1.NAME, True):
+                self.onSetDemo(Solid_1)
+                update = True
+            
+            if ui.item(Solid_2.NAME, True):
+                self.onSetDemo(Solid_2)
+                update = True
+            
+            if ui.item(Solid_3.NAME, True):
+                self.onSetDemo(Solid_3)
+                update = True
+            
+            if ui.item(Solid_4.NAME, True):
+                self.onSetDemo(Solid_4)
+                update = True
+            
+            ui.indent()
         
         ui.endScrollArea()
         
@@ -557,8 +580,6 @@ class DemoViewer(Viewer):
             ui.endScrollArea()
             
         ui.endFrame()
-        ui.flush()
-        
         return update
     
     def onSetDemo(self, demo):
@@ -570,6 +591,15 @@ class DemoViewer(Viewer):
             self.addObject(obj)
         
         self.onIsoView()
+            
+    def onChar(self, ch):
+        if ch == 'f':
+            self.onZoomExtents()
+            self.onRefresh()
+            
+        elif ch == 'm':
+            self.showUI = not self.showUI
+            self.onRefresh()
     
 def main():
     mw = DemoViewer()
