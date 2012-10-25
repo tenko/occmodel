@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import sys
 import math
 import array
@@ -145,7 +146,9 @@ class Viewer(gl.Window):
             res.color = color
             
             tess = obj.tesselate()
-            
+            if not tess.isValid():
+                return False
+                
             # update bounding box
             bbox = obj.boundingBox()
             self.bbox.addPoint(bbox.min)
@@ -170,7 +173,9 @@ class Viewer(gl.Window):
             res = FaceObj()
             
             mesh = obj.createMesh()
-            
+            if not mesh.isValid():
+                return False
+                
             # update bounding box
             bbox = obj.boundingBox()
             self.bbox.addPoint(bbox.min)
@@ -227,7 +232,9 @@ class Viewer(gl.Window):
             res = SolidObj()
             
             mesh = obj.createMesh()
-            
+            if not mesh.isValid():
+                return False
+                
             # update bounding box
             bbox = obj.boundingBox()
             self.bbox.addPoint(bbox.min)
@@ -272,6 +279,11 @@ class Viewer(gl.Window):
             )
         
             self.objects.add(res)
+        
+        else:
+            raise GLError('unknown object type')
+            
+        return True
             
     def onSetup(self):
         self.ui = gl.UI()
@@ -651,7 +663,7 @@ class Viewer(gl.Window):
         self.onZoomExtents()
         
 
-def viewer(objs, colors = None):
+def viewer(objs, colors = None, logger = sys.stderr):
     if not isinstance(objs, (tuple,list)):
        objs = (objs,)
     
@@ -668,10 +680,11 @@ def viewer(objs, colors = None):
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
         # skip Null objects.
         if obj.isNull():
-            print("skipped object: '%s'" % str(obj))
+            print("skipped Null object", file=logger)
             continue
         
-        mw.addObject(obj, color)
+        if not mw.addObject(obj, color):
+            print("skipped object", file=logger)
     
     mw.onIsoView()
     mw.mainLoop()

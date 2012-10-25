@@ -37,9 +37,16 @@ cdef class Tesselation:
         args = self.nvertices(), self.nranges()
         return "(nvertices = %d, ranges = %d)" % args
     
+    cpdef bint isValid(self):
+        cdef c_OCCTesselation *occ = <c_OCCTesselation *>self.thisptr
+        return occ.vertices.size() > 0 and occ.ranges.size() > 0
+            
     cdef setArrays(self):
         cdef c_OCCTesselation *occ = <c_OCCTesselation *>self.thisptr
         
+        if not self.isValid():
+            return
+            
         self.verticesItemSize = sizeof(float)
         self.rangesItemSize = sizeof(unsigned int)
         
@@ -106,9 +113,17 @@ cdef class Mesh:
         args = self.nvertices(), self.ntriangles(), self.nnormals()
         return "(nvertices = %d, ntriangles = %d, nnormals = %d)" % args
     
+    cpdef bint isValid(self):
+        cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
+        return occ.vertices.size() > 0 and occ.normals.size() > 0 and \
+               occ.triangles.size() > 0
+      
     cdef setArrays(self):
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
         
+        if not self.isValid():
+            return
+               
         self.verticesItemSize = sizeof(float)
         self.normalsItemSize = sizeof(float)
         self.trianglesItemSize = sizeof(unsigned int)
