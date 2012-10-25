@@ -54,6 +54,10 @@ int extractSubShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes)
     {
         OCCSolid *ret = new OCCSolid();
         ret->setShape(shape);
+        if (!ret->fixShape()) {
+            delete ret;
+            return 0;
+        }
         shapes.push_back((OCCBase *)ret);
         break;
     }
@@ -62,6 +66,10 @@ int extractSubShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes)
     {
         OCCFace *ret = new OCCFace();
         ret->setShape(shape);
+        if (!ret->fixShape()) {
+            delete ret;
+            return 0;
+        }
         shapes.push_back((OCCBase *)ret);
         break;
     }
@@ -69,6 +77,10 @@ int extractSubShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes)
     {
         OCCWire *ret = new OCCWire();
         ret->setShape(shape);
+        if (!ret->fixShape()) {
+            delete ret;
+            return 0;
+        }
         shapes.push_back((OCCBase *)ret);
         break;
     }
@@ -76,6 +88,10 @@ int extractSubShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes)
     {
         OCCEdge *ret = new OCCEdge();
         ret->setShape(shape);
+        if (!ret->fixShape()) {
+            delete ret;
+            return 0;
+        }
         shapes.push_back((OCCBase *)ret);
         break;
     }
@@ -83,6 +99,10 @@ int extractSubShape(const TopoDS_Shape& shape, std::vector<OCCBase *>& shapes)
     {
         OCCVertex *ret = new OCCVertex();
         ret->setShape(shape);
+        if (!ret->fixShape()) {
+            delete ret;
+            return 0;
+        }
         shapes.push_back((OCCBase *)ret);
         break;
     }
