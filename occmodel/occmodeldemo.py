@@ -447,13 +447,17 @@ class DemoViewer(Viewer):
         w, h = self.width, self.height
         x, y = self.lastPos
         
+        scroll = self.uiScroll
+        if scroll != 0:
+            self.uiScroll = 0
+            
         if not self.showUI:
             # empty gui
-            ui.beginFrame(x,h - y,self.currentButton,0)
+            ui.beginFrame(x,h - y,self.currentButton,scroll)
             ui.endFrame()
             return update
         
-        ui.beginFrame(x,h - y,self.currentButton,0)
+        ui.beginFrame(x,h - y,self.currentButton,scroll)
         
         ui.beginScrollArea("Menu", 10, .4*h, 200, .6*h - 10)
         ui.separatorLine()
@@ -572,9 +576,9 @@ class DemoViewer(Viewer):
         
         if self.source:
             ui.beginScrollArea("Source", .5*w, 10, .5*w - 10, 150.)
-            ui.separatorLine()
             for line in self.source.splitlines():
                 if not line.strip():
+                    ui.separator()
                     continue
                 ui.label(line)
             ui.endScrollArea()
@@ -583,7 +587,7 @@ class DemoViewer(Viewer):
         return update
     
     def onSetDemo(self, demo):
-        self.source = demo.TEXT
+        self.source = demo.TEXT.strip()
         
         self.bbox.invalidate()
         self.objects.clear()

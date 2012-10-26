@@ -116,6 +116,8 @@ class Viewer(gl.Window):
         self.bbox.invalidate()
         
         self.lastPos = 0,0
+        self.mouseCenter = geo.Point()
+        self.uiScroll = 0
         self.currentButton = -1
         
         self.uiGradient = True
@@ -488,7 +490,11 @@ class Viewer(gl.Window):
         w, h = self.width, self.height
         x, y = self.lastPos
         
-        ui.beginFrame(x,h - y,self.currentButton,0)
+        scroll = self.uiScroll
+        if scroll != 0:
+            self.uiScroll = 0
+            
+        ui.beginFrame(x,h - y,self.currentButton,scroll)
         ui.beginScrollArea("Menu", 10, .4*h, 200, .6*h - 10)
         
         ui.separatorLine()
@@ -588,11 +594,11 @@ class Viewer(gl.Window):
             # rotate view
             dx = x - lastx
             dy = y - lasty
-            cam.rotateDeltas(dx, dy)
+            cam.rotateDeltas(dx, dy, target = self.mouseCenter)
         
         elif not ui and self.currentButton == gl.MOUSE.RIGHT:
             # pan view
-            cam.pan(lastx,lasty,x,y)
+            cam.pan(lastx, lasty, x, y, target = self.mouseCenter)
             
         self.lastPos = x, y
         self.onRefresh()
@@ -600,6 +606,8 @@ class Viewer(gl.Window):
     def onMouseButton(self, button, action):
         if action == gl.ACTION.PRESS:
             if button in {gl.MOUSE.LEFT, gl.MOUSE.RIGHT}:
+                # temporary rotation center to avoid exponential increase
+                self.mouseCenter.set(self.cam.target)
                 self.currentButton = button
         else:
             self.currentButton = -1
@@ -613,19 +621,21 @@ class Viewer(gl.Window):
     def onChar(self, ch):
         if ch == 'f':
             self.onZoomExtents()
+            self.mouseCenter.set(self.cam.target)
             self.onRefresh()
     
     def onScroll(self, scx, scy):
         x, y = self.lastPos
+        self.uiScroll = -int(scy)
         
-        if self.activeUI(x, y):
-            return
-        
-        delta = 1e-4*scy
-        dx = delta*self.width
-        dy = delta*self.height
-        
-        self.cam.zoomFactor(1. + max(dx,dy), (x, y))
+        if not self.activeUI(x, y):
+            delta = 1e-4*scy
+            dx = delta*self.width
+            dy = delta*self.height
+            
+            self.cam.zoomFactor(1. + max(dx,dy), (x, y))
+            self.mouseCenter.set(self.cam.target)
+            
         self.onRefresh()
         
     def onClose(self):
@@ -633,6 +643,7 @@ class Viewer(gl.Window):
         
     def onZoomExtents(self):
         self.cam.zoomExtents(self.bbox.min, self.bbox.max)
+        self.mouseCenter.set(self.cam.target)
     
     def onTopView(self):
         self.cam.setTopView()
