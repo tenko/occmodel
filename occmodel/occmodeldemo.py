@@ -592,7 +592,7 @@ class DemoViewer(Viewer):
         self.bbox.invalidate()
         self.objects.clear()
         for obj in demo.eval():
-            self.addObject(obj)
+            self.addObject(obj, color = 'grey')
         
         self.onIsoView()
             
