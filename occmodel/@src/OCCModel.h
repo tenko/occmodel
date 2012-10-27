@@ -5,6 +5,7 @@
 #include "OCCIncludes.h"
 #include <math.h>
 #include <vector>
+#include <set>
 #include <sstream>
 #include <limits>
 
@@ -50,6 +51,9 @@ class OCCMesh {
         std::vector<OCCStruct3f> normals;
         std::vector<OCCStruct3f> vertices;
         std::vector<OCCStruct3I> triangles;
+        std::vector<unsigned int> edgeindices;
+        std::vector<int> edgeranges;
+        std::vector<int> edgehash;
         OCCMesh() { ; }
         int extractFaceMesh(const TopoDS_Face& face, bool qualityNormals);
 };

@@ -98,6 +98,7 @@ using std::iostream;
 #include <ShapeFix_Wireframe.hxx>
 #include <BRepMesh.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <ShapeAnalysis.hxx>

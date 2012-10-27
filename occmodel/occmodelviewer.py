@@ -218,7 +218,7 @@ varying vec4 col;
 void main(void)  
 {     
    col = gl_Color;
-   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;  
+   gl_Position = ftransform();
 }
 """
 
@@ -231,7 +231,7 @@ void main (void)
    gl_FragColor = col; 
 }
 """
-        
+
 class Viewer(gl.Window):
     def __init__(self, width = -1, height = -1, title = None, fullscreen = False):
         self.initialized = False
@@ -297,9 +297,12 @@ class Viewer(gl.Window):
             
             self.objects.add(res)
             
-        elif isinstance(obj, occ.Face):
-            res = FaceObj()
-            
+        elif isinstance(obj, (occ.Face, occ.Solid)):
+            if isinstance(obj, occ.Face):
+                res = FaceObj()
+            else:
+                res = SolidObj()
+                
             mesh = obj.createMesh()
             if not mesh.isValid():
                 return False
@@ -332,79 +335,47 @@ class Viewer(gl.Window):
             
             # create tri indices buffer
             tribuffer = res.triBuffer = gl.ClientBuffer(gl.ELEMENT_ARRAY_BUFFER)
-            
             triSize = 3*mesh.ntriangles()
-            triItemSize = mesh.trianglesItemSize
-            
-            tribuffer.loadData(mesh.triangles, triSize*triItemSize)
+            tribuffer.loadData(mesh.triangles, triSize*mesh.trianglesItemSize)
             res.triSize = triSize
             
-            # add material
-            res.frontMaterial = gl.Material(
-                ambient = .3*color,
-                diffuse = color,
-                specular = gl.ColorRGBA(200,200,200,255),
-                shininess = 128.,
-            )
-            
-            res.backMaterial = gl.Material(
-                ambient = .2*color,
-                diffuse = .7*color,
-                specular = gl.ColorRGBA(100,100,100,255),
-                shininess = 128.,
-            )
-        
-            self.objects.add(res)
-        
-        elif isinstance(obj, occ.Solid):
-            res = SolidObj()
-            
-            mesh = obj.createMesh()
-            if not mesh.isValid():
-                return False
+            # create edge indices buffer
+            if mesh.nedgeIndices() > 0:
+                edgebuffer = res.edgeBuffer = gl.ClientBuffer(gl.ELEMENT_ARRAY_BUFFER)
+                res.edgeItemSize = mesh.edgeIndicesItemSize
+                edgebuffer.loadData(mesh.edgeIndices, mesh.nedgeIndices()*res.edgeItemSize)
                 
-            # update bounding box
-            bbox = obj.boundingBox()
-            self.bbox.addPoint(bbox.min)
-            self.bbox.addPoint(bbox.max)
+                # copy edge range object
+                res.range = tuple(mesh.edgeRanges)
+                res.rangeSize = mesh.nedgeRanges()
+            else:
+                res.edgeBuffer = None
+                res.range = None
+                res.rangeSize = 0
             
-            # create vertex & normal buffer
-            buffer = res.buffer = gl.ClientBuffer()
-            
-            vertSize = 3*mesh.nvertices()
-            vertItemSize = mesh.verticesItemSize
-
-            normSize = 3*mesh.nnormals()
-            normItemSize = mesh.normalsItemSize
-            
-            buffer.loadData(None, vertSize*vertItemSize + normSize*normItemSize)
-            
-            offset = 0
-            size = vertSize*vertItemSize
-            buffer.setDataType(gl.VERTEX_ARRAY, gl.FLOAT, 3, 0, 0)
-            buffer.loadData(mesh.vertices, size, offset)
-            offset += size
-            
-            size = normSize*normItemSize
-            buffer.setDataType(gl.NORMAL_ARRAY, gl.FLOAT, 3, 0, offset)
-            buffer.loadData(mesh.normals, size, offset)
-            
-            # create tri indices buffer
-            tribuffer = res.triBuffer = gl.ClientBuffer(gl.ELEMENT_ARRAY_BUFFER)
-            
-            triSize = 3*mesh.ntriangles()
-            triItemSize = mesh.trianglesItemSize
-            
-            tribuffer.loadData(mesh.triangles, triSize*triItemSize)
-            res.triSize = triSize
-            
-            # add material
-            res.material = gl.Material(
-                ambient = .3*color,
-                diffuse = color,
-                specular = gl.ColorRGBA(200,200,200,255),
-                shininess = 128.,
-            )
+            if isinstance(obj, occ.Face):
+                # add material
+                res.frontMaterial = gl.Material(
+                    ambient = .3*color,
+                    diffuse = color,
+                    specular = gl.ColorRGBA(200,200,200,255),
+                    shininess = 128.,
+                )
+                
+                res.backMaterial = gl.Material(
+                    ambient = .2*color,
+                    diffuse = .7*color,
+                    specular = gl.ColorRGBA(100,100,100,255),
+                    shininess = 128.,
+                )
+            else:
+                # add material
+                res.material = gl.Material(
+                    ambient = .3*color,
+                    diffuse = color,
+                    specular = gl.ColorRGBA(200,200,200,255),
+                    shininess = 128.,
+                )
         
             self.objects.add(res)
         
@@ -547,6 +518,7 @@ class Viewer(gl.Window):
         
         for obj in self.objects:
             if isinstance(obj, (SolidObj,FaceObj)):
+                # draw mesh
                 self.glslPong.begin()
                 
                 gl.Enable(gl.LIGHTING)
@@ -566,11 +538,37 @@ class Viewer(gl.Window):
                     obj.material.enable()
                     
                 gl.DrawElements(gl.TRIANGLES, obj.triSize, gl.UNSIGNED_INT, 0)
-                obj.buffer.unBind()
-                obj.triBuffer.unBind()
                 
+                obj.triBuffer.unBind()
+                obj.buffer.unBind()
                 self.glslPong.end()
-            
+                
+                # draw eges
+                if not obj.edgeBuffer is None:
+                    self.glslFlat.begin()
+                    gl.Disable(gl.LIGHTING)
+                    
+                    gl.Color(gl.ColorRGBA(195,195,195,255))
+                    gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+                    gl.Enable(gl.LINE_SMOOTH)
+                    gl.PolygonOffset(1.,0.1)
+                    gl.LineWidth(1.2)
+                    
+                    obj.buffer.bind()
+                    obj.edgeBuffer.bind()
+                    
+                    i = 0
+                    while i < obj.rangeSize:
+                        gl.DrawElements(gl.LINE_STRIP, obj.range[i + 1], gl.UNSIGNED_INT, obj.range[i]*obj.edgeItemSize)
+                        i += 2
+                    
+                    gl.Disable(gl.LINE_SMOOTH)
+                    gl.PolygonOffset(0.,0.)
+                    obj.edgeBuffer.unBind()
+                    obj.buffer.unBind()
+                    
+                    self.glslFlat.end()
+                
             else:
                 self.glslFlat.begin()
                 
@@ -589,6 +587,9 @@ class Viewer(gl.Window):
                     i += 2
                     
                 obj.buffer.unBind()
+                
+                gl.Disable(gl.LINE_SMOOTH)
+                gl.LineWidth(1.0)
                 
                 self.glslFlat.end()
     
@@ -827,7 +828,10 @@ def viewer(objs, colors = None, logger = sys.stderr):
     mw.mainLoop()
     
 if __name__ == '__main__':
-    e1 = occ.Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,-1.),radius = .5)
-    f1 = occ.Face().createConstrained(e1, ((0.,.0,-.5),))
-    
-    viewer((e1,f1))
+    #e1 = occ.Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,-1.),radius = .5)
+    #f1 = occ.Face().createConstrained(e1, ((0.,.0,-.5),))
+    w1 = occ.Wire().createRectangle(width = 1., height = 1., radius = 0.)
+    e1 = occ.Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .25)
+    face = occ.Face().createFace((w1, e1))
+
+    viewer((face,))

@@ -180,6 +180,48 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
             }
         }
         
+        // extract edge indices from mesh
+        std::set<int> seen;
+        for (unsigned int i = 0; i < this->edgehash.size(); i++)
+            seen.insert(this->edgehash[i]);
+        
+        int lastSize = this->edgeindices.size();
+        TopExp_Explorer ex0, ex1;
+        for (ex0.Init(face, TopAbs_WIRE); ex0.More(); ex0.Next()) {
+            const TopoDS_Wire& wire = TopoDS::Wire(ex0.Current());
+            for (ex1.Init(wire, TopAbs_EDGE); ex1.More(); ex1.Next()) {
+                const TopoDS_Edge& edge = TopoDS::Edge(ex1.Current());
+                
+                // skip degenerated edge
+                if (BRep_Tool::Degenerated(edge))
+                    continue;
+                
+                // skip edge if it is a seam
+                if (BRep_Tool::IsClosed(edge, face))
+                    continue;
+                    
+                int hash = edge.HashCode(std::numeric_limits<int>::max());
+                if (seen.count(hash) == 0) {
+                    Handle(Poly_PolygonOnTriangulation) edgepoly = BRep_Tool::PolygonOnTriangulation(edge, triangulation, loc);
+                    if (edgepoly.IsNull()) {
+                        continue;
+                    }
+                    seen.insert(hash);
+                    this->edgehash.push_back(hash);
+                    this->edgeranges.push_back(this->edgeindices.size());
+                    
+                    const TColStd_Array1OfInteger& edgeind = edgepoly->Nodes();
+                    for (int i=edgeind.Lower();i <= edgeind.Upper();i++) {
+                        const unsigned int idx = (unsigned int)edgeind(i);
+                        this->edgeindices.push_back(vsize + idx - 1);
+                    }
+                    
+                    this->edgeranges.push_back(this->edgeindices.size() - lastSize);
+                    lastSize = this->edgeindices.size();
+                }
+            }
+        }
+        
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();

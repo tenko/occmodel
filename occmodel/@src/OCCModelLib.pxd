@@ -42,6 +42,10 @@ cdef extern from "OCCModel.h":
         vector[c_OCCStruct3f] vertices
         vector[c_OCCStruct3f] normals
         vector[c_OCCStruct3I] triangles
+        vector[unsigned int] edgeindices
+        vector[int] edgeranges
+        vector[int] edgehash
+        
         c_OCCMesh()
     
     cdef enum c_BoolOpType "BoolOpType":

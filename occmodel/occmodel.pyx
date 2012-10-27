@@ -96,6 +96,12 @@ cdef class Mesh:
     cdef readonly view.array triangles
     cdef readonly int trianglesItemSize
     
+    cdef readonly view.array edgeIndices
+    cdef readonly int edgeIndicesItemSize
+    
+    cdef readonly view.array edgeRanges
+    cdef readonly int edgeRangesItemSize
+    
     def __init__(self):
         self.thisptr = new c_OCCMesh()
         
@@ -127,6 +133,8 @@ cdef class Mesh:
         self.verticesItemSize = sizeof(float)
         self.normalsItemSize = sizeof(float)
         self.trianglesItemSize = sizeof(unsigned int)
+        self.edgeIndicesItemSize = sizeof(unsigned int)
+        self.edgeRangesItemSize = sizeof(int)
         
         self.vertices = view.array(
             shape=(3*occ.vertices.size(),),
@@ -151,7 +159,25 @@ cdef class Mesh:
             allocate_buffer=False
         )
         self.triangles.data = <char *> &occ.triangles[0]
-      
+        
+        if occ.edgeindices.size() > 0:
+            self.edgeIndices = view.array(
+                shape=(occ.edgeindices.size(),),
+                itemsize=sizeof(unsigned int),
+                format="I",
+                allocate_buffer=False
+            )
+            self.edgeIndices.data = <char *> &occ.edgeindices[0]
+            
+            self.edgeRanges = view.array(
+                shape=(occ.edgeranges.size(),),
+                itemsize=sizeof(int),
+                format="i",
+                allocate_buffer=False
+            )
+            self.edgeRanges.data = <char *> &occ.edgeranges[0]
+          
+          
     cpdef size_t nvertices(self):
         '''
         Return number of vertices
@@ -172,6 +198,20 @@ cdef class Mesh:
         '''
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
         return occ.normals.size()
+    
+    cpdef size_t nedgeIndices(self):
+        '''
+        Return number of edge indices
+        '''
+        cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
+        return occ.edgeindices.size()
+        
+    cpdef size_t nedgeRanges(self):
+        '''
+        Return number of edge ranges
+        '''
+        cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
+        return occ.edgeranges.size()
         
     cpdef vertex(self, size_t index):
         '''

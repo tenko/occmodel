@@ -380,7 +380,7 @@ OCCTesselation *OCCWire::tesselate(double angular, double curvature)
         OCCStruct3f dtmp;
         
         // explore wire edges in connected order
-        int lastSize = 0, idx = 1;
+        int lastSize = 0;
         BRepTools_WireExplorer exWire;
         
         for (exWire.Init(this->getWire()); exWire.More(); exWire.Next()) {
@@ -397,8 +397,6 @@ OCCTesselation *OCCWire::tesselate(double angular, double curvature)
             
             for (Standard_Integer i = 1; i <= TD.NbPoints(); i++)
             {
-                if (idx == 1)
-                    idx = 2;
                 gp_Pnt pnt = TD.Value(i).Transformed(location);
                 dtmp.x = (float)pnt.X();
                 dtmp.y = (float)pnt.Y();
