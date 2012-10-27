@@ -507,7 +507,11 @@ class DemoViewer(Viewer):
             if ui.check('Gradient background', self.uiGradient, True):
                 self.uiGradient = not self.uiGradient
                 update = True
-                
+            
+            if ui.check('Specular material', self.uiSpecular, True):
+                self.uiSpecular = not self.uiSpecular
+                update = True
+            
             if ui.button('Take screenshot', True):
                 self.onScreenShot(prefix = 'demoShot')
             
