@@ -2,6 +2,7 @@
 import math
 
 import geotools as geo
+import gltools as gl
 import occmodel as occ
 from occmodelviewer import Viewer
 
@@ -421,6 +422,9 @@ class DemoViewer(Viewer):
         self.showUI = True
         self.source = ''
         
+        self.defaultColor = gl.ColorRGBA(100,100,100,255)
+        self.edgeColor = gl.ColorRGBA(255,255,255,255)
+        
     def activeUI(self, x, y):
         w, h = self.width, self.height
         y = h - y
@@ -592,7 +596,7 @@ class DemoViewer(Viewer):
         self.bbox.invalidate()
         self.objects.clear()
         for obj in demo.eval():
-            self.addObject(obj, color = 'grey')
+            self.addObject(obj)
         
         self.onIsoView()
             

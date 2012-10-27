@@ -254,6 +254,8 @@ class Viewer(gl.Window):
         
         self.clearColor = gl.ColorRGBA(70,70,255,255)
         self.defaultColor = gl.ColorRGBA(10,10,255,255)
+        self.edgeColor = gl.ColorRGBA(100,100,155,255)
+        
         self.objects = set()
         
         gl.Window.__init__(self, width, height, title, fullscreen)
@@ -527,7 +529,9 @@ class Viewer(gl.Window):
                 self.light2.enable()
         
                 gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
-                
+                gl.Enable(gl.POLYGON_OFFSET_FILL)
+                gl.PolygonOffset(1.,1.)
+                    
                 obj.buffer.bind()
                 obj.triBuffer.bind()
                 
@@ -539,6 +543,7 @@ class Viewer(gl.Window):
                     
                 gl.DrawElements(gl.TRIANGLES, obj.triSize, gl.UNSIGNED_INT, 0)
                 
+                gl.Disable(gl.POLYGON_OFFSET_FILL)
                 obj.triBuffer.unBind()
                 obj.buffer.unBind()
                 self.glslPong.end()
@@ -548,10 +553,9 @@ class Viewer(gl.Window):
                     self.glslFlat.begin()
                     gl.Disable(gl.LIGHTING)
                     
-                    gl.Color(gl.ColorRGBA(195,195,195,255))
+                    gl.Color(self.edgeColor)
                     gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
                     gl.Enable(gl.LINE_SMOOTH)
-                    gl.PolygonOffset(1.,0.1)
                     gl.LineWidth(1.2)
                     
                     obj.buffer.bind()
@@ -563,7 +567,6 @@ class Viewer(gl.Window):
                         i += 2
                     
                     gl.Disable(gl.LINE_SMOOTH)
-                    gl.PolygonOffset(0.,0.)
                     obj.edgeBuffer.unBind()
                     obj.buffer.unBind()
                     
