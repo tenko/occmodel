@@ -36,252 +36,6 @@ class FaceObj(object):
 
 class SolidObj(object):
     pass
-    
-GLSL_VERTEX_PONG = \
-"""
-varying vec3 normal;
-varying vec3 vertex;
-
-void main()
-{
-    // Calculate the normal
-    normal = normalize(gl_NormalMatrix * gl_Normal);
-   
-    // Transform the vertex position to eye space
-    vertex = vec3(gl_ModelViewMatrix * gl_Vertex);
-       
-    gl_Position = ftransform();
-}
-"""
-
-# two sided per-pixel phong shader
-# ref: http://www.gamedev.net/page/resources/_/technical/opengl/creating-a-glsl-library-r2428
-GLSL_FRAG_PONG_COMMON = \
-"""
-#define MAX_LIGHTS 3 
-varying vec3 normal;
-varying vec3 vertex;
-
-float calculateAttenuation(in int i, in float dist)
-{
-    return(1.0 / (gl_LightSource[i].constantAttenuation +
-                  gl_LightSource[i].linearAttenuation * dist +
-                  gl_LightSource[i].quadraticAttenuation * dist * dist));
-}
-
-void directionalLight(in int i, in vec3 N, in float shininess,
-                      inout vec4 ambient, inout vec4 diffuse, inout vec4 specular)
-{
-    vec3 L = normalize(gl_LightSource[i].position.xyz);
-   
-    float nDotL = dot(N, L);
-   
-    if (nDotL > 0.0)
-    {   
-        vec3 H = gl_LightSource[i].halfVector.xyz;
-       
-        float pf = pow(max(dot(N,H), 0.0), shininess);
-
-        diffuse  += gl_LightSource[i].diffuse  * nDotL;
-        specular += gl_LightSource[i].specular * pf;
-    }
-   
-    ambient  += gl_LightSource[i].ambient;
-}
-
-void pointLight(in int i, in vec3 N, in vec3 V, in float shininess,
-                inout vec4 ambient, inout vec4 diffuse, inout vec4 specular)
-{
-    vec3 D = gl_LightSource[i].position.xyz - V;
-    vec3 L = normalize(D);
-
-    float dist = length(D);
-    float attenuation = calculateAttenuation(i, dist);
-
-    float nDotL = dot(N,L);
-
-    if (nDotL > 0.0)
-    {   
-        vec3 E = normalize(-V);
-        vec3 R = reflect(-L, N);
-       
-        float pf = pow(max(dot(R,E), 0.0), shininess);
-
-        diffuse  += gl_LightSource[i].diffuse  * attenuation * nDotL;
-        specular += gl_LightSource[i].specular * attenuation * pf;
-    }
-   
-    ambient  += gl_LightSource[i].ambient * attenuation;
-}
-
-void spotLight(in int i, in vec3 N, in vec3 V, in float shininess,
-               inout vec4 ambient, inout vec4 diffuse, inout vec4 specular)
-{
-    vec3 D = gl_LightSource[i].position.xyz - V;
-    vec3 L = normalize(D);
-
-    float dist = length(D);
-    float attenuation = calculateAttenuation(i, dist);
-
-    float nDotL = dot(N,L);
-
-    if (nDotL > 0.0)
-    {   
-        float spotEffect = dot(normalize(gl_LightSource[i].spotDirection), -L);
-       
-        if (spotEffect > gl_LightSource[i].spotCosCutoff)
-        {
-            attenuation *=  pow(spotEffect, gl_LightSource[i].spotExponent);
-
-            vec3 E = normalize(-V);
-            vec3 R = reflect(-L, N);
-       
-            float pf = pow(max(dot(R,E), 0.0), shininess);
-
-            diffuse  += gl_LightSource[i].diffuse  * attenuation * nDotL;
-            specular += gl_LightSource[i].specular * attenuation * pf;
-        }
-    }
-   
-    ambient  += gl_LightSource[i].ambient * attenuation;
-}
-
-void calculateLighting(in vec3 N, in vec3 V, in float shininess,
-                       inout vec4 ambient, inout vec4 diffuse, inout vec4 specular)
-{
-    // Just loop through each light, and add
-    // its contributions to the color of the pixel.
-    for (int i = 0; i < MAX_LIGHTS - 1; i++)
-    {
-        if (gl_LightSource[i].position.w == 0.0)
-            directionalLight(i, N, shininess, ambient, diffuse, specular);
-        else if (gl_LightSource[i].spotCutoff == 180.0)
-            pointLight(i, N, V, shininess, ambient, diffuse, specular);
-        else
-             spotLight(i, N, V, shininess, ambient, diffuse, specular);
-    }
-}
-"""
-
-GLSL_FRAG_PONG_SPECULAR = \
-"""
-void main()
-{
-    // Normalize the normal. A varying variable CANNOT
-    // be modified by a fragment shader. So a new variable
-    // needs to be created.
-    vec3 n = normalize(normal);
-   
-    vec4 ambient, diffuse, specular, color;
-
-    // Initialize the contributions.
-    ambient  = vec4(0.0);
-    diffuse  = vec4(0.0);
-    specular = vec4(0.0);
-   
-    // In this case the built in uniform gl_MaxLights is used
-    // to denote the number of lights. A better option may be passing
-    // in the number of lights as a uniform or replacing the current
-    // value with a smaller value.
-    calculateLighting(n, vertex, gl_FrontMaterial.shininess,
-                      ambient, diffuse, specular);
-   
-    color  = gl_FrontLightModelProduct.sceneColor  +
-             (ambient  * gl_FrontMaterial.ambient) +
-             (diffuse  * gl_FrontMaterial.diffuse) +
-             (specular * gl_FrontMaterial.specular);
-
-    // Re-initialize the contributions for the back
-    // pass over the lights
-    ambient  = vec4(0.0);
-    diffuse  = vec4(0.0);
-    specular = vec4(0.0);
-          
-    // Now caculate the back contribution. All that needs to be
-    // done is to flip the normal.
-    calculateLighting(-n, vertex, gl_BackMaterial.shininess,
-                      ambient, diffuse, specular);
-
-    color += gl_BackLightModelProduct.sceneColor  +
-             (ambient  * gl_BackMaterial.ambient) +
-             (diffuse  * gl_BackMaterial.diffuse) +
-             (specular * gl_BackMaterial.specular);
-
-    color = clamp(color, 0.0, 1.0);
-   
-    gl_FragColor = color;
-}
-"""
-
-GLSL_FRAG_PONG_DIFFUSE = \
-"""
-void main()
-{
-    // Normalize the normal. A varying variable CANNOT
-    // be modified by a fragment shader. So a new variable
-    // needs to be created.
-    vec3 n = normalize(normal);
-   
-    vec4 ambient, diffuse, specular, color;
-
-    // Initialize the contributions.
-    ambient  = vec4(0.0);
-    diffuse  = vec4(0.0);
-    specular = vec4(0.0);
-   
-    // In this case the built in uniform gl_MaxLights is used
-    // to denote the number of lights. A better option may be passing
-    // in the number of lights as a uniform or replacing the current
-    // value with a smaller value.
-    calculateLighting(n, vertex, gl_FrontMaterial.shininess,
-                      ambient, diffuse, specular);
-   
-    color  = gl_FrontLightModelProduct.sceneColor  +
-             (ambient  * gl_FrontMaterial.ambient) +
-             (diffuse  * gl_FrontMaterial.diffuse);
-
-    // Re-initialize the contributions for the back
-    // pass over the lights
-    ambient  = vec4(0.0);
-    diffuse  = vec4(0.0);
-    specular = vec4(0.0);
-          
-    // Now caculate the back contribution. All that needs to be
-    // done is to flip the normal.
-    calculateLighting(-n, vertex, gl_BackMaterial.shininess,
-                      ambient, diffuse, specular);
-
-    color += gl_BackLightModelProduct.sceneColor  +
-             (ambient  * gl_BackMaterial.ambient) +
-             (diffuse  * gl_BackMaterial.diffuse);
-
-    color = clamp(color, 0.0, 1.0);
-   
-    gl_FragColor = color;
-}
-"""
-
-# simple flat shader for overlay & background
-GLSL_VERTEX_FLAT = \
-"""
-varying vec4 col;
-
-void main(void)  
-{     
-   col = gl_Color;
-   gl_Position = ftransform();
-}
-"""
-
-GLSL_FRAG_FLAT = \
-"""
-varying vec4 col;
-
-void main (void) 
-{ 
-   gl_FragColor = col; 
-}
-"""
 
 class Viewer(gl.Window):
     def __init__(self, width = -1, height = -1, title = None, fullscreen = False):
@@ -294,11 +48,15 @@ class Viewer(gl.Window):
         
         self.lastPos = 0,0
         self.mouseCenter = geo.Point()
-        self.uiScroll = 0
         self.currentButton = -1
         
+        self.uiBuffer = None
+        self.uiActive = False
+        self.uiRefresh = True
+        self.uiScroll = 0
         self.uiGradient = True
         self.uiSpecular = False
+        self.uiEdges = True
         self.screenShotCnt = 1
         
         self.projectionMatrix = geo.Transform()
@@ -472,14 +230,10 @@ class Viewer(gl.Window):
         
         # GLSL
         glsl = self.glslFlat = gl.ShaderProgram()
-        glsl.build(GLSL_VERTEX_FLAT, GLSL_FRAG_FLAT)
+        glsl.flat()
         
-        glsl = self.glslPongSpecular = gl.ShaderProgram()
-        #glsl.build(GLSL_VERTEX_PONG, GLSL_FRAG_PONG_COMMON + GLSL_FRAG_PONG_DIFFUSE)
-        glsl.build(GLSL_VERTEX_PONG, GLSL_FRAG_PONG_COMMON + GLSL_FRAG_PONG_SPECULAR)
-        
-        glsl = self.glslPongDiffuse = gl.ShaderProgram()
-        glsl.build(GLSL_VERTEX_PONG, GLSL_FRAG_PONG_COMMON + GLSL_FRAG_PONG_DIFFUSE)
+        self.glslPongSpecular = gl.ShaderProgram.pongSpecular(3)
+        self.glslPongDiffuse = gl.ShaderProgram.pongDiffuse(3)
         
         # Setup gradient background
         start = .05*self.clearColor
@@ -529,6 +283,9 @@ class Viewer(gl.Window):
             self.makeContextCurrent()
             gl.Viewport(0, 0, self.width, self.height)
             
+            self.uiRefresh = True
+            self.uiBuffer = None
+            
         # initialize
         if not self.initialized:
             self.onSetup()
@@ -536,19 +293,26 @@ class Viewer(gl.Window):
             self.initialized = True
         
     def onRefresh(self):
+        x, y = self.lastPos
+        
         if not self.running:
             return
         
         self.makeContextCurrent()
         gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
         
-        # draw gradient
-        if self.uiGradient:
-            self.onGradient()
-        
-        # draw 3d objects
-        self.onObjects()
-        
+        if self.uiRefresh:
+            # draw gradient
+            if self.uiGradient:
+                self.onGradient()
+            
+            # draw 3d objects
+            self.onObjects()
+            
+            if self.uiActive:
+                # copy to buffer
+                self.uiBuffer.copy()
+                
         # draw user interface
         update = self.onUI()
         self.onFlushUI()
@@ -610,7 +374,7 @@ class Viewer(gl.Window):
                 glsl.end()
                 
                 # draw eges
-                if not obj.edgeBuffer is None:
+                if self.uiEdges and not obj.edgeBuffer is None:
                     self.glslFlat.begin()
                     gl.Disable(gl.LIGHTING)
                     
@@ -662,6 +426,7 @@ class Viewer(gl.Window):
         gl.Disable(gl.DEPTH_TEST)
         gl.Disable(gl.LIGHTING)
         gl.Enable(gl.DITHER)
+        gl.Enable(gl.MULTISAMPLE)
         gl.MatrixMode(gl.PROJECTION)
         gl.LoadIdentity()
         
@@ -731,6 +496,10 @@ class Viewer(gl.Window):
         if ui.check('Specular material', self.uiSpecular, True):
             self.uiSpecular = not self.uiSpecular
             update = True
+        
+        if ui.check('Draw face edges', self.uiEdges, True):
+            self.uiEdges = not self.uiEdges
+            update = True
             
         if ui.button('Take screenshot', True):
             self.onScreenShot()
@@ -754,14 +523,18 @@ class Viewer(gl.Window):
         gl.Disable(gl.DEPTH_TEST)
         gl.Disable(gl.LIGHTING)
         gl.Disable(gl.DITHER)
-        gl.Enable(gl.BLEND)
-        gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
         
         gl.MatrixMode(gl.PROJECTION)
         gl.LoadIdentity()
         gl.Ortho(0,self.width,0,self.height,-1,1)
         gl.MatrixMode(gl.MODELVIEW)
         gl.LoadIdentity()
+        
+        if self.uiActive and not self.uiBuffer is None:
+            self.uiBuffer.blit(0,0)
+        
+        gl.Enable(gl.BLEND)
+        gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
         
         self.ui.flush()
     
@@ -786,21 +559,36 @@ class Viewer(gl.Window):
         ui = self.activeUI(x, y)
         
         viewUpdate = False
-        if not ui and self.currentButton == gl.MOUSE.LEFT:
-            # rotate view
-            viewUpdate = True
-            dx = x - lastx
-            dy = y - lasty
-            cam.rotateDeltas(dx, dy, target = self.mouseCenter)
+        bufferUpdate = False
         
-        elif not ui and self.currentButton == gl.MOUSE.RIGHT:
-            # pan view
+        if ui:
             viewUpdate = True
-            cam.pan(lastx, lasty, x, y, target = self.mouseCenter)
+            if not self.uiActive:
+                self.uiActive = True
+                self.uiRefresh = True
+                
+            if self.uiBuffer is None:
+                self.uiBuffer = gl.TextureRect2D(width, height, 3)
+                self.uiRefresh = True
+        else:
+            if self.uiActive:
+                self.uiActive = False
+                viewUpdate = True
+                
+            if self.currentButton == gl.MOUSE.LEFT:
+                # rotate view
+                dx = x - lastx
+                dy = y - lasty
+                cam.rotateDeltas(dx, dy, target = self.mouseCenter)
+                self.uiRefresh = True
             
-        self.lastPos = x, y
+            elif self.currentButton == gl.MOUSE.RIGHT:
+                # pan view
+                cam.pan(lastx, lasty, x, y, target = self.mouseCenter)
+                self.uiRefresh = True
         
-        if ui or viewUpdate:
+        self.lastPos = x, y
+        if viewUpdate or self.uiRefresh:
             self.onRefresh()
         
     def onMouseButton(self, button, action):
@@ -809,6 +597,7 @@ class Viewer(gl.Window):
                 # temporary rotation center to avoid exponential increase
                 self.mouseCenter.set(self.cam.target)
                 self.currentButton = button
+                self.uiRefresh = True
         else:
             self.currentButton = -1
         
@@ -822,6 +611,7 @@ class Viewer(gl.Window):
         if ch == 'f':
             self.onZoomExtents()
             self.mouseCenter.set(self.cam.target)
+            self.uiRefresh = True
             self.onRefresh()
     
     def onScroll(self, scx, scy):
@@ -835,6 +625,7 @@ class Viewer(gl.Window):
             
             self.cam.zoomFactor(1. + max(dx,dy), (x, y))
             self.mouseCenter.set(self.cam.target)
+            self.uiRefresh = True
             
         self.onRefresh()
         

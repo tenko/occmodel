@@ -512,6 +512,10 @@ class DemoViewer(Viewer):
                 self.uiSpecular = not self.uiSpecular
                 update = True
             
+            if ui.check('Draw face edges', self.uiEdges, True):
+                self.uiEdges = not self.uiEdges
+                update = True
+            
             if ui.button('Take screenshot', True):
                 self.onScreenShot(prefix = 'demoShot')
             
