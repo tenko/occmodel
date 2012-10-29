@@ -37,6 +37,8 @@ class FaceObj(object):
 class SolidObj(object):
     pass
 
+LSHIFT, LCTRL = 1, 2
+
 class Viewer(gl.Window):
     def __init__(self, width = -1, height = -1, title = None, fullscreen = False):
         self.initialized = False
@@ -47,8 +49,10 @@ class Viewer(gl.Window):
         self.bbox.invalidate()
         
         self.lastPos = 0,0
+        self.mouseStart = 0,0
         self.mouseCenter = geo.Point()
         self.currentButton = -1
+        self.keyMod = 0
         
         self.uiBuffer = None
         self.uiActive = False
@@ -200,7 +204,8 @@ class Viewer(gl.Window):
         self.ui = gl.UI()
         gl.ClearColor(self.clearColor)
         gl.ClearDepth(1.)
-        
+        gl.Hint(gl.PERSPECTIVE_CORRECTION_HINT, gl.NICEST)
+        gl.Hint(gl.LINE_SMOOTH_HINT, gl.NICEST)
         gl.InitGLExt()
         
         # Lights
@@ -229,9 +234,7 @@ class Viewer(gl.Window):
         )
         
         # GLSL
-        glsl = self.glslFlat = gl.ShaderProgram()
-        glsl.flat()
-        
+        self.glslFlat = gl.ShaderProgram.flat()
         self.glslPongSpecular = gl.ShaderProgram.pongSpecular(3)
         self.glslPongDiffuse = gl.ShaderProgram.pongDiffuse(3)
         
@@ -315,8 +318,8 @@ class Viewer(gl.Window):
                 
         # draw user interface
         update = self.onUI()
-        self.onFlushUI()
         
+        self.onFlushUI()
         self.swapBuffers()
         
         if update:
@@ -388,7 +391,9 @@ class Viewer(gl.Window):
                     
                     i = 0
                     while i < obj.rangeSize:
-                        gl.DrawElements(gl.LINE_STRIP, obj.range[i + 1], gl.UNSIGNED_INT, obj.range[i]*obj.edgeItemSize)
+                        gl.DrawElements(gl.LINE_STRIP, obj.range[i + 1],
+                                        gl.UNSIGNED_INT,
+                                        obj.range[i]*obj.edgeItemSize)
                         i += 2
                     
                     gl.Disable(gl.LINE_SMOOTH)
@@ -557,7 +562,6 @@ class Viewer(gl.Window):
         cam = self.cam
         
         ui = self.activeUI(x, y)
-        
         viewUpdate = False
         bufferUpdate = False
         
@@ -575,17 +579,28 @@ class Viewer(gl.Window):
                 self.uiActive = False
                 viewUpdate = True
                 
-            if self.currentButton == gl.MOUSE.LEFT:
-                # rotate view
-                dx = x - lastx
-                dy = y - lasty
-                cam.rotateDeltas(dx, dy, target = self.mouseCenter)
-                self.uiRefresh = True
-            
-            elif self.currentButton == gl.MOUSE.RIGHT:
-                # pan view
-                cam.pan(lastx, lasty, x, y, target = self.mouseCenter)
-                self.uiRefresh = True
+            if self.currentButton == gl.MOUSE.RIGHT:
+                if self.keyMod == LSHIFT:
+                    # pan view
+                    cam.pan(lastx, lasty, x, y, target = self.mouseCenter)
+                    self.uiRefresh = True
+                
+                elif self.keyMod == LCTRL:
+                    x0, y0 = self.mouseStart
+                    
+                    dy = y0 - y
+                    factor = 2.**(dy/128.)
+                    
+                    self.cam.zoomFactor(factor, self.mouseStart)
+                    self.mouseCenter.set(self.cam.target)
+                    self.uiRefresh = True
+                    
+                elif self.keyMod == 0:
+                    # rotate view
+                    dx = x - lastx
+                    dy = y - lasty
+                    cam.rotateDeltas(dx, dy, target = self.mouseCenter)
+                    self.uiRefresh = True
         
         self.lastPos = x, y
         if viewUpdate or self.uiRefresh:
@@ -593,20 +608,72 @@ class Viewer(gl.Window):
         
     def onMouseButton(self, button, action):
         if action == gl.ACTION.PRESS:
-            if button in {gl.MOUSE.LEFT, gl.MOUSE.RIGHT}:
+            self.currentButton = button
+            self.uiRefresh = True
+                
+            if button == gl.MOUSE.LEFT:
+                pass
+                
+            elif button  == gl.MOUSE.RIGHT:
+                self.mouseStart = self.lastPos
                 # temporary rotation center to avoid exponential increase
                 self.mouseCenter.set(self.cam.target)
-                self.currentButton = button
-                self.uiRefresh = True
+                
         else:
             self.currentButton = -1
         
         self.onRefresh()
     
     def onKey(self, key, action):
-        if key == gl.KEY.ESCAPE:
-            self.running = False
-    
+        cam = self.cam
+        
+        if action == gl.ACTION.PRESS:
+            if key == gl.KEY.ESCAPE:
+                self.running = False
+            
+            elif key == gl.KEY.LEFT:
+                cam.rotate(math.pi/12., geo.Zaxis)
+                self.uiRefresh = True
+        
+            elif key == gl.KEY.RIGHT:
+                cam.rotate(-math.pi/12., geo.Zaxis)
+                self.uiRefresh = True
+        
+            elif key == gl.KEY.UP:
+                cam.rotate(math.pi/12., cam.X)
+                self.uiRefresh = True
+           
+            elif key == gl.KEY.DOWN:
+                cam.rotate(-math.pi/12., cam.X)
+                self.uiRefresh = True
+            
+            elif key == gl.KEY.PAGE_UP:
+                x, y = .5*self.width, .5*self.height
+                self.cam.zoomFactor(1.15, (x, y))
+                self.mouseCenter.set(self.cam.target)
+                self.uiRefresh = True
+            
+            elif key == gl.KEY.PAGE_DOWN:
+                x, y = .5*self.width, .5*self.height
+                self.cam.zoomFactor(.85, (x, y))
+                self.mouseCenter.set(self.cam.target)
+                self.uiRefresh = True
+               
+            elif key == gl.KEY.LEFT_SHIFT:
+                self.keyMod |= LSHIFT
+            
+            elif key == gl.KEY.LEFT_CONTROL:
+                self.keyMod |= LCTRL
+        else:
+            if key == gl.KEY.LEFT_SHIFT:
+                self.keyMod ^= LSHIFT
+            
+            elif key == gl.KEY.LEFT_CONTROL:
+                self.keyMod ^= LCTRL
+                    
+        if self.uiRefresh:
+            self.onRefresh()
+        
     def onChar(self, ch):
         if ch == 'f':
             self.onZoomExtents()
@@ -676,7 +743,7 @@ def viewer(objs, colors = None, logger = sys.stderr):
         colors = COLORS
         
     mw = Viewer(
-        title = "Viewer ('f' - zoomFit | ESC - Quit | LMB - rotate | RMB - pan | scroll - zoom)"
+        title = "Viewer ('f' - zoomFit | ESC - Quit | RMB - rotate | RMB+LSHIFT - pan | RMB+LCTRL - zoom | MWHEEL - zoom)"
     )
     
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
