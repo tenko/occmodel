@@ -68,9 +68,11 @@ class Viewer(gl.Window):
         
         self.clearColor = gl.ColorRGBA(70,70,255,255)
         self.defaultColor = gl.ColorRGBA(10,10,255,255)
+        self.pickColor = gl.ColorRGBA(255,255,55,255)
         self.edgeColor = gl.ColorRGBA(100,100,155,255)
         
         self.objects = set()
+        self.picked = set()
         
         gl.Window.__init__(self, width, height, title, fullscreen)
     
@@ -202,11 +204,17 @@ class Viewer(gl.Window):
             
     def onSetup(self):
         self.ui = gl.UI()
-        gl.ClearColor(self.clearColor)
         gl.ClearDepth(1.)
         gl.Hint(gl.PERSPECTIVE_CORRECTION_HINT, gl.NICEST)
         gl.Hint(gl.LINE_SMOOTH_HINT, gl.NICEST)
         gl.InitGLExt()
+        
+        # picking material
+        self.pickMat = gl.Material(
+            diffuse = self.pickColor,
+            ambient = .25*self.pickColor,
+            specular = gl.ColorRGBA(255,255,255,255)
+        )
         
         # Lights
         lightMat = gl.Material(
@@ -302,6 +310,7 @@ class Viewer(gl.Window):
             return
         
         self.makeContextCurrent()
+        gl.ClearColor(self.clearColor)
         gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
         
         if self.uiRefresh:
@@ -363,12 +372,15 @@ class Viewer(gl.Window):
                 obj.buffer.bind()
                 obj.triBuffer.bind()
                 
-                if isinstance(obj, FaceObj):
-                    obj.frontMaterial.enable()
-                    obj.backMaterial.enable()
+                if obj in self.picked:
+                    self.pickMat.enable()
                 else:
-                    obj.material.enable()
-                    
+                    if isinstance(obj, FaceObj):
+                        obj.frontMaterial.enable()
+                        obj.backMaterial.enable()
+                    else:
+                        obj.material.enable()
+                        
                 gl.DrawElements(gl.TRIANGLES, obj.triSize, gl.UNSIGNED_INT, 0)
                 
                 gl.Disable(gl.POLYGON_OFFSET_FILL)
@@ -407,7 +419,11 @@ class Viewer(gl.Window):
                 
                 gl.Disable(gl.LIGHTING)
                 
-                gl.Color(obj.color)
+                if obj in self.picked:
+                    gl.Color(self.pickColor)
+                else:
+                    gl.Color(obj.color)
+                    
                 gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
                 gl.Enable(gl.LINE_SMOOTH)
                 gl.LineWidth(1.2)
@@ -426,6 +442,89 @@ class Viewer(gl.Window):
                 
                 self.glslFlat.end()
     
+    def onPick(self):
+        x, y = self.lastPos
+        if self.activeUI(x, y):
+            return False
+        
+        self.makeContextCurrent()
+        gl.ClearColor(COLORS['white'])
+        gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+        
+        gl.Enable(gl.DEPTH_TEST)
+        gl.Disable(gl.MULTISAMPLE)
+        gl.Disable(gl.DITHER)
+        gl.Disable(gl.BLEND)
+        gl.Disable(gl.CULL_FACE)
+        gl.Disable(gl.LIGHTING)
+        
+        gl.MatrixMode(gl.PROJECTION)
+        self.projectionMatrix.cameraToClip(self.cam)
+        gl.LoadMatrixd(self.projectionMatrix)
+        
+        gl.MatrixMode(gl.MODELVIEW)
+        self.modelviewMatrix.worldToCamera(self.cam)
+        gl.LoadMatrixd(self.modelviewMatrix)
+        
+        self.glslFlat.begin()
+        
+        objmap = {}
+        cnt = 1
+        color = gl.ColorRGBA()
+        
+        for obj in self.objects:
+            # set color from counter
+            color.fromInt(cnt)
+            if color.alpha != 0:
+                raise GLError('to many object to pick')
+            color.alpha = 255
+            gl.Color(color)
+            
+            # add object to map
+            objmap[cnt] = obj
+            cnt += 1
+            
+            if isinstance(obj, (SolidObj,FaceObj)):
+                gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+                
+                obj.buffer.bind()
+                obj.triBuffer.bind()
+                
+                gl.DrawElements(gl.TRIANGLES, obj.triSize, gl.UNSIGNED_INT, 0)
+                
+                obj.triBuffer.unBind()
+                obj.buffer.unBind()
+            else:
+                gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+                gl.LineWidth(5)
+                
+                obj.buffer.bind()
+                
+                i = 0
+                while i < obj.rangeSize:
+                    gl.DrawArrays(gl.LINE_STRIP, obj.range[i], obj.range[i + 1])
+                    i += 2
+                    
+                obj.buffer.unBind()
+                gl.LineWidth(1.0)
+            
+        self.glslFlat.end()
+        
+        # fetch color under cursor
+        pickCol = gl.ReadPixel(x, self.height - y)
+        pickCol.alpha = 0
+        key = pickCol.toInt()
+        
+        # clear selection unless shift is presses
+        if not self.keyMod == LSHIFT:
+            self.picked.clear()
+        
+        if key in objmap:
+            self.picked.add(objmap[key])
+            return True
+        
+        return False
+            
     def onGradient(self):
         gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
         gl.Disable(gl.DEPTH_TEST)
@@ -612,7 +711,7 @@ class Viewer(gl.Window):
             self.uiRefresh = True
                 
             if button == gl.MOUSE.LEFT:
-                pass
+                self.onPick()
                 
             elif button  == gl.MOUSE.RIGHT:
                 self.mouseStart = self.lastPos
