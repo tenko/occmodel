@@ -414,7 +414,7 @@ s2 = Solid().createText(1., .25, 'Tenko')
 
 class DemoViewer(Viewer):
     def __init__(self, fullscreen = False):
-        title = "Demo (F1 for help)"
+        title = "Demo (F1 for help - 'm' to toggle menu)"
         Viewer.__init__(self, -1, -1, title, fullscreen)
         
         self.uiView = False
@@ -446,6 +446,9 @@ class DemoViewer(Viewer):
         return False
         
     def onUI(self):
+        if self.uiQuit:
+            return self.onUIQuit()
+            
         if self.uiHelp:
             return self.onUIHelp()
         

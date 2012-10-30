@@ -62,6 +62,7 @@ class Viewer(gl.Window):
         self.uiSpecular = False
         self.uiEdges = True
         self.uiHelp = False
+        self.uiQuit = False
         self.screenShotCnt = 1
         
         self.projectionMatrix = geo.Transform()
@@ -586,8 +587,39 @@ class Viewer(gl.Window):
         ui.endFrame()
         
         return update
+    
+    def onUIQuit(self):
+        ui = self.ui
+        update = False
+        w, h = self.width, self.height
+        x, y = self.lastPos
         
+        ui.beginFrame(x,h - y,self.currentButton,0)
+        W = min(300, w - 50)
+        H = min(150, h - 50)
+        ui.beginArea("Dialog", .5*w - .5*W, .5*h - .5*H, W, H)
+        ui.separatorLine()
+        ui.label('Confirm to quit')
+        
+        if ui.button("Yes", True, 5, H - 35, 40):
+            self.uiQuit = False
+            self.running = False
+            update = True
+        
+        elif ui.button("No", True, W - 50, H - 35, 40):
+            self.uiQuit = False
+            update = True
+        
+        ui.endArea()
+        ui.endFrame()
+        
+        return update
+            
+            
     def onUI(self):
+        if self.uiQuit:
+            return self.onUIQuit()
+        
         if self.uiHelp:
             return self.onUIHelp()
             
@@ -692,7 +724,7 @@ class Viewer(gl.Window):
         w, h = self.width, self.height
         y = h - y
         
-        if self.ui.anyActive() or self.uiHelp:
+        if self.ui.anyActive() or self.uiHelp or self.uiQuit:
             return True
         
         if x >= 10 and x <= 200:
@@ -774,8 +806,9 @@ class Viewer(gl.Window):
         
         if action == gl.ACTION.PRESS:
             if key == gl.KEY.ESCAPE:
-                self.running = False
-            
+                self.uiQuit = True
+                self.uiRefresh = True
+                
             elif key == gl.KEY.F1:
                 self.uiHelp = not self.uiHelp
                 self.uiRefresh = True
@@ -846,7 +879,8 @@ class Viewer(gl.Window):
         self.onRefresh()
         
     def onClose(self):
-        return True
+        self.uiQuit = True
+        return False
         
     def onZoomExtents(self):
         self.cam.zoomExtents(self.bbox.min, self.bbox.max)
