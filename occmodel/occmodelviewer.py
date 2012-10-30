@@ -61,6 +61,7 @@ class Viewer(gl.Window):
         self.uiGradient = True
         self.uiSpecular = False
         self.uiEdges = True
+        self.uiHelp = False
         self.screenShotCnt = 1
         
         self.projectionMatrix = geo.Transform()
@@ -543,8 +544,53 @@ class Viewer(gl.Window):
         gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, self.gradientIndices)
         self.glslFlat.end()
         self.gradientBuffer.unBind()
+    
+    def onUIHelp(self):
+        ui = self.ui
+        update = False
+        w, h = self.width, self.height
+        x, y = self.lastPos
+        
+        ui.beginFrame(x,h - y,self.currentButton,0)
+        W = min(400, w - 50)
+        H = min(600, h - 50)
+        ui.beginArea("Viewer Help", .5*w - .5*W, .5*h - .5*H, W, H)
+        ui.separatorLine()
+        ui.label('Mouse')
+        ui.indent()
+        ui.label('LMB -> Selection')
+        ui.label('LMB + LShift -> Add to Selection')
+        ui.label('RMB + Movement -> Rotation')
+        ui.label('RMB + LShift + Movement -> Pan')
+        ui.label('RMB + LRight + Movement -> Zoom')
+        ui.label('MWheel -> Zoom (towards mouse target)')
+        ui.unindent()
+        ui.separator()
+        ui.label('Keyboard')
+        ui.indent()
+        ui.label('ESC -> Quit')
+        ui.label('F1 - Toggle Help Text')
+        ui.label('Left - Rotate 15 deg around Z axis')
+        ui.label('Right - Rotate -15 deg around Z axis')
+        ui.label('Up - Rotate 15 deg around camera X axis')
+        ui.label('Down - Rotate -15 deg around camera X axis')
+        ui.label('PageUp - Zoom In')
+        ui.label('PageDown - Zoom Out')
+        ui.label('F - Zoom to Extents')
+        
+        if ui.button("OK", True, 5, H - 50, 40):
+            self.uiHelp = False
+            update = True
+        
+        ui.endArea()
+        ui.endFrame()
+        
+        return update
         
     def onUI(self):
+        if self.uiHelp:
+            return self.onUIHelp()
+            
         ui = self.ui
         update = False
         w, h = self.width, self.height
@@ -646,9 +692,9 @@ class Viewer(gl.Window):
         w, h = self.width, self.height
         y = h - y
         
-        if self.ui.anyActive():
+        if self.ui.anyActive() or self.uiHelp:
             return True
-            
+        
         if x >= 10 and x <= 200:
             if y >= .4*h and y <= h - 10:
                 return True
@@ -730,6 +776,10 @@ class Viewer(gl.Window):
             if key == gl.KEY.ESCAPE:
                 self.running = False
             
+            elif key == gl.KEY.F1:
+                self.uiHelp = not self.uiHelp
+                self.uiRefresh = True
+            
             elif key == gl.KEY.LEFT:
                 cam.rotate(math.pi/12., geo.Zaxis)
                 self.uiRefresh = True
@@ -779,7 +829,7 @@ class Viewer(gl.Window):
             self.mouseCenter.set(self.cam.target)
             self.uiRefresh = True
             self.onRefresh()
-    
+        
     def onScroll(self, scx, scy):
         x, y = self.lastPos
         self.uiScroll = -int(scy)
@@ -842,7 +892,7 @@ def viewer(objs, colors = None, logger = sys.stderr):
         colors = COLORS
         
     mw = Viewer(
-        title = "Viewer ('f' - zoomFit | ESC - Quit | RMB - rotate | RMB+LSHIFT - pan | RMB+LCTRL - zoom | MWHEEL - zoom)"
+        title = "Viewer (F1 for help)"
     )
     
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):

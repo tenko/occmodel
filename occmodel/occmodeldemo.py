@@ -414,7 +414,7 @@ s2 = Solid().createText(1., .25, 'Tenko')
 
 class DemoViewer(Viewer):
     def __init__(self, fullscreen = False):
-        title = "Demo ('m' - toggle Menu | 'f' - zoomFit | ESC - Quit | LMB - rotate | RMB - pan | scroll - zoom)"
+        title = "Demo (F1 for help)"
         Viewer.__init__(self, -1, -1, title, fullscreen)
         
         self.uiView = False
@@ -432,7 +432,7 @@ class DemoViewer(Viewer):
         if not self.showUI:
             return False
         
-        if self.ui.anyActive():
+        if self.ui.anyActive() or self.uiHelp:
             return True
         
         if x >= 10 and x <= 200:
@@ -446,6 +446,9 @@ class DemoViewer(Viewer):
         return False
         
     def onUI(self):
+        if self.uiHelp:
+            return self.onUIHelp()
+        
         ui = self.ui
         update = False
         w, h = self.width, self.height
