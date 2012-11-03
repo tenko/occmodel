@@ -4,10 +4,75 @@ import sys
 import math
 import array
 import itertools
+import ctypes
+import atexit
 
 import geotools as geo
 import gltools as gl
 import occmodel as occ
+    
+class InputHookManager(object):
+    """
+    Manage PyOS_InputHook.
+    
+    Code from IPython : BSD License
+    """
+    
+    def __init__(self):
+        self.PYFUNC = ctypes.PYFUNCTYPE(ctypes.c_int)
+        self._reset()
+
+    def _reset(self):
+        self._callback_pyfunctype = None
+        self._callback = None
+        self._installed = False
+    
+    def _get_pyos_inputhook(self):
+        """Return the current PyOS_InputHook as a ctypes.c_void_p."""
+        return ctypes.c_void_p.in_dll(ctypes.pythonapi,"PyOS_InputHook")
+
+    def _get_pyos_inputhook_as_func(self):
+        """Return the current PyOS_InputHook as a ctypes.PYFUNCYPE."""
+        return self.PYFUNC.in_dll(ctypes.pythonapi,"PyOS_InputHook")
+
+    def setInputHook(self, callback):
+        """
+        Set PyOS_InputHook to callback and return the previous one.
+        """
+        self._callback = callback
+        self._callback_pyfunctype = self.PYFUNC(callback)
+        pyos_inputhook_ptr = self._get_pyos_inputhook()
+        original = self._get_pyos_inputhook_as_func()
+        pyos_inputhook_ptr.value = \
+            ctypes.cast(self._callback_pyfunctype, ctypes.c_void_p).value
+        self._installed = True
+        return original
+
+    def clearInputHook(self):
+        """
+        Set PyOS_InputHook to NULL and return the previous one.
+        """
+        pyos_inputhook_ptr = self._get_pyos_inputhook()
+        original = self._get_pyos_inputhook_as_func()
+        pyos_inputhook_ptr.value = ctypes.c_void_p(None).value
+        self._reset()
+        return original
+    
+    def enable(self):
+        # input hook
+        def InputHook():
+            gl.PollEvents()
+            return 0
+    
+        self.setInputHook(InputHook)
+        
+        def removeInputHook(self):
+            gl.Terminate()
+            self.clearInputHook()
+            
+        atexit.register(removeInputHook, self)
+
+inputHookManager = InputHookManager()
 
 COLORS = {
     'red'   :gl.ColorRGBA(255,0,0,255),
@@ -913,9 +978,19 @@ class Viewer(gl.Window):
     def onIsoView(self):
         self.cam.setIsoView()
         self.onZoomExtents()
-        
 
-def viewer(objs, colors = None, logger = sys.stderr):
+def viewer(objs, colors = None, interactive = False, logger = sys.stderr):
+    '''
+    Viewer
+    
+    :objs: Single object or sequence of objects.
+    :colors: Color or sequence of colors. Defaults to COLORS.
+             The object color is cycled from the seqence or set to single color.
+    :interactive: Install input hook for interactive use. Note that the
+                  returned reference to the viewer must be referenced to
+                  keep the viewer alive.
+    :logger: File to write error messages to. Defaults to stderr.
+    '''
     if not isinstance(objs, (tuple,list)):
        objs = (objs,)
     
@@ -930,6 +1005,9 @@ def viewer(objs, colors = None, logger = sys.stderr):
     )
     
     for obj, color in itertools.izip(objs, itertools.cycle(colors)):
+        if obj is None:
+            continue
+        
         # skip Null objects.
         if obj.isNull():
             print("skipped Null object", file=logger)
@@ -939,7 +1017,13 @@ def viewer(objs, colors = None, logger = sys.stderr):
             print("skipped object", file=logger)
     
     mw.onIsoView()
-    mw.mainLoop()
+    mw.running = True
+    
+    if interactive:
+        inputHookManager.enable()
+        return mw
+    else:
+        mw.mainLoop()
     
 if __name__ == '__main__':
     #e1 = occ.Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,-1.),radius = .5)
