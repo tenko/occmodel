@@ -18,15 +18,26 @@ cdef class Base:
     
     def __repr__(self):
         return '()'
+    
+    def __hash__(self):
+        return self.hashCode()
         
     def __richcmp__(self, other, int op):
-        if op == 2:
-            return self.isEqual(other)
-        elif op == 3:
-            return not self.isEqual(other)
+        if not isinstance(other, Base):
+            if op == 2:
+                return False
+            elif op == 3:
+                return True
+            else:
+               raise TypeError('operation not supported')
         else:
-            raise TypeError('operation not supported')
-            
+            if op == 2:
+                return self.hashCode() == other.hashCode()
+            elif op == 3:
+                return self.hashCode() != other.hashCode()
+            else:
+                raise TypeError('operation not supported')
+                
     cdef CheckPtr(self):
         if self.thisptr == NULL:
             raise TypeError('Base object not initialized')

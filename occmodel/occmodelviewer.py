@@ -84,22 +84,20 @@ COLORS = {
     'black' :gl.ColorRGBA(255,255,255,255),
 }
 
-class PolylineObj(object):
+class BaseObj(object):
+    def __init__(self, hashValue):
+        self.__hash = hashValue
+    
+    def hashCode(self):
+        return self.__hash
+        
+class PolylineObj(BaseObj):
     pass
     
-class FaceObj(object):
+class FaceObj(BaseObj):
     pass
 
-class SolidObj(object):
-    pass
-
-class PolylineObj(object):
-    pass
-    
-class FaceObj(object):
-    pass
-
-class SolidObj(object):
+class SolidObj(BaseObj):
     pass
 
 LSHIFT, LCTRL = 1, 2
@@ -139,12 +137,69 @@ class Viewer(gl.Window):
         self.edgeColor = gl.ColorRGBA(100,100,155,255)
         
         self.objects = set()
+        self.drawables = set()
+        self.hidden = set()
         self.picked = set()
         
         gl.Window.__init__(self, width, height, title, fullscreen)
     
-    def addObject(self, obj, color = None):
+    def redraw(self):
+        '''
+        Redraw view
+        '''
+        self.onRefresh()
         
+    def clear(self):
+        '''
+        Remove all objects
+        '''
+        self.bbox.invalidate()
+        self.objects.clear()
+        self.drawables.clear()
+        self.hidden.clear()
+        self.picked.clear()
+    
+    def remove(self, obj):
+        '''
+        Remove object
+        '''
+        self.objects.discard(obj)
+        hid = obj.hashCode()
+        self.drawables.discard(hid)
+        self.hidden.discard(hid)
+        self.picked.discard(hid)
+    
+    def hide(self, obj):
+        '''
+        Hide object
+        '''
+        self.hidden.add(obj.hashCode())
+    
+    def unHide(self, obj = None):
+        '''
+        Unhide object
+        '''
+        if obj is None:
+            self.hidden.clear()
+        else:
+            self.hidden.discard(obj.hashCode())
+    
+    def updateBounds(self):
+        '''
+        Recalculate bounding box
+        '''
+        self.bbox.invalidate()
+        for obj in self.objects:
+            if obj.hashCode() in self.hidden:
+                continue
+            bbox = obj.boundingBox()
+            self.bbox.addPoint(bbox.min)
+            self.bbox.addPoint(bbox.max)
+        
+    def add(self, obj, color = None):
+        '''
+        Add object
+        '''
         if color is None:
             color = self.defaultColor
             
@@ -155,7 +210,7 @@ class Viewer(gl.Window):
                 raise GLError("Unknown color: '%s'" % color)
         
         if isinstance(obj, (occ.Edge, occ.Wire)):
-            res = PolylineObj()
+            res = PolylineObj(obj.hashCode())
             res.color = color
             
             tess = obj.tesselate()
@@ -180,13 +235,14 @@ class Viewer(gl.Window):
             res.range = tuple(tess.ranges)
             res.rangeSize = tess.nranges()
             
-            self.objects.add(res)
+            self.drawables.add(res)
+            self.objects.add(obj)
             
         elif isinstance(obj, (occ.Face, occ.Solid)):
             if isinstance(obj, occ.Face):
-                res = FaceObj()
+                res = FaceObj(obj.hashCode())
             else:
-                res = SolidObj()
+                res = SolidObj(obj.hashCode())
                 
             mesh = obj.createMesh()
             if not mesh.isValid():
@@ -243,6 +299,7 @@ class Viewer(gl.Window):
             if isinstance(obj, occ.Face):
                 # add material
                 res.frontMaterial = gl.Material(
+                    mode = gl.FRONT,
                     ambient = .3*color,
                     diffuse = color,
                     specular = gl.ColorRGBA(200,200,200,255),
@@ -250,6 +307,7 @@ class Viewer(gl.Window):
                 )
                 
                 res.backMaterial = gl.Material(
+                    mode = gl.BACK,
                     ambient = .2*color,
                     diffuse = .7*color,
                     specular = gl.ColorRGBA(100,100,100,255),
@@ -263,8 +321,9 @@ class Viewer(gl.Window):
                     specular = gl.ColorRGBA(200,200,200,255),
                     shininess = 128.,
                 )
-        
-            self.objects.add(res)
+            
+            self.drawables.add(res)
+            self.objects.add(obj)
         
         else:
             raise GLError('unknown object type')
@@ -419,7 +478,10 @@ class Viewer(gl.Window):
         self.modelviewMatrix.worldToCamera(self.cam)
         gl.LoadMatrixd(self.modelviewMatrix)
         
-        for obj in self.objects:
+        for obj in self.drawables:
+            if obj.hashCode() in self.hidden:
+                continue
+                
             if isinstance(obj, (SolidObj,FaceObj)):
                 # draw mesh
                 if self.uiSpecular:
@@ -441,7 +503,7 @@ class Viewer(gl.Window):
                 obj.buffer.bind()
                 obj.triBuffer.bind()
                 
-                if obj in self.picked:
+                if obj.hashCode() in self.picked:
                     self.pickMat.enable()
                 else:
                     if isinstance(obj, FaceObj):
@@ -488,7 +550,7 @@ class Viewer(gl.Window):
                 
                 gl.Disable(gl.LIGHTING)
                 
-                if obj in self.picked:
+                if obj.hashCode() in self.picked:
                     gl.Color(self.pickColor)
                 else:
                     gl.Color(obj.color)
@@ -541,7 +603,10 @@ class Viewer(gl.Window):
         cnt = 1
         color = gl.ColorRGBA()
         
-        for obj in self.objects:
+        for obj in self.drawables:
+            if obj.hashCode() in self.hidden:
+                continue
+                
             # set color from counter
             color.fromInt(cnt)
             if color.alpha != 0:
@@ -550,7 +615,7 @@ class Viewer(gl.Window):
             gl.Color(color)
             
             # add object to map
-            objmap[cnt] = obj
+            objmap[cnt] = obj.hashCode()
             cnt += 1
             
             if isinstance(obj, (SolidObj,FaceObj)):
@@ -630,7 +695,7 @@ class Viewer(gl.Window):
         ui.label('LMB + LShift -> Add to Selection')
         ui.label('RMB + Movement -> Rotation')
         ui.label('RMB + LShift + Movement -> Pan')
-        ui.label('RMB + LRight + Movement -> Zoom')
+        ui.label('RMB + LCtrl + Movement -> Zoom')
         ui.label('MWheel -> Zoom (towards mouse target)')
         ui.unindent()
         ui.separator()
@@ -644,7 +709,9 @@ class Viewer(gl.Window):
         ui.label('Down - Rotate -15 deg around camera X axis')
         ui.label('PageUp - Zoom In')
         ui.label('PageDown - Zoom Out')
-        ui.label('F - Zoom to Extents')
+        ui.label('LCtrl + f - Zoom to Extents')
+        ui.label('LCtrl + h - Hide selected objects')
+        ui.label('LCtrl + H - Show all objects')
         
         if ui.button("OK", True, 5, H - 50, 40):
             self.uiHelp = False
@@ -856,7 +923,9 @@ class Viewer(gl.Window):
             self.uiRefresh = True
                 
             if button == gl.MOUSE.LEFT:
-                self.onPick()
+                x, y = self.lastPos  
+                if not self.activeUI(x, y):
+                    self.onPick()
                 
             elif button  == gl.MOUSE.RIGHT:
                 self.mouseStart = self.lastPos
@@ -907,7 +976,7 @@ class Viewer(gl.Window):
                 self.cam.zoomFactor(.85, (x, y))
                 self.mouseCenter.set(self.cam.target)
                 self.uiRefresh = True
-               
+            
             elif key == gl.KEY.LEFT_SHIFT:
                 self.keyMod |= LSHIFT
             
@@ -924,12 +993,27 @@ class Viewer(gl.Window):
             self.onRefresh()
         
     def onChar(self, ch):
-        if ch == 'f':
-            self.onZoomExtents()
-            self.mouseCenter.set(self.cam.target)
-            self.uiRefresh = True
-            self.onRefresh()
-        
+        if self.keyMod & LCTRL:
+            if ch == 'f':
+                self.onZoomExtents()
+                self.mouseCenter.set(self.cam.target)
+                self.uiRefresh = True
+                self.onRefresh()
+            
+            elif ch == 'h':
+                if self.picked:
+                    self.hidden.update(self.picked)
+                    self.updateBounds()
+                    self.picked.clear()
+                    self.uiRefresh = True
+                    self.onRefresh()
+            
+            elif ch == 'H':
+                self.hidden.clear()
+                self.updateBounds()
+                self.uiRefresh = True
+                self.onRefresh()
+            
     def onScroll(self, scx, scy):
         x, y = self.lastPos
         self.uiScroll = -int(scy)
@@ -1015,7 +1099,7 @@ def viewer(objs, colors = None, interactive = False, logger = sys.stderr):
             print("skipped Null object", file=logger)
             continue
         
-        if not mw.addObject(obj, color):
+        if not mw.add(obj, color):
             print("skipped object", file=logger)
     
     mw.onIsoView()

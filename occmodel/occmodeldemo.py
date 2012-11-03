@@ -608,20 +608,18 @@ class DemoViewer(Viewer):
         self.source = demo.TEXT.strip()
         
         self.bbox.invalidate()
-        self.objects.clear()
+        self.clear()
         for obj in demo.eval():
-            self.addObject(obj)
+            self.add(obj)
         
         self.onIsoView()
             
-    def onChar(self, ch):
-        if ch == 'f':
-            self.onZoomExtents()
-            self.onRefresh()
-            
-        elif ch == 'm':
+    def onChar(self, ch):    
+        if ch == 'm':
             self.showUI = not self.showUI
             self.onRefresh()
+        
+        Viewer.onChar(self, ch)
     
 def main():
     mw = DemoViewer()
