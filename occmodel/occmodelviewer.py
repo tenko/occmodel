@@ -26,6 +26,7 @@ class InputHookManager(object):
         self._callback_pyfunctype = None
         self._callback = None
         self._installed = False
+        self._windows = set()
     
     def _get_pyos_inputhook(self):
         """Return the current PyOS_InputHook as a ctypes.c_void_p."""
@@ -58,10 +59,18 @@ class InputHookManager(object):
         self._reset()
         return original
     
-    def enable(self):
+    def enable(self, win):
+        self._windows.add(win)
+        
         # input hook
-        def InputHook():
+        def InputHook(windows = self._windows):
             gl.PollEvents()
+            # check for exceptions
+            for win in windows:
+                if not win.error is None:
+                    error = win.error
+                    win.error = None
+                    raise error
             return 0
     
         self.setInputHook(InputHook)
@@ -1106,7 +1115,7 @@ def viewer(objs, colors = None, interactive = False, logger = sys.stderr):
     mw.running = True
     
     if interactive:
-        inputHookManager.enable()
+        inputHookManager.enable(mw)
         return mw
     else:
         mw.mainLoop()
