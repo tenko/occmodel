@@ -123,7 +123,14 @@ cdef class Mesh:
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
         return occ.vertices.size() > 0 and occ.normals.size() > 0 and \
                occ.triangles.size() > 0
-      
+    
+    cpdef optimize(self):
+        '''
+        Vertex Cache Optimisation
+        '''
+        cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
+        occ.optimize()
+               
     cdef setArrays(self):
         cdef c_OCCMesh *occ = <c_OCCMesh *>self.thisptr
         

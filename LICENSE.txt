@@ -9,6 +9,10 @@ Code based on freecad :
     http://sourceforge.net/projects/free-cad/
     License - GPL v2, several authors (Check site)
 
+Mesh optimize code based on Horde3D :
+    http://http://www.horde3d.org/
+    License - Eclipse Public License v1.0, several authors (Check site)
+    
 Truetype code:
     stb_truetype.h - v0.6c - public domain
     authored from 2009-2012 by Sean Barrett / RAD Game Tools

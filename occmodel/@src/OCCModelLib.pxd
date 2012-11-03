@@ -47,6 +47,7 @@ cdef extern from "OCCModel.h":
         vector[int] edgehash
         
         c_OCCMesh()
+        void optimize()
     
     cdef enum c_BoolOpType "BoolOpType":
         BOOL_FUSE

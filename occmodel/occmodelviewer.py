@@ -191,7 +191,9 @@ class Viewer(gl.Window):
             mesh = obj.createMesh()
             if not mesh.isValid():
                 return False
-                
+            
+            mesh.optimize()
+            
             # update bounding box
             bbox = obj.boundingBox()
             self.bbox.addPoint(bbox.min)

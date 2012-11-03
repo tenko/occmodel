@@ -235,3 +235,225 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
     
     return 1;
 }
+
+void OCCMesh::optimize() {
+    //printf("calcCacheEfficiency1 = %f\n", MeshOptimizer::calcCacheEfficiency(this));
+    MeshOptimizer::optimizeIndexOrder(this);
+    //printf("calcCacheEfficiency2 = %f\n\n", MeshOptimizer::calcCacheEfficiency(this));
+}
+        
+void OptVertex::updateScore(int cacheIndex)
+{
+	if(faces.empty())
+	{	
+		score = 0;
+		return;
+	}
+	
+	// The constants used here are coming from the paper
+	if(cacheIndex < 0) score = 0;				// Not in cache
+	else if(cacheIndex < 3) score = 0.75f;	// Among three most recent vertices
+	else score = pow(1.0f - ((cacheIndex - 3) / MeshOptimizer::maxCacheSize), 1.5f);
+
+	score += 2.0f * pow((float)faces.size(), -0.5f);
+}
+
+void MeshOptimizer::optimizeIndexOrder(OCCMesh *mesh)
+{
+	// Implementation of Linear-Speed Vertex Cache Optimisation by Tom Forsyth
+	// (see http://home.comcast.net/~tom_forsyth/papers/fast_vert_cache_opt.html)
+	const size_t nvertices = mesh->vertices.size();
+	const size_t nindices = mesh->triangles.size();
+	if(nindices == 0) return;
+    
+    std::vector<OptVertex> verts(nvertices);
+	std::set<OptFace *> faces;
+	std::list<OptVertex *> cache;
+    
+    // Build vertex and triangle structures
+	for(unsigned int i = 0; i < nindices; ++i)
+	{
+		std::set<OptFace *>::iterator itr1 = faces.insert(faces.begin(), new OptFace());
+		OptFace *face = (*itr1);
+		
+        const OCCStruct3I *tri = &mesh->triangles[i];
+		face->verts[0] = &verts[tri->i];
+		face->verts[1] = &verts[tri->j];
+		face->verts[2] = &verts[tri->k];
+		face->verts[0]->faces.insert(face);
+		face->verts[1]->faces.insert(face);
+		face->verts[2]->faces.insert(face);
+	}
+    for( unsigned int i = 0; i < nvertices; ++i )
+	{
+		verts[i].index = i;
+		verts[i].updateScore( -1 );
+	}
+    
+    // Main loop of algorithm
+	unsigned int curIndex = 0;
+	
+    while( !faces.empty() )
+	{
+		OptFace *bestFace = 0x0;
+		float bestScore = -1.0f;
+		
+		// Try to find best scoring face in cache
+		std::list<OptVertex *>::iterator itr1 = cache.begin();
+		while(itr1 != cache.end())
+		{
+			std::set<OptFace *>::iterator itr2 = (*itr1)->faces.begin();
+			while(itr2 != (*itr1)->faces.end())
+			{
+				if((*itr2)->getScore() > bestScore)
+				{
+					bestFace = *itr2;
+					bestScore = bestFace->getScore();
+				}
+				++itr2;
+			}
+			++itr1;
+		}
+        
+        // If that didn't work find it in the complete list of triangles
+		if(bestFace == 0x0)
+		{
+			std::set<OptFace *>::iterator itr2 = faces.begin();
+			while(itr2 != faces.end())
+			{
+				if((*itr2)->getScore() > bestScore)
+				{
+					bestFace = (*itr2);
+					bestScore = bestFace->getScore();
+				}
+				++itr2;
+			}
+		}
+        
+        // Process vertices of best face
+        OCCStruct3I *tri = &mesh->triangles[curIndex++];
+        tri->i = bestFace->verts[0]->index;
+        tri->j = bestFace->verts[1]->index;
+        tri->k = bestFace->verts[2]->index;
+        
+		for( unsigned int i = 0; i < 3; ++i )
+		{
+			// Move vertex to head of cache
+			itr1 = find(cache.begin(), cache.end(), bestFace->verts[i]);
+			if(itr1 != cache.end() ) cache.erase( itr1);
+			cache.push_front(bestFace->verts[i]);
+
+			// Remove face from vertex lists
+			bestFace->verts[i]->faces.erase(bestFace);
+		}
+        
+        // Remove best face
+		faces.erase(faces.find(bestFace));
+		delete bestFace;
+        
+        // Update scores of vertices in cache
+		unsigned int cacheIndex = 0;
+		for(itr1 = cache.begin(); itr1 != cache.end(); ++itr1)
+		{
+			(*itr1)->updateScore( cacheIndex++ );
+		}
+
+		// Trim cache
+		for(unsigned int i = cache.size(); i > maxCacheSize; --i)
+		{
+			cache.pop_back();
+		}
+    }
+    
+    // Remap vertices to make access to them as linear as possible
+	std::map<unsigned int, unsigned int> mapping;
+	unsigned int curVertex = 0;
+    
+    for(unsigned int i = 0; i < nindices; ++i)
+	{
+        OCCStruct3I *tri = &mesh->triangles[i];
+        
+        std::map<unsigned int, unsigned int>::iterator itr1 = mapping.find(tri->i);
+		if(itr1 == mapping.end())
+		{
+			mapping[tri->i] = curVertex;
+			tri->i = curVertex++;
+		}
+		else
+		{
+			tri->i = itr1->second;
+		}
+        
+        std::map<unsigned int, unsigned int>::iterator itr2 = mapping.find(tri->j);
+		if(itr2 == mapping.end())
+		{
+			mapping[tri->j] = curVertex;
+			tri->j = curVertex++;
+		}
+		else
+		{
+			tri->j = itr2->second;
+		}
+        
+        std::map<unsigned int, unsigned int>::iterator itr3 = mapping.find(tri->k);
+		if(itr3 == mapping.end())
+		{
+			mapping[tri->k] = curVertex;
+			tri->k = curVertex++;
+		}
+		else
+		{
+			tri->k = itr3->second;
+		}
+    }
+    
+    std::vector<OCCStruct3f> oldVertices(mesh->vertices.begin(),  mesh->vertices.end());
+    std::vector<OCCStruct3f> oldNormals(mesh->normals.begin(), mesh->normals.end());    
+    for(std::map<unsigned int, unsigned int>::iterator itr1 = mapping.begin();
+        itr1 != mapping.end(); ++itr1 )
+	{
+		mesh->vertices[itr1->second] = oldVertices[itr1->first];
+		mesh->normals[itr1->second] = oldNormals[itr1->first];
+	}
+    
+    for(unsigned int i = 0; i < mesh->edgeindices.size(); ++i)
+	{
+        mesh->edgeindices[i] = mapping[mesh->edgeindices[i]];
+    }
+}
+
+float MeshOptimizer::calcCacheEfficiency(OCCMesh *mesh,
+                                         const unsigned int cacheSize)
+{	
+	// Measure efficiency of index array regarding post-transform vertex cache
+	unsigned int misses = 0;
+    const unsigned int nindices = mesh->triangles.size();
+	std::list<unsigned int> testCache;
+    for(unsigned int i = 0; i < nindices; ++i)
+	{
+        OCCStruct3I *tri = &mesh->triangles[i];
+		if(std::find(testCache.begin(), testCache.end(), tri->i) == testCache.end())
+		{
+			testCache.push_back(tri->i);
+			if(testCache.size() > cacheSize) testCache.erase(testCache.begin());
+			++misses;
+		}
+        if(std::find(testCache.begin(), testCache.end(), tri->j) == testCache.end())
+		{
+			testCache.push_back(tri->j);
+			if(testCache.size() > cacheSize) testCache.erase(testCache.begin());
+			++misses;
+		}
+        if(std::find(testCache.begin(), testCache.end(), tri->k) == testCache.end())
+		{
+			testCache.push_back(tri->k);
+			if(testCache.size() > cacheSize) testCache.erase(testCache.begin());
+			++misses;
+		}
+    }
+    
+    // Average transform to vertex ratio (ATVR)
+	// 1.0 is theoretical optimum, meaning that each vertex is just transformed exactly one time
+	float atvr = (float)(3*nindices + misses) / (3*nindices);
+	return atvr;
+}

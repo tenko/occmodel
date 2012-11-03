@@ -3,11 +3,18 @@
 #ifndef OCCMODEL_H
 #define OCCMODEL_H
 #include "OCCIncludes.h"
+#include <sstream>
 #include <math.h>
+#include <limits>
 #include <vector>
 #include <set>
-#include <sstream>
-#include <limits>
+#include <map>
+#include <list>
+#include <algorithm>
+
+typedef std::vector<float> FVec;
+typedef std::vector<double> DVec;
+typedef std::vector<int> IVec;
 
 struct OCCStruct3d {
     double x;
@@ -27,9 +34,21 @@ struct OCCStruct3I {
     unsigned int k;
 };
 
-typedef std::vector<float> FVec;
-typedef std::vector<double> DVec;
-typedef std::vector<int> IVec;
+struct OptFace;
+
+struct OptVertex
+{
+	unsigned int           index;  // Index in vertex array
+	float                  score;
+	std::set<OptFace *>    faces;  // Faces that are using this vertex
+	void updateScore(int cacheIndex);
+};
+
+struct OptFace
+{
+	OptVertex  *verts[3];
+	float getScore()  {return verts[0]->score + verts[1]->score + verts[2]->score;}
+};
 
 enum BoolOpType {BOOL_FUSE, BOOL_CUT, BOOL_COMMON};
 
@@ -56,6 +75,16 @@ class OCCMesh {
         std::vector<int> edgehash;
         OCCMesh() { ; }
         int extractFaceMesh(const TopoDS_Face& face, bool qualityNormals);
+        void optimize();
+};
+
+class MeshOptimizer
+{
+public:
+	static const unsigned int maxCacheSize = 16;
+	static float calcCacheEfficiency(OCCMesh *mesh,
+                                     const unsigned  int cacheSize = maxCacheSize);
+	static void optimizeIndexOrder(OCCMesh *mesh);
 };
 
 unsigned int decutf8(unsigned int* state, unsigned int* codep, unsigned int byte);
