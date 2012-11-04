@@ -20,7 +20,7 @@ The license is GPL v2.
 Building
 ========
 
- * Python 2.6 and Cython 0.17.
+ * Python 2.7 and Cython 0.17.
  * A working installation of OpenCASCADE (OCE prefered)
  * The geotools_ library.
  * The optional viewer and demo needs the gltools_ library.
