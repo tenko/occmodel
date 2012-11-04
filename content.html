@@ -1520,6 +1520,23 @@ a VRML file.</p>
 <dd><p>Mesh()</p>
 <p>Mesh - Represent triangle mesh for viewing purpose</p>
 <dl class="method">
+<dt id="occmodel.Mesh.isValid">
+<tt class="descname">isValid</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Mesh.isValid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Mesh.nedgeIndices">
+<tt class="descname">nedgeIndices</tt><big>(</big><em>self</em><big>)</big> &rarr; size_t<a class="headerlink" href="#occmodel.Mesh.nedgeIndices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of edge indices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodel.Mesh.nedgeRanges">
+<tt class="descname">nedgeRanges</tt><big>(</big><em>self</em><big>)</big> &rarr; size_t<a class="headerlink" href="#occmodel.Mesh.nedgeRanges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of edge ranges</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="occmodel.Mesh.nnormals">
 <tt class="descname">nnormals</tt><big>(</big><em>self</em><big>)</big> &rarr; size_t<a class="headerlink" href="#occmodel.Mesh.nnormals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return number of normals</p>
@@ -1544,6 +1561,12 @@ a VRML file.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="occmodel.Mesh.optimize">
+<tt class="descname">optimize</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vertex Cache Optimisation</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="occmodel.Mesh.triangle">
 <tt class="descname">triangle</tt><big>(</big><em>self</em>, <em>size_t index</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.triangle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return triangle indices at given index</p>
@@ -1553,6 +1576,30 @@ a VRML file.</p>
 <dt id="occmodel.Mesh.vertex">
 <tt class="descname">vertex</tt><big>(</big><em>self</em>, <em>size_t index</em><big>)</big><a class="headerlink" href="#occmodel.Mesh.vertex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return vertex at given index</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Mesh.edgeIndices">
+<tt class="descname">edgeIndices</tt><a class="headerlink" href="#occmodel.Mesh.edgeIndices" title="Permalink to this definition">¶</a></dt>
+<dd><p>edgeIndices: View.MemoryView.array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Mesh.edgeIndicesItemSize">
+<tt class="descname">edgeIndicesItemSize</tt><a class="headerlink" href="#occmodel.Mesh.edgeIndicesItemSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>edgeIndicesItemSize: &#8216;int&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Mesh.edgeRanges">
+<tt class="descname">edgeRanges</tt><a class="headerlink" href="#occmodel.Mesh.edgeRanges" title="Permalink to this definition">¶</a></dt>
+<dd><p>edgeRanges: View.MemoryView.array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="occmodel.Mesh.edgeRangesItemSize">
+<tt class="descname">edgeRangesItemSize</tt><a class="headerlink" href="#occmodel.Mesh.edgeRangesItemSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>edgeRangesItemSize: &#8216;int&#8217;</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1605,6 +1652,11 @@ a VRML file.</p>
 <dd>possible multiple disconnected polylines.</dd>
 </dl>
 <dl class="method">
+<dt id="occmodel.Tesselation.isValid">
+<tt class="descname">isValid</tt><big>(</big><em>self</em><big>)</big> &rarr; int<a class="headerlink" href="#occmodel.Tesselation.isValid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="occmodel.Tesselation.nranges">
 <tt class="descname">nranges</tt><big>(</big><em>self</em><big>)</big> &rarr; size_t<a class="headerlink" href="#occmodel.Tesselation.nranges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return number of range values</p>
@@ -1646,7 +1698,76 @@ a VRML file.</p>
 </div>
 <div class="section" id="visualization">
 <h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h1>
-<p>ToDo</p>
+<dl class="class">
+<dt id="occmodelviewer.Viewer">
+<em class="property">class </em><tt class="descclassname">occmodelviewer.</tt><tt class="descname">Viewer</tt><big>(</big><em>width=-1</em>, <em>height=-1</em>, <em>title=None</em>, <em>fullscreen=False</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="occmodelviewer.Viewer.add">
+<tt class="descname">add</tt><big>(</big><em>obj</em>, <em>color=None</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.clear">
+<tt class="descname">clear</tt><big>(</big><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.hide">
+<tt class="descname">hide</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.hide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hide object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.redraw">
+<tt class="descname">redraw</tt><big>(</big><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.redraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redraw view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.remove">
+<tt class="descname">remove</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.unHide">
+<tt class="descname">unHide</tt><big>(</big><em>obj=None</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.unHide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unhide object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.updateBounds">
+<tt class="descname">updateBounds</tt><big>(</big><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.updateBounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recalculate bounding box</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="occmodelviewer.viewer">
+<tt class="descclassname">occmodelviewer.</tt><tt class="descname">viewer</tt><big>(</big><em>objs</em>, <em>colors=None</em>, <em>interactive=False</em>, <em>logger=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x7ff383592270&gt;</em><big>)</big><a class="headerlink" href="#occmodelviewer.viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Viewer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Objs :</th><td class="field-body">Single object or sequence of objects.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Colors :</th><td class="field-body">Color or sequence of colors. Defaults to COLORS.
+The object color is cycled from the seqence or set to single color.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Interactive :</th><td class="field-body">Install input hook for interactive use. Note that the
+returned reference to the viewer must be referenced to
+keep the viewer alive.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Logger :</th><td class="field-body">File to write error messages to. Defaults to stderr.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 

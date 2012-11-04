@@ -49,4 +49,7 @@ Tesselation
 Visualization
 =============
 
-ToDo
+.. autoclass:: occmodelviewer.Viewer
+    :members:
+
+.. autofunction:: occmodelviewer.viewer

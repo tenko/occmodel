@@ -22,6 +22,17 @@ object to the viewer function.
     viewer(solid)
     viewer((solid,face,edge))
 
+The viewer can also be used interactive from the Python command
+prompt. Note that a reference must be keept of the returned
+Viewer to avoid beeing reclaimed by the garbage collector.
+
+.. code-block:: python
+
+    from occmodelviewer import viewer
+    view = viewer(interactive = True)
+    view.add(solid)
+    view.redraw()
+    
 It is also possible to read objects from a STEP or BREP file and view
 the imported geometry.
 
@@ -277,8 +288,6 @@ Create open box with fillet edges.
 .. code-block:: python
 
     solid = Solid().createBox((0.,0.,0.),(100.,100.,100.))
-    pnt = Point(0.,0.,0.)
-    face = None
     for face in FaceIterator(solid):
         bbox = face.boundingBox()
         if bbox.near.z > 50. and bbox.far.z > 50.:
