@@ -1,4 +1,6 @@
+#!/usr/bin/python2
 # -*- coding: utf-8 -*-
+import sys
 import math
 
 import geotools as geo
@@ -18,7 +20,11 @@ class Demo:
             'Solid':occ.Solid,
             'SWEEP_RIGHT_CORNER': occ.SWEEP_RIGHT_CORNER,
         }
-        exec(self.TEXT) in loc
+        if sys.hexversion > 0x03000000:
+            exec(self.TEXT, loc)
+        else:
+            exec(self.TEXT) in loc
+            
         return self.results(loc)
         
 class Edge_1(Demo):

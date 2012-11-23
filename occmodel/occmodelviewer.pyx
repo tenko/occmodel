@@ -7,10 +7,18 @@ import itertools
 import ctypes
 import atexit
 
+cimport geotools as geo
 import geotools as geo
+
+cimport gltools as gl
 import gltools as gl
+
 import occmodel as occ
-    
+from occmodel import OCCError
+
+if sys.hexversion > 0x03000000:
+    basestring = str
+
 class InputHookManager(object):
     """
     Manage PyOS_InputHook.
@@ -89,7 +97,7 @@ COLORS = {
     'blue'  :gl.ColorRGBA(0,0,255,255),
     'yellow':gl.ColorRGBA(255,255,0,255),
     'white' :gl.ColorRGBA(0,0,0,0),
-    'grey' :gl.ColorRGBA(128,128,128,255),
+    'grey'  :gl.ColorRGBA(128,128,128,255),
     'black' :gl.ColorRGBA(255,255,255,255),
 }
 
@@ -216,7 +224,7 @@ class Viewer(gl.Window):
             if color.lower() in COLORS:
                 color = COLORS[color.lower()]
             else:
-                raise GLError("Unknown color: '%s'" % color)
+                raise OCCError("Unknown color: '%s'" % color)
         
         if isinstance(obj, (occ.Edge, occ.Wire)):
             res = PolylineObj(obj.hashCode())
@@ -335,7 +343,7 @@ class Viewer(gl.Window):
             self.objects.add(obj)
         
         else:
-            raise GLError('unknown object type')
+            raise OCCError('unknown object type')
             
         return True
             
@@ -619,7 +627,7 @@ class Viewer(gl.Window):
             # set color from counter
             color.fromInt(cnt)
             if color.alpha != 0:
-                raise GLError('to many object to pick')
+                raise OCCError('to many object to pick')
             color.alpha = 255
             gl.Color(color)
             

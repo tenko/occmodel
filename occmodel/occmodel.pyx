@@ -3,6 +3,7 @@
 # Copyright 2012 by Runar Tenfjord, Tenko as.
 # See LICENSE.txt for details on conditions.
 include "OCCIncludes.pxi"
+include "Config.pxi"
 
 class OCCError(Exception):
     pass

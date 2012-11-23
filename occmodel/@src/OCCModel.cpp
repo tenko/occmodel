@@ -102,7 +102,7 @@ int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = fals
                 pt.Get(n1,n2,n3);
             
             // make sure that we don't process invalid triangle
-            if (n1 == n2 or n2 == n3 or n3 == n1)
+            if (n1 == n2 || n2 == n3 || n3 == n1)
                 continue;
                 
             // Calculate face normal

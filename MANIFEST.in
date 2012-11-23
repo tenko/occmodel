@@ -1,0 +1,11 @@
+include Makefile
+include setup_build.py
+include setup_docs.py
+include version.py
+include MANIFEST.in
+include README.rst
+include TODO.rst
+include LICENSE.txt
+recursive-include occmodel *.py *.pyx *.pxi *.pxd *.rst *.cpp *.h
+exclude occmodel/test.py occmodel/test2.py occmodel/Note.rst
+prune occmodel/@arch
