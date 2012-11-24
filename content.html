@@ -1700,46 +1700,176 @@ a VRML file.</p>
 <h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="occmodelviewer.Viewer">
-<em class="property">class </em><tt class="descclassname">occmodelviewer.</tt><tt class="descname">Viewer</tt><big>(</big><em>width=-1</em>, <em>height=-1</em>, <em>title=None</em>, <em>fullscreen=False</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">occmodelviewer.</tt><tt class="descname">Viewer</tt><a class="headerlink" href="#occmodelviewer.Viewer" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
+<dt id="occmodelviewer.Viewer.activeUI">
+<tt class="descname">activeUI</tt><big>(</big><em>self</em>, <em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.activeUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="occmodelviewer.Viewer.add">
-<tt class="descname">add</tt><big>(</big><em>obj</em>, <em>color=None</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.add" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add</tt><big>(</big><em>self</em>, <em>obj</em>, <em>color=None</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add object</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodelviewer.Viewer.clear">
-<tt class="descname">clear</tt><big>(</big><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.clear" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">clear</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all objects</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodelviewer.Viewer.hide">
-<tt class="descname">hide</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.hide" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">hide</tt><big>(</big><em>self</em>, <em>obj</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.hide" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hide object</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="occmodelviewer.Viewer.onBackView">
+<tt class="descname">onBackView</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onBackView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onBottomView">
+<tt class="descname">onBottomView</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onBottomView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onChar">
+<tt class="descname">onChar</tt><big>(</big><em>self</em>, <em>ch</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onChar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onClose">
+<tt class="descname">onClose</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onClose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onCursorPos">
+<tt class="descname">onCursorPos</tt><big>(</big><em>self</em>, <em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onCursorPos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onFlushUI">
+<tt class="descname">onFlushUI</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onFlushUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onFrontView">
+<tt class="descname">onFrontView</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onFrontView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onGradient">
+<tt class="descname">onGradient</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onGradient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onIsoView">
+<tt class="descname">onIsoView</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onIsoView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onKey">
+<tt class="descname">onKey</tt><big>(</big><em>self</em>, <em>key</em>, <em>action</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onKey" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onLeftView">
+<tt class="descname">onLeftView</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onLeftView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onMouseButton">
+<tt class="descname">onMouseButton</tt><big>(</big><em>self</em>, <em>button</em>, <em>action</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onMouseButton" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onObjects">
+<tt class="descname">onObjects</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onObjects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onPick">
+<tt class="descname">onPick</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onPick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onRefresh">
+<tt class="descname">onRefresh</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onRefresh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onRightView">
+<tt class="descname">onRightView</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onRightView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onScreenShot">
+<tt class="descname">onScreenShot</tt><big>(</big><em>self</em>, <em>prefix='screenshot'</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onScreenShot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onScroll">
+<tt class="descname">onScroll</tt><big>(</big><em>self</em>, <em>scx</em>, <em>scy</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onScroll" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onSetup">
+<tt class="descname">onSetup</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onSetup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onSize">
+<tt class="descname">onSize</tt><big>(</big><em>self</em>, <em>w</em>, <em>h</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onTopView">
+<tt class="descname">onTopView</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onTopView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onUI">
+<tt class="descname">onUI</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onUIHelp">
+<tt class="descname">onUIHelp</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onUIHelp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onUIQuit">
+<tt class="descname">onUIQuit</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onUIQuit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="occmodelviewer.Viewer.onZoomExtents">
+<tt class="descname">onZoomExtents</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.onZoomExtents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="occmodelviewer.Viewer.redraw">
-<tt class="descname">redraw</tt><big>(</big><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.redraw" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">redraw</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.redraw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redraw view</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodelviewer.Viewer.remove">
-<tt class="descname">remove</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.remove" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">remove</tt><big>(</big><em>self</em>, <em>obj</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove object</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodelviewer.Viewer.unHide">
-<tt class="descname">unHide</tt><big>(</big><em>obj=None</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.unHide" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">unHide</tt><big>(</big><em>self</em>, <em>obj=None</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.unHide" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unhide object</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="occmodelviewer.Viewer.updateBounds">
-<tt class="descname">updateBounds</tt><big>(</big><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.updateBounds" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">updateBounds</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#occmodelviewer.Viewer.updateBounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recalculate bounding box</p>
 </dd></dl>
 
@@ -1747,7 +1877,7 @@ a VRML file.</p>
 
 <dl class="function">
 <dt id="occmodelviewer.viewer">
-<tt class="descclassname">occmodelviewer.</tt><tt class="descname">viewer</tt><big>(</big><em>objs</em>, <em>colors=None</em>, <em>interactive=False</em>, <em>logger=&lt;open file '&lt;stderr&gt;'</em>, <em>mode 'w' at 0x7ff383592270&gt;</em><big>)</big><a class="headerlink" href="#occmodelviewer.viewer" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">occmodelviewer.</tt><tt class="descname">viewer</tt><big>(</big><em>objs</em>, <em>colors=None</em>, <em>interactive=False</em>, <em>logger=&lt;???&gt;</em><big>)</big><a class="headerlink" href="#occmodelviewer.viewer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Viewer</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
