@@ -40,6 +40,9 @@ on the OCE_ project site. The python 2.7 module is linked against
 'OCE-0.10.0-Win-MSVC2008.zip' and the python 3.3 module is
 linked against 'OCE-0.10.0-Win-MSVC2010.zip'.
 
+For Linux build scripts are available for ArchLinux in the AUR_
+repository. These could be adapted to other Linux distros.
+
 Documentation
 =============
 
@@ -54,3 +57,5 @@ See online Sphinx docs_
 .. _pypi: http://pypi.python.org/pypi/occmodel
 
 .. _OCE: https://github.com/tpaviot/oce/downloads
+
+.. _AUR: https://aur.archlinux.org/packages/?O=0&K=occmodel

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#cython: embedsignature=True
 from __future__ import print_function
 import sys
 import math
@@ -1127,12 +1128,3 @@ def viewer(objs, colors = None, interactive = False, logger = sys.stderr):
         return mw
     else:
         mw.mainLoop()
-    
-if __name__ == '__main__':
-    #e1 = occ.Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,-1.),radius = .5)
-    #f1 = occ.Face().createConstrained(e1, ((0.,.0,-.5),))
-    w1 = occ.Wire().createRectangle(width = 1., height = 1., radius = 0.)
-    e1 = occ.Edge().createCircle(center=(0.,0.,0.),normal=(0.,0.,1.),radius = .25)
-    face = occ.Face().createFace((w1, e1))
-
-    viewer((face,))

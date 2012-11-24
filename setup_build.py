@@ -116,6 +116,9 @@ This viewer is utilizing modern OpenGL methods like GLSL
 shaders and vertex buffers to ensure visual quality and
 maximum speed. To use the viewer OpenGL version 2.1 is
 needed.
+
+In order to complete the installation OpenCASCADE must be installed
+on the system. Check the home page or the README file for details.
 ''',
         classifiers = [value for value in classifiers.split("\n") if value],
         author='Runar Tenfjord',

@@ -55,7 +55,6 @@ clean:
 	-rm $(LIB)
 	-rm -rf build dist
 	-rm -rf occmodel/@docs/build
-	-rm -rf occmodel/@docs/html
 	-rm MANIFEST occmodel/@src/Config.pxi
 	-rm occmodel.so occmodel/occmodel.cpp
 	-rm occmodelviewer.so occmodel/occmodelviewer.c

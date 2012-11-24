@@ -2,12 +2,15 @@ Introduction
 ============
 
 Examples are available by executing the demo
-function.
+script.
 
-.. code-block:: python
-
-    from occmodeldemo import demo
-    demo()
+::
+    
+    # windows
+    C:\Python2.7\Scripts\occmodeldemo.py
+    
+    # linux
+    occmodeldemo.py
 
 .. figure:: images/demo_window.jpg
     
