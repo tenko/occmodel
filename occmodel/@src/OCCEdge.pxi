@@ -270,6 +270,101 @@ cdef class Edge(Base):
             
         return self
     
+    cpdef createArcOfEllipse(self, center, normal, double rMajor, double rMinor,
+                              double a1, double a2, bint reverse = False):
+        '''
+        Create ellitical arc from center, normal direction, major, minor axis
+        and two angle constains. If the reverse flag is set the arc is created
+        from the reversed ellipse direction.
+        
+        example::
+            
+            e1 = Edge().createArcOfEllipse(center=(0.,0.,0.),normal=(0.,0.,1.),
+                                           rMajor = .5, rMinor=.2,
+                                           a1 = -pi/2., a2 = pi/2.)
+        '''
+        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        cdef c_OCCStruct3d ccen, cnor
+        cdef int ret
+        
+        ccen.x = center[0]
+        ccen.y = center[1]
+        ccen.z = center[2]
+        
+        cnor.x = normal[0]
+        cnor.y = normal[1]
+        cnor.z = normal[2]
+        
+        ret = occ.createArcOfEllipse(ccen, cnor, rMajor, rMinor, a1, a2, reverse)
+        
+        if not ret:
+            raise OCCError(errorMessage)
+            
+        return self
+
+    cpdef createArcOfHyperbola(self, center, normal, double rMajor, double rMinor,
+                               double a1, double a2, bint reverse = False):
+        '''
+        Create arc of hyperbola from center, normal direction, major, minor axis
+        and two angle constains. If the reverse flag is set the arc is created
+        from the reversed hyperbola direction.
+        
+        example::
+            
+            e1 = Edge().createArcOfHyperbola(center=(0.,0.,0.),normal=(0.,0.,1.),
+                                             rMajor = .5, rMinor=.2,
+                                             a1 = -pi/2., a2 = pi/2.)
+        '''
+        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        cdef c_OCCStruct3d ccen, cnor
+        cdef int ret
+        
+        ccen.x = center[0]
+        ccen.y = center[1]
+        ccen.z = center[2]
+        
+        cnor.x = normal[0]
+        cnor.y = normal[1]
+        cnor.z = normal[2]
+        
+        ret = occ.createArcOfHyperbola(ccen, cnor, rMajor, rMinor, a1, a2, reverse)
+        
+        if not ret:
+            raise OCCError(errorMessage)
+            
+        return self
+
+    cpdef createArcOfParabola(self, center, normal, double focus, double a1,
+                              double a2, bint reverse = False):
+        '''
+        Create arc of parabola from center, normal direction, focus distance
+        and two angle constains. If the reverse flag is set the arc is created
+        from the reversed parabola direction.
+        
+        example::
+            
+            e1 = Edge().createArcOfParabola(center=(0.,0.,0.),normal=(0.,0.,1.),
+                                             focus = .5, a1 = -pi/2., a2 = pi/2.)
+        '''
+        cdef c_OCCEdge *occ = <c_OCCEdge *>self.thisptr
+        cdef c_OCCStruct3d ccen, cnor
+        cdef int ret
+        
+        ccen.x = center[0]
+        ccen.y = center[1]
+        ccen.z = center[2]
+        
+        cnor.x = normal[0]
+        cnor.y = normal[1]
+        cnor.z = normal[2]
+        
+        ret = occ.createArcOfParabola(ccen, cnor, focus, a1, a2, reverse)
+        
+        if not ret:
+            raise OCCError(errorMessage)
+            
+        return self
+         
     cpdef createHelix(self, double pitch, double height, double radius, double angle = 0., bint leftHanded = False):
         '''
         Create helix curve.

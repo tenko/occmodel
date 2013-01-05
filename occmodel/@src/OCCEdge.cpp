@@ -204,6 +204,87 @@ int OCCEdge::createEllipse(OCCStruct3d pnt, OCCStruct3d nor, double rMajor, doub
     return 1;
 }
 
+int OCCEdge::createArcOfEllipse(OCCStruct3d pnt, OCCStruct3d nor, double rMajor,
+                                double rMinor, double a1, double a2, bool reverse)
+{
+    try {
+        gp_Ax2 ax2(gp_Pnt(pnt.x,pnt.y,pnt.z), gp_Dir(nor.x,nor.y,nor.z));
+        
+        if (rMajor <= Precision::Confusion() || rMinor <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("radius to small");
+        }
+        
+        gce_MakeElips ellipse(ax2, rMajor, rMinor);
+        GC_MakeArcOfEllipse arc(ellipse, a1, a2, reverse);
+        
+        this->setShape(BRepBuilderAPI_MakeEdge(arc));
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create arc");
+        }
+        return 0;
+    }
+    return 1;
+}
+
+int OCCEdge::createArcOfHyperbola(OCCStruct3d pnt, OCCStruct3d nor, double rMajor,
+                                  double rMinor, double a1, double a2, bool reverse)
+{
+    try {
+        gp_Ax2 ax2(gp_Pnt(pnt.x,pnt.y,pnt.z), gp_Dir(nor.x,nor.y,nor.z));
+        
+        if (rMajor <= Precision::Confusion() || rMinor <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("radius to small");
+        }
+        
+        gp_Hypr hyperbola(ax2, rMajor, rMinor);
+        GC_MakeArcOfHyperbola arc(hyperbola, a1, a2, reverse);
+        
+        this->setShape(BRepBuilderAPI_MakeEdge(arc));
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create arc");
+        }
+        return 0;
+    }
+    return 1;
+}
+
+int OCCEdge::createArcOfParabola(OCCStruct3d pnt, OCCStruct3d nor, double focus,
+                                 double a1, double a2, bool reverse)
+{
+    try {
+        gp_Ax2 ax2(gp_Pnt(pnt.x,pnt.y,pnt.z), gp_Dir(nor.x,nor.y,nor.z));
+        
+        if (focus <= Precision::Confusion()) {
+            StdFail_NotDone::Raise("focus to small");
+        }
+        
+        gp_Parab parabola(ax2, focus);
+        GC_MakeArcOfParabola arc(parabola, a1, a2, reverse);
+        
+        this->setShape(BRepBuilderAPI_MakeEdge(arc));
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to create arc");
+        }
+        return 0;
+    }
+    return 1;
+}
+                       
 int OCCEdge::createHelix(double pitch, double height, double radius, double angle, bool leftHanded)
 {
     try {

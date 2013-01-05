@@ -6,12 +6,17 @@ using std::iostream;
 #include <StdFail_NotDone.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Parab.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TShort_Array1OfShortReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <GC_MakeLine.hxx>
 #include <GC_MakeArcOfCircle.hxx>
+#include <GC_MakeArcOfEllipse.hxx>
+#include <GC_MakeArcOfHyperbola.hxx>
+#include <GC_MakeArcOfParabola.hxx>
 # include<GCE2d_MakeSegment.hxx>
 #include <gce_MakeCirc.hxx>
 #include <gce_MakeElips.hxx>

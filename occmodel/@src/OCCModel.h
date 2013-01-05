@@ -194,6 +194,12 @@ class OCCEdge : public OCCBase {
         int createArc3P(OCCVertex *start, OCCVertex *end, OCCStruct3d pnt);
         int createCircle(OCCStruct3d center, OCCStruct3d normal, double radius);
         int createEllipse(OCCStruct3d pnt, OCCStruct3d nor, double rMajor, double rMinor);
+        int createArcOfEllipse(OCCStruct3d pnt, OCCStruct3d nor, double rMajor,
+                               double rMinor, double a1, double a2, bool reverse);
+        int createArcOfHyperbola(OCCStruct3d pnt, OCCStruct3d nor, double rMajor,
+                                 double rMinor, double a1, double a2, bool reverse);
+        int createArcOfParabola(OCCStruct3d pnt, OCCStruct3d nor, double focus,
+                                double a1, double a2, bool reverse);
         int createHelix(double pitch, double height, double radius, double angle,
                         bool leftHanded);
         int createBezier(OCCVertex *start, OCCVertex *end, std::vector<OCCStruct3d> points);

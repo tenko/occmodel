@@ -104,6 +104,12 @@ cdef extern from "OCCModel.h":
         int createArc3P(c_OCCVertex *start, c_OCCVertex *end, c_OCCStruct3d pnt)
         int createCircle(c_OCCStruct3d center, c_OCCStruct3d normal, double radius)
         int createEllipse(c_OCCStruct3d pnt, c_OCCStruct3d nor, double rMajor, double rMinor)
+        int createArcOfEllipse(c_OCCStruct3d pnt, c_OCCStruct3d nor, double rMajor,
+                               double rMinor, double a1, double a2, bint reverse)
+        int createArcOfHyperbola(c_OCCStruct3d pnt, c_OCCStruct3d nor, double rMajor,
+                                 double rMinor, double a1, double a2, bint reverse)
+        int createArcOfParabola(c_OCCStruct3d pnt, c_OCCStruct3d nor, double focus,
+                                double a1, double a2, bint reverse)
         int createHelix(double pitch, double height, double radius, double angle, bint leftHanded)
         int createBezier(c_OCCVertex *start, c_OCCVertex *end, vector[c_OCCStruct3d] points)
         int createSpline(c_OCCVertex *start, c_OCCVertex *end, vector[c_OCCStruct3d] points, double tolerance)
