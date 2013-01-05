@@ -85,6 +85,7 @@ cdef extern from "OCCModel.h":
         double X()
         double Y()
         double Z()
+        int project(c_OCCBase *target)
     
     cdef cppclass c_OCCVertexIterator "OCCVertexIterator":
         c_OCCVertexIterator(c_OCCBase *arg)

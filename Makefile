@@ -27,7 +27,7 @@ $(LIB): $(LIBOBJ)
 
 pylib: $(LIB)
 	@echo lib Makefile - building python extension
-	$(PYTHON) setup_build.py build_ext --inplace
+	$(PYTHON) setup_build.py build_ext --inplace --force
     
 docs: pylib
 	@echo lib Makefile - building documentation

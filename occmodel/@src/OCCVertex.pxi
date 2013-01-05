@@ -58,6 +58,19 @@ cdef class Vertex(Base):
     cpdef double Z(self):
         cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
         return occ.Z()
+    
+    cpdef project(self, Base target):
+        '''
+        Project vertex towards edge.
+        '''
+        cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
+        cdef int ret
+        
+        ret = occ.project(<c_OCCBase *>target.thisptr)
+        if not ret:
+            raise OCCError(errorMessage)
+            
+        return self
 
 cdef class VertexIterator:
     '''

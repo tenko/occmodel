@@ -53,6 +53,7 @@ struct OptFace
 enum BoolOpType {BOOL_FUSE, BOOL_CUT, BOOL_COMMON};
 
 class OCCBase;
+class OCCEdge;
 class OCCSolid;
 
 extern char errorMessage[256];
@@ -149,6 +150,7 @@ class OCCVertex : public OCCBase {
             gp_Pnt pnt = BRep_Tool::Pnt(vertex);
             return pnt.Z();
         }
+        int project(OCCBase *target);
         bool canSetShape(const TopoDS_Shape& shape) {
             return shape.ShapeType() == TopAbs_VERTEX;
         }

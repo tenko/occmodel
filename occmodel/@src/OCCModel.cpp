@@ -42,6 +42,59 @@ unsigned int decutf8(unsigned int* state, unsigned int* codep, unsigned int byte
 	return *state;
 }
 
+int OCCVertex::project(OCCBase *target) {
+    Standard_Real First,Last,Best = 1e200;
+    try {
+        gp_Pnt pnt = BRep_Tool::Pnt(vertex);
+        if (target->shapeType() == TopAbs_EDGE) {
+            Handle(Geom_Curve) Curve = BRep_Tool::Curve(TopoDS::Edge(target->getShape()), First, Last);
+            GeomAPI_ProjectPointOnCurve proj;
+            proj.Init(pnt, Curve, First, Last);
+            gp_Pnt aPnt = proj.NearestPoint();
+            BRepBuilderAPI_MakeVertex mkVertex(aPnt);
+            this->setShape(mkVertex.Vertex());
+        } else if (target->shapeType() == TopAbs_WIRE) {
+            BRepTools_WireExplorer exWire;
+            for (exWire.Init(TopoDS::Wire(target->getShape())); exWire.More(); exWire.Next()) {
+                const TopoDS_Edge& edge = exWire.Current();
+                const Handle(Geom_Curve)& Curve = BRep_Tool::Curve(edge, First, Last);
+                GeomAPI_ProjectPointOnCurve proj;
+                proj.Init(pnt, Curve);
+                gp_Pnt aPnt = proj.NearestPoint();
+                if (proj.LowerDistance() < Best) {
+                    Best = proj.LowerDistance();
+                    pnt = aPnt;
+                }
+            }
+            BRepBuilderAPI_MakeVertex mkVertex(pnt);
+            this->setShape(mkVertex.Vertex());
+        } else {
+            gp_Pnt org = BRep_Tool::Pnt(vertex);
+            BRepExtrema_DistShapeShape proj(this->getShape(), target->getShape());
+            proj.Perform();
+            for (int i = 1; i <= proj.NbSolution(); i++) {
+                gp_Pnt aPnt = proj.PointOnShape2(i);
+                if (org.Distance(aPnt) < Best) {
+                    Best = org.Distance(aPnt);
+                    pnt = aPnt;
+                }
+            }
+            BRepBuilderAPI_MakeVertex mkVertex(pnt);
+            this->setShape(mkVertex.Vertex());
+        }
+    } catch(Standard_Failure &err) {
+        Handle_Standard_Failure e = Standard_Failure::Caught();
+        const Standard_CString msg = e->GetMessageString();
+        if (msg != NULL && strlen(msg) > 1) {
+            setErrorMessage(msg);
+        } else {
+            setErrorMessage("Failed to project vertex");
+        }
+        return 0;
+    }
+    return 1;
+}
+        
 int OCCMesh::extractFaceMesh(const TopoDS_Face& face, bool qualityNormals = false)
 {
     int vsize = this->vertices.size();
