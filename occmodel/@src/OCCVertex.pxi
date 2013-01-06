@@ -61,7 +61,7 @@ cdef class Vertex(Base):
     
     cpdef project(self, Base target):
         '''
-        Project vertex towards edge.
+        Project vertex towards edge, wire, face or solid.
         '''
         cdef c_OCCVertex *occ = <c_OCCVertex *>self.thisptr
         cdef int ret
