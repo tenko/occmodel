@@ -12,3 +12,8 @@ occmodel/@docs/build/
 *.a
 # object files
 *.o
+MANIFEST
+occmodel/@src/Config.pxi
+occmodel/occmodel.cpp
+dist/
+build/

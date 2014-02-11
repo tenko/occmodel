@@ -49,7 +49,7 @@ OCC = \
 TKCAF TKCDF TKFeat TKFillet TKG2d TKG3d TKGeomAlgo TKGeomBase TKHLR TKIGES TKLCAF
 TKMath TKMesh TKOffset TKPCAF TKPLCAF TKPShape TKPrim TKSTEP TKSTEP209 TKSTEPAttr
 TKSTEPBase TKSTL TKService TKShHealing TKShapeSchema TKStdLSchema TKStdSchema
-TKTObj TKTopAlgo TKV2d TKV3d TKVRML TKXCAF TKXCAFSchema TKXDEIGES TKXDESTEP 
+TKTObj TKTopAlgo TKV3d TKVRML TKXCAF TKXCAFSchema TKXDEIGES TKXDESTEP 
 TKXMesh TKXSBase TKXml TKXmlL TKXmlTObj TKXmlXCAF TKernel'''
 
 # platform specific settings
@@ -60,15 +60,15 @@ if sys.platform == 'win32':
     OCCLIBS = []
     OBJECTS = [name + '.lib' for name in OCC.split()] + ['occmodel.lib',]
 else:
-    OCCINCLUDE = '/usr/include/oce'
+    OCCINCLUDE = (sys.platform == 'darwin') and '/usr/local/include/oce' or '/usr/include/oce'
     OCCLIBS = OCC.split()
-    LIBS.append("occmodel")
     LIBS.append("pthread")
     COMPILE_ARGS.append("-fpermissive")
 
 EXTENSIONS = [
     Extension("occmodel",
-        sources = ["occmodel/occmodel.pyx"],
+        sources = ["occmodel/occmodel.pyx"] + \
+                  glob.glob("occmodel/@src/*.cpp"),
         depends = glob.glob("occmodel/@src/*.pxd") + \
                   glob.glob("occmodel/@src/*.pxi"),
         include_dirs = ['occmodel/@src', OCCINCLUDE],
