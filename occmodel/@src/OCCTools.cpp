@@ -201,6 +201,9 @@ int OCCTools::writeSTEP(const char *filename, std::vector<OCCBase *> shapes)
             }
         }
         status = writer.Write(filename);
+        if (status != IFSelect_RetDone) {
+            StdFail_NotDone::Raise("Failed to write STEP file");
+        }
     } catch(Standard_Failure &err) {
         Handle_Standard_Failure e = Standard_Failure::Caught();
         const Standard_CString msg = e->GetMessageString();
