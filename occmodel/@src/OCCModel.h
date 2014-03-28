@@ -100,7 +100,6 @@ public:
     static int writeBREP(std::ostream& str, const TopoDS_Shape& shape);
     static int writeSTEP(const char *filename, std::vector<OCCBase *> shapes);
     static int writeSTL(const char *filename, std::vector<OCCBase *> shapes);
-    static int writeVRML(const char *filename, std::vector<OCCBase *> shapes);
     static int readBREP(const char *filename, std::vector<OCCBase *>& shapes);
     static int readBREP(std::istream& str, TopoDS_Shape& shape);
     static int readSTEP(const char *filename, std::vector<OCCBase *>& shapes);

@@ -111,7 +111,6 @@ using std::iostream;
 #include <IGESControl_Writer.hxx>
 #include <STEPControl_Writer.hxx>
 #include <StlAPI_Writer.hxx>
-#include <VrmlAPI_Writer.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <ShapeAnalysis_ShapeTolerance.hxx>
 #include <ShapeAnalysis_ShapeContents.hxx>

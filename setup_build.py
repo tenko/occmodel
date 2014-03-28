@@ -45,12 +45,11 @@ if not os.path.exists(CONFIG) and 'sdist' not in sys.argv:
         fh.write("__version_info__ = (%d,%d,%d)\n" % args)
 
 OCC = \
-'''FWOSPlugin PTKernel TKAdvTools TKBO TKBRep TKBin TKBinL TKBinTObj TKBinXCAF TKBool
-TKCAF TKCDF TKFeat TKFillet TKG2d TKG3d TKGeomAlgo TKGeomBase TKHLR TKIGES TKLCAF
-TKMath TKMesh TKOffset TKPCAF TKPLCAF TKPShape TKPrim TKSTEP TKSTEP209 TKSTEPAttr
-TKSTEPBase TKSTL TKService TKShHealing TKShapeSchema TKStdLSchema TKStdSchema
-TKTObj TKTopAlgo TKV2d TKV3d TKVRML TKXCAF TKXCAFSchema TKXDEIGES TKXDESTEP 
-TKXMesh TKXSBase TKXml TKXmlL TKXmlTObj TKXmlXCAF TKernel'''
+'''FWOSPlugin PTKernel TKAdvTools TKBO TKBRep TKBinL TKBool TKCDF TKFeat TKFillet
+TKG2d TKG3d TKGeomAlgo TKGeomBase TKHLR TKIGES TKLCAF TKMath TKMesh TKOffset
+TKPLCAF TKPShape TKPrim TKSTEP TKSTEP209 TKSTEPAttr TKSTEPBase TKSTL TKShHealing
+TKShapeSchema TKStdLSchema TKTObj TKTopAlgo TKXMesh TKXSBase TKXmlL TKernel
+'''
 
 # platform specific settings
 OBJECTS, LIBS, LINK_ARGS, COMPILE_ARGS = [],[],[],[]
@@ -62,8 +61,7 @@ if sys.platform == 'win32':
 else:
     OCCINCLUDE = '/usr/include/oce'
     OCCLIBS = OCC.split()
-    LIBS.append("occmodel")
-    LIBS.append("pthread")
+    OBJECTS = ["occmodel/liboccmodel.a"]
     COMPILE_ARGS.append("-fpermissive")
 
 EXTENSIONS = [
@@ -72,7 +70,7 @@ EXTENSIONS = [
         depends = glob.glob("occmodel/@src/*.pxd") + \
                   glob.glob("occmodel/@src/*.pxi"),
         include_dirs = ['occmodel/@src', OCCINCLUDE],
-        library_dirs = ['occmodel'],
+        library_dirs = ['/lib/','occmodel'],
         libraries = LIBS + OCCLIBS,
         extra_link_args = LINK_ARGS,
         extra_compile_args = COMPILE_ARGS,

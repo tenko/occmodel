@@ -241,32 +241,6 @@ int OCCTools::writeSTL(const char *filename, std::vector<OCCBase *> shapes)
     return 1;
 }
 
-int OCCTools::writeVRML(const char *filename, std::vector<OCCBase *> shapes)
-{
-    try {
-        BRep_Builder B;
-        TopoDS_Compound shape;
-        B.MakeCompound(shape);
-        
-        for (unsigned i = 0; i < shapes.size(); i++) {
-            B.Add(shape, shapes[i]->getShape());
-        }
-        VrmlAPI_Writer writer;
-        writer.Write(shape, filename);
-    } catch(Standard_Failure &err) {
-        Handle_Standard_Failure e = Standard_Failure::Caught();
-        const Standard_CString msg = e->GetMessageString();
-        //printf("ERROR: %s\n", e->GetMessageString());
-        if (msg != NULL && strlen(msg) > 1) {
-            setErrorMessage(msg);
-        } else {
-            setErrorMessage("Failed to write VRML file");
-        }
-        return 0;
-    }
-    return 1;
-}
-
 int OCCTools::readBREP(const char *filename, std::vector<OCCBase *>& shapes)
 {
     try {

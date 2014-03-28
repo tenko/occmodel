@@ -56,8 +56,8 @@ clean:
 	-rm -rf build dist
 	-rm -rf occmodel/@docs/build
 	-rm MANIFEST occmodel/@src/Config.pxi
-	-rm occmodel.so occmodel/occmodel.cpp
-	-rm occmodelviewer.so occmodel/occmodelviewer.c
+	-rm occmodel.dll occmodel.so occmodel/occmodel.cpp
+	-rm occmodelviewer.dll occmodelviewer.so occmodel/occmodelviewer.c
 	-find occmodel -iname '*.so' -exec rm {} \;
 	-find occmodel -iname '*.pyc' -exec rm {} \;
 	-find occmodel -iname '*.pyo' -exec rm {} \;

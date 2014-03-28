@@ -72,28 +72,6 @@ cdef class Tools:
             raise OCCError(errorMessage)
             
         return True
-    
-    @staticmethod
-    def writeVRML(filename, shapes):
-        '''
-        Write a sequence of shapes or a single shape to
-        a VRML file.
-        '''
-        cdef vector[c_OCCBase *] cshapes
-        cdef Base cobj
-        cdef int ret
-        
-        if isinstance(shapes, Base):
-            shapes = (shapes,)
-        
-        for cobj in shapes:
-            cshapes.push_back((<c_OCCBase *>cobj.thisptr))
-        
-        ret = writeVRML(filename, cshapes)
-        if not ret:
-            raise OCCError(errorMessage)
-            
-        return True
 
     @staticmethod
     def readBREP(filename):

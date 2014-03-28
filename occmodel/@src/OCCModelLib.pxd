@@ -206,6 +206,5 @@ cdef extern from "OCCModel.h" namespace "OCCTools":
     int writeBREP(char *filename, vector[c_OCCBase *] shapes)
     int writeSTEP(char *filename, vector[c_OCCBase *] shapes)
     int writeSTL(char *filename, vector[c_OCCBase *] shapes)
-    int writeVRML(char *filename, vector[c_OCCBase *] shapes)
     int readBREP(char *filename, vector[c_OCCBase *] shapes)
     int readSTEP(char *filename, vector[c_OCCBase *] shapes)
