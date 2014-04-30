@@ -955,7 +955,7 @@ class Viewer(gl.Window):
         
         self.onRefresh()
     
-    def onKey(self, key, action):
+    def onKey(self, key, scancode, action, mods):
         cam = self.cam
         
         if action == gl.ACTION.PRESS:
@@ -1000,6 +1000,27 @@ class Viewer(gl.Window):
             
             elif key == gl.KEY.LEFT_CONTROL:
                 self.keyMod |= LCTRL
+            
+            if mods & gl.MOD.CONTROL:
+                if key == gl.KEY.F and mods == gl.MOD.CONTROL:
+                    self.onZoomExtents()
+                    self.mouseCenter.set(self.cam.target)
+                    self.uiRefresh = True
+                    self.onRefresh()
+                
+                elif key == gl.KEY.H:
+                    if mods & gl.MOD.SHIFT:
+                        self.hidden.clear()
+                        self.updateBounds()
+                        self.uiRefresh = True
+                        self.onRefresh()
+                    else:
+                        if self.picked:
+                            self.hidden.update(self.picked)
+                            self.updateBounds()
+                            self.picked.clear()
+                            self.uiRefresh = True
+                            self.onRefresh()
         else:
             if key == gl.KEY.LEFT_SHIFT:
                 self.keyMod ^= LSHIFT
@@ -1009,28 +1030,6 @@ class Viewer(gl.Window):
                     
         if self.uiRefresh:
             self.onRefresh()
-        
-    def onChar(self, ch):
-        if self.keyMod & LCTRL:
-            if ch == 'f':
-                self.onZoomExtents()
-                self.mouseCenter.set(self.cam.target)
-                self.uiRefresh = True
-                self.onRefresh()
-            
-            elif ch == 'h':
-                if self.picked:
-                    self.hidden.update(self.picked)
-                    self.updateBounds()
-                    self.picked.clear()
-                    self.uiRefresh = True
-                    self.onRefresh()
-            
-            elif ch == 'H':
-                self.hidden.clear()
-                self.updateBounds()
-                self.uiRefresh = True
-                self.onRefresh()
             
     def onScroll(self, scx, scy):
         x, y = self.lastPos
