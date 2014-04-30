@@ -17,13 +17,17 @@ cdef class Tools:
         cdef Base cobj
         cdef int ret
         
+        cdef char *c_filename
+        bytetext = unicode(filename).encode('UTF-8','ignore')
+        c_filename = bytetext
+        
         if isinstance(shapes, Base):
             shapes = (shapes,)
         
         for cobj in shapes:
             cshapes.push_back((<c_OCCBase *>cobj.thisptr))
         
-        ret = writeBREP(filename, cshapes)
+        ret = writeBREP(c_filename, cshapes)
         if not ret:
             raise OCCError(errorMessage)
             
@@ -39,13 +43,17 @@ cdef class Tools:
         cdef Base cobj
         cdef int ret
         
+        cdef char *c_filename
+        bytetext = unicode(filename).encode('UTF-8','ignore')
+        c_filename = bytetext
+        
         if isinstance(shapes, Base):
             shapes = (shapes,)
         
         for cobj in shapes:
             cshapes.push_back((<c_OCCBase *>cobj.thisptr))
         
-        ret = writeSTEP(filename, cshapes)
+        ret = writeSTEP(c_filename, cshapes)
         if not ret:
             raise OCCError(errorMessage)
             
@@ -61,13 +69,17 @@ cdef class Tools:
         cdef Base cobj
         cdef int ret
         
+        cdef char *c_filename
+        bytetext = unicode(filename).encode('UTF-8','ignore')
+        c_filename = bytetext
+        
         if isinstance(shapes, Base):
             shapes = (shapes,)
         
         for cobj in shapes:
             cshapes.push_back((<c_OCCBase *>cobj.thisptr))
         
-        ret = writeSTL(filename, cshapes)
+        ret = writeSTL(c_filename, cshapes)
         if not ret:
             raise OCCError(errorMessage)
             
@@ -88,7 +100,11 @@ cdef class Tools:
         cdef Vertex vertex
         cdef int i, ret
         
-        ret = readBREP(filename, cshapes)
+        cdef char *c_filename
+        bytetext = unicode(filename).encode('UTF-8','ignore')
+        c_filename = bytetext
+        
+        ret = readBREP(c_filename, cshapes)
         if not ret:
             raise OCCError(errorMessage)
             
@@ -143,7 +159,11 @@ cdef class Tools:
         cdef Vertex vertex
         cdef int i, ret
         
-        ret = readSTEP(filename, cshapes)
+        cdef char *c_filename
+        bytetext = unicode(filename).encode('UTF-8','ignore')
+        c_filename = bytetext
+        
+        ret = readSTEP(c_filename, cshapes)
         if not ret or cshapes.size() == 0:
             raise OCCError(errorMessage)
         
