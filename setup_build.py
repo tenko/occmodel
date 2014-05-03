@@ -52,12 +52,21 @@ TKShapeSchema TKStdLSchema TKTObj TKTopAlgo TKXMesh TKXSBase TKXmlL TKernel
 '''
 
 # platform specific settings
+SOURCES = ["occmodel/occmodel.pyx"]
+
 OBJECTS, LIBS, LINK_ARGS, COMPILE_ARGS = [],[],[],[]
 if sys.platform == 'win32':
     COMPILE_ARGS.append('/EHsc')
     OCCINCLUDE = r"C:\vs9include\oce"
     OCCLIBS = []
     OBJECTS = [name + '.lib' for name in OCC.split()] + ['occmodel.lib',]
+    
+elif sys.platform == 'darwin':
+    SOURCES += glob.glob("occmodel/@src/*.cpp")
+    OCCINCLUDE = '/usr/include/oce'
+    OCCLIBS = OCC.split()
+    COMPILE_ARGS.append("-fpermissive")
+    
 else:
     OCCINCLUDE = '/usr/include/oce'
     OCCLIBS = OCC.split()
@@ -66,7 +75,7 @@ else:
 
 EXTENSIONS = [
     Extension("occmodel",
-        sources = ["occmodel/occmodel.pyx"],
+        sources = SOURCES,
         depends = glob.glob("occmodel/@src/*.pxd") + \
                   glob.glob("occmodel/@src/*.pxi"),
         include_dirs = ['occmodel/@src', OCCINCLUDE],
