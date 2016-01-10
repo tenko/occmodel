@@ -2,13 +2,13 @@
 # File:  Makefile (for library)
 #
 # The variables 'PYTHON' and 'PYVER' can be modified by
-# passing parameters to make: make PYTHON=python PYVER=2.6
+# passing parameters to make: make PYTHON=python PYVER=2.7
 #
-PYTHON=python2
-PYVER=2.7
+PYTHON=python3
+PYVER=3.5
 
 CC=g++
-CFLAGS=-Wall -fPIC -O2 -frtti -fexceptions -Isrc -I/usr/include/oce
+CFLAGS=-Wall -fPIC -O2 -frtti -fexceptions -Isrc -I/mingw64/include/oce
 LIB=occmodel/liboccmodel.a
     
 LIBSRC = $(wildcard occmodel/@src/*.cpp)

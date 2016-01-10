@@ -453,7 +453,7 @@ OCCMesh *OCCFace::createMesh(double factor, double angle, bool qualityNormals = 
         
         MSH.Perform(this->getShape());
         
-        BRepMesh::Mesh(this->getShape(),factor*maxd);
+        BRepMesh_IncrementalMesh(this->getShape(),factor*maxd);
         
         if (this->getShape().ShapeType() != TopAbs_FACE) {
             TopExp_Explorer exFace;

@@ -30,8 +30,7 @@ int OCCBase::transform(DVec mat, OCCBase *target)
             trans.SetValues(
                 mat[0], mat[1], mat[2], mat[3], 
                 mat[4], mat[5], mat[6], mat[7], 
-                mat[8], mat[9], mat[10], mat[11], 
-                0.00001,0.00001
+                mat[8], mat[9], mat[10], mat[11]
             );
             BRepBuilderAPI_Transform aTrans(shape, trans, Standard_True);
             aTrans.Build();
