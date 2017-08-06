@@ -45,7 +45,7 @@ if not os.path.exists(CONFIG) and 'sdist' not in sys.argv:
         fh.write("__version_info__ = (%d,%d,%d)\n" % args)
 
 OCC = \
-'''FWOSPlugin PTKernel TKAdvTools TKBO TKBRep TKBinL TKBool TKCDF TKFeat TKFillet
+'''FWOSPlugin PTKernel TKBO TKBRep TKBinL TKBool TKCDF TKFeat TKFillet
 TKG2d TKG3d TKGeomAlgo TKGeomBase TKHLR TKIGES TKLCAF TKMath TKMesh TKOffset
 TKPLCAF TKPShape TKPrim TKSTEP TKSTEP209 TKSTEPAttr TKSTEPBase TKSTL TKShHealing
 TKShapeSchema TKStdLSchema TKTObj TKTopAlgo TKXMesh TKXSBase TKXmlL TKernel
